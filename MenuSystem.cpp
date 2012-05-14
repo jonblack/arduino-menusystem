@@ -72,9 +72,7 @@ MenuComponent* Menu::activate()
     MenuComponent* pComponent = _menu_components[_cur_menu_component];
     
     if (pComponent == NULL)
-    {
         return NULL;
-    }
     
     return pComponent->select();
 }
@@ -91,9 +89,7 @@ void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
     pItem->set_select_function(on_select);
     
     if (_num_menu_components == 0)
-    {
         _p_sel_menu_component = pItem;
-    }
     
     _num_menu_components++;
 }
@@ -115,9 +111,7 @@ Menu* Menu::add_menu(Menu* pMenu)
     _menu_components[_num_menu_components] = pMenu;
     
     if (_num_menu_components == 0)
-    {
         _p_sel_menu_component = pMenu;
-    }
     
     _num_menu_components++;
     
@@ -157,9 +151,7 @@ void MenuItem::set_select_function(void (*on_select)(MenuItem*))
 MenuComponent* MenuItem::select()
 {
     if (_on_select != NULL)
-    {
         _on_select(this);
-    }
     
     return 0;
 }
@@ -176,23 +168,16 @@ MenuSystem::MenuSystem()
 
 boolean MenuSystem::next()
 {
-    // TODO: surround by debug stuff
-    Serial.println("Next menu item");
     return _p_curr_menu->next();
 }
 
 boolean MenuSystem::prev()
 {
-    Serial.println("Prev menu item");
     return _p_curr_menu->prev();
 }
 
 void MenuSystem::select()
 {
-    // TODO: surround by debug stuff
-    Serial.print(get_current_menu_name());
-    Serial.println(" menu item selected");
-    
     MenuComponent* pComponent = _p_curr_menu->activate();
     
     if (pComponent != NULL)
@@ -210,9 +195,7 @@ void MenuSystem::select()
 void MenuSystem::back()
 {
     if (_p_curr_menu != _p_root_menu)
-    {
         _p_curr_menu = _p_curr_menu->get_parent();
-    }
 }
 
 void MenuSystem::set_root_menu(Menu* p_root_menu)
