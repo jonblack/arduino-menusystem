@@ -1,0 +1,237 @@
+/*
+  MenuSystem.h - Library for creating menu structures.
+  Created by Jon Black, August 8th 2011.
+  Released into the public domain.
+  
+  License: GPL 3
+*/
+
+#include "MenuSystem.h"
+
+// *********************************************************
+// MenuComponent
+// *********************************************************
+
+MenuComponent::MenuComponent(char* name)
+: _name(name)
+{
+}
+
+char* MenuComponent::get_name()
+{
+    return _name;
+}
+
+void MenuComponent::set_name(char* name)
+{
+    _name = name;
+}
+
+
+// *********************************************************
+// Menu
+// *********************************************************
+
+Menu::Menu(char* name)
+: MenuComponent(name),
+  _p_sel_menu_component(NULL),
+  _p_parent(NULL),
+  _num_menu_components(NULL),
+  _cur_menu_component(NULL)
+{
+}
+
+boolean Menu::next()
+{
+    if (_cur_menu_component != _num_menu_components - 1)
+    {
+        _cur_menu_component++;
+        _p_sel_menu_component = _menu_components[_cur_menu_component];
+        
+        return true;
+    }
+    
+    return false;
+}
+
+boolean Menu::prev()
+{
+    if (_cur_menu_component != 0)
+    {
+        _cur_menu_component--;
+        _p_sel_menu_component = _menu_components[_cur_menu_component];
+        
+        return true;
+    }
+    
+    return false;
+}
+
+MenuComponent* Menu::activate()
+{
+    MenuComponent* pComponent = _menu_components[_cur_menu_component];
+    
+    if (pComponent == NULL)
+    {
+        return NULL;
+    }
+    
+    return pComponent->select();
+}
+
+MenuComponent* Menu::select()
+{
+    return this;
+}
+
+void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
+{
+    _menu_components[_num_menu_components] = pItem;
+    
+    pItem->set_select_function(on_select);
+    
+    if (_num_menu_components == 0)
+    {
+        _p_sel_menu_component = pItem;
+    }
+    
+    _num_menu_components++;
+}
+
+Menu* Menu::get_parent() const
+{
+    return _p_parent;
+}
+
+void Menu::set_parent(Menu* pParent)
+{
+    _p_parent = pParent;
+}
+
+Menu* Menu::add_menu(Menu* pMenu)
+{
+    pMenu->set_parent(this);
+    
+    _menu_components[_num_menu_components] = pMenu;
+    
+    if (_num_menu_components == 0)
+    {
+        _p_sel_menu_component = pMenu;
+    }
+    
+    _num_menu_components++;
+    
+    return pMenu;
+}
+
+MenuComponent* Menu::get_selected() const
+{
+    return _p_sel_menu_component;
+}
+
+byte Menu::get_num_menu_items() const
+{
+    return _num_menu_components;
+}
+
+byte Menu::get_cur_menu_item() const
+{
+    return _cur_menu_component;
+}
+
+// *********************************************************
+// MenuItem
+// *********************************************************
+
+MenuItem::MenuItem(char* name)
+: MenuComponent(name),
+  _on_select(0)
+{
+}
+
+void MenuItem::set_select_function(void (*on_select)(MenuItem*))
+{
+    _on_select = on_select;
+}
+
+MenuComponent* MenuItem::select()
+{
+    if (_on_select != NULL)
+    {
+        _on_select(this);
+    }
+    
+    return 0;
+}
+
+// *********************************************************
+// MenuSystem
+// *********************************************************
+
+MenuSystem::MenuSystem()
+: _p_root_menu(NULL),
+  _p_curr_menu(NULL)
+{
+}
+
+boolean MenuSystem::next()
+{
+    // TODO: surround by debug stuff
+    Serial.println("Next menu item");
+    return _p_curr_menu->next();
+}
+
+boolean MenuSystem::prev()
+{
+    Serial.println("Prev menu item");
+    return _p_curr_menu->prev();
+}
+
+void MenuSystem::select()
+{
+    // TODO: surround by debug stuff
+    Serial.print(get_current_menu_name());
+    Serial.println(" menu item selected");
+    
+    MenuComponent* pComponent = _p_curr_menu->activate();
+    
+    if (pComponent != NULL)
+    {
+        _p_curr_menu = (Menu*) pComponent;
+    }
+    else
+    {
+        // A menu item was selected, so reset the menu ready for when
+        // it's used again.
+        _p_curr_menu = _p_root_menu;
+    }
+}
+
+void MenuSystem::back()
+{
+    if (_p_curr_menu != _p_root_menu)
+    {
+        _p_curr_menu = _p_curr_menu->get_parent();
+    }
+}
+
+void MenuSystem::set_root_menu(Menu* p_root_menu)
+{
+    _p_root_menu = p_root_menu;
+    _p_curr_menu = p_root_menu;
+}
+
+char* MenuSystem::get_current_menu_name()
+{
+    return _p_curr_menu->get_selected()->get_name();
+}
+
+byte MenuSystem::get_num_menu_items() const
+{
+    return _p_curr_menu->get_num_menu_items();
+}
+
+byte MenuSystem::get_cur_menu_item() const
+{
+    return _p_curr_menu->get_cur_menu_item();
+}
