@@ -1,7 +1,7 @@
 /*
-  current_item.ino - Example code using the menu system library.
+  current_menu.ino - Example code using the menu system library.
   
-  This example shows only the current menu item.
+  This example shows all items in the current menu.
   
   Created by Jon Black, May 25th 2012.
   Released into the public domain.
@@ -65,7 +65,18 @@ void loop()
   Serial.println("");
   
   // Display the menu
-  Serial.println(ms.get_current_menu()->get_selected()->get_name());
+  Menu const* cp_menu = ms.get_current_menu();
+  MenuComponent const* cp_menu_sel = cp_menu->get_selected();
+  for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
+  {
+    MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
+    Serial.print(cp_m_comp->get_name());
+    
+    if (cp_menu_sel == cp_m_comp)
+      Serial.print("<<< ");
+    
+    Serial.println("");
+  }
   
   // Simulate using the menu by walking over the entire structure.
   ms.select();

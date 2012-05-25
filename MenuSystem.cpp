@@ -17,7 +17,7 @@ MenuComponent::MenuComponent(char* name)
 {
 }
 
-char* MenuComponent::get_name()
+char* MenuComponent::get_name() const
 {
     return _name;
 }
@@ -36,17 +36,17 @@ Menu::Menu(char* name)
 : MenuComponent(name),
   _p_sel_menu_component(NULL),
   _p_parent(NULL),
-  _num_menu_components(NULL),
-  _cur_menu_component(NULL)
+  _num_menu_components(0),
+  _cur_menu_component_num(0)
 {
 }
 
 boolean Menu::next()
 {
-    if (_cur_menu_component != _num_menu_components - 1)
+    if (_cur_menu_component_num != _num_menu_components - 1)
     {
-        _cur_menu_component++;
-        _p_sel_menu_component = _menu_components[_cur_menu_component];
+        _cur_menu_component_num++;
+        _p_sel_menu_component = _menu_components[_cur_menu_component_num];
         
         return true;
     }
@@ -56,10 +56,10 @@ boolean Menu::next()
 
 boolean Menu::prev()
 {
-    if (_cur_menu_component != 0)
+    if (_cur_menu_component_num != 0)
     {
-        _cur_menu_component--;
-        _p_sel_menu_component = _menu_components[_cur_menu_component];
+        _cur_menu_component_num--;
+        _p_sel_menu_component = _menu_components[_cur_menu_component_num];
         
         return true;
     }
@@ -69,7 +69,7 @@ boolean Menu::prev()
 
 MenuComponent* Menu::activate()
 {
-    MenuComponent* pComponent = _menu_components[_cur_menu_component];
+    MenuComponent* pComponent = _menu_components[_cur_menu_component_num];
     
     if (pComponent == NULL)
         return NULL;
@@ -94,7 +94,7 @@ void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
     _num_menu_components++;
 }
 
-Menu* Menu::get_parent() const
+Menu const* Menu::get_parent() const
 {
     return _p_parent;
 }
@@ -104,7 +104,7 @@ void Menu::set_parent(Menu* pParent)
     _p_parent = pParent;
 }
 
-Menu* Menu::add_menu(Menu* pMenu)
+Menu const* Menu::add_menu(Menu* pMenu)
 {
     pMenu->set_parent(this);
     
@@ -118,19 +118,24 @@ Menu* Menu::add_menu(Menu* pMenu)
     return pMenu;
 }
 
-MenuComponent* Menu::get_selected() const
+MenuComponent const* Menu::get_menu_component(int index) const
+{
+  return _menu_components[index];
+}
+
+MenuComponent const* Menu::get_selected() const
 {
     return _p_sel_menu_component;
 }
 
-byte Menu::get_num_menu_items() const
+byte Menu::get_num_menu_components() const
 {
     return _num_menu_components;
 }
 
-byte Menu::get_cur_menu_item() const
+byte Menu::get_cur_menu_component_num() const
 {
-    return _cur_menu_component;
+    return _cur_menu_component_num;
 }
 
 // *********************************************************
@@ -195,7 +200,7 @@ void MenuSystem::select()
 void MenuSystem::back()
 {
     if (_p_curr_menu != _p_root_menu)
-        _p_curr_menu = _p_curr_menu->get_parent();
+        _p_curr_menu = const_cast<Menu*>(_p_curr_menu->get_parent());
 }
 
 void MenuSystem::set_root_menu(Menu* p_root_menu)
@@ -204,17 +209,7 @@ void MenuSystem::set_root_menu(Menu* p_root_menu)
     _p_curr_menu = p_root_menu;
 }
 
-char* MenuSystem::get_current_menu_name()
+Menu const* MenuSystem::get_current_menu() const
 {
-    return _p_curr_menu->get_selected()->get_name();
-}
-
-byte MenuSystem::get_num_menu_items() const
-{
-    return _p_curr_menu->get_num_menu_items();
-}
-
-byte MenuSystem::get_cur_menu_item() const
-{
-    return _p_curr_menu->get_cur_menu_item();
+  return _p_curr_menu;
 }

@@ -26,7 +26,7 @@ public:
     MenuComponent(char* name);
     
     void set_name(char* name);
-    char* get_name();
+    char* get_name() const;
     
     virtual MenuComponent* select() = 0;
 
@@ -60,21 +60,23 @@ public:
     virtual MenuComponent* select();
     
     void add_item(MenuItem* pItem, void (*on_select)(MenuItem*));
-    Menu* add_menu(Menu* pMenu);
+    Menu const* add_menu(Menu* pMenu);
     
     void set_parent(Menu* pParent);
-    Menu* get_parent() const;
+    Menu const* get_parent() const;
     
-    MenuComponent* get_selected() const;
-    byte get_num_menu_items() const;
-    byte get_cur_menu_item() const;
+    MenuComponent const* get_selected() const;
+    MenuComponent const* get_menu_component(int index) const;
+    
+    byte get_num_menu_components() const;
+    byte get_cur_menu_component_num() const;
 
 private:
     MenuComponent* _p_sel_menu_component;
     MenuComponent* _menu_components[MAX_MENU_ITEMS];
     Menu* _p_parent;
     byte _num_menu_components;
-    byte _cur_menu_component;
+    byte _cur_menu_component_num;
 };
 
 
@@ -85,14 +87,12 @@ public:
     
     boolean next();
     boolean prev();
-    void    select();
-    void    back();
+    void select();
+    void back();
     
-    void    set_root_menu(Menu* p_root_menu);
+    void set_root_menu(Menu* p_root_menu);
     
-    char*   get_current_menu_name();
-    byte    get_num_menu_items() const;
-    byte    get_cur_menu_item() const;
+    Menu const* get_current_menu() const;
 
 private:
     Menu* _p_root_menu;
