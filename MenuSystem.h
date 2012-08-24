@@ -3,7 +3,7 @@
   Created by Jon Black, August 8th 2011.
   Released into the public domain.
   
-  License: GPL 3
+  License: LGPL 3
 */
 
 
