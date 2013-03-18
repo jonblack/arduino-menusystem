@@ -88,8 +88,8 @@ public:
     boolean next();
     boolean prev();
     void select();
-    void back();
-    
+    boolean back();
+
     void set_root_menu(Menu* p_root_menu);
     
     Menu const* get_current_menu() const;
