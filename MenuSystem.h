@@ -2,10 +2,9 @@
   MenuSystem.h - Library for creating menu structures.
   Created by Jon Black, August 8th 2011.
   Released into the public domain.
-  
+
   License: LGPL 3
 */
-
 
 #ifndef MENUSYSTEM_H
 #define MENUSYSTEM_H
@@ -24,10 +23,10 @@ class MenuComponent
 {
 public:
     MenuComponent(char* name);
-    
+
     void set_name(char* name);
     char* get_name() const;
-    
+
     virtual MenuComponent* select() = 0;
 
 protected:
@@ -39,7 +38,7 @@ class MenuItem : public MenuComponent
 {
 public:
     MenuItem(char* name);
-    
+
     void set_select_function(void (*on_select)(MenuItem*));
 
     virtual MenuComponent* select();
@@ -53,21 +52,21 @@ class Menu : public MenuComponent
 {
 public:
     Menu(char* name);
-    
+
     boolean next();
     boolean prev();
     MenuComponent* activate();
     virtual MenuComponent* select();
-    
+
     void add_item(MenuItem* pItem, void (*on_select)(MenuItem*));
     Menu const* add_menu(Menu* pMenu);
-    
+
     void set_parent(Menu* pParent);
     Menu const* get_parent() const;
-    
+
     MenuComponent const* get_selected() const;
     MenuComponent const* get_menu_component(byte index) const;
-    
+
     byte get_num_menu_components() const;
     byte get_cur_menu_component_num() const;
 
@@ -84,14 +83,14 @@ class MenuSystem
 {
 public:
     MenuSystem();
-    
+
     boolean next();
     boolean prev();
     void select();
     boolean back();
 
     void set_root_menu(Menu* p_root_menu);
-    
+
     Menu const* get_current_menu() const;
 
 private:
