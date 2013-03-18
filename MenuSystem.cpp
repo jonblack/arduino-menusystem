@@ -118,7 +118,7 @@ Menu const* Menu::add_menu(Menu* pMenu)
     return pMenu;
 }
 
-MenuComponent const* Menu::get_menu_component(int index) const
+MenuComponent const* Menu::get_menu_component(byte index) const
 {
   return _menu_components[index];
 }

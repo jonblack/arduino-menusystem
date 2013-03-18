@@ -66,7 +66,7 @@ public:
     Menu const* get_parent() const;
     
     MenuComponent const* get_selected() const;
-    MenuComponent const* get_menu_component(int index) const;
+    MenuComponent const* get_menu_component(byte index) const;
     
     byte get_num_menu_components() const;
     byte get_cur_menu_component_num() const;
