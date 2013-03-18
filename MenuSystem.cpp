@@ -2,7 +2,7 @@
   MenuSystem.h - Library for creating menu structures.
   Created by Jon Black, August 8th 2011.
   Released into the public domain.
-  
+
   License: LGPL 3
 */
 
@@ -47,10 +47,10 @@ boolean Menu::next()
     {
         _cur_menu_component_num++;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
-        
+
         return true;
     }
-    
+
     return false;
 }
 
@@ -60,20 +60,20 @@ boolean Menu::prev()
     {
         _cur_menu_component_num--;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
-        
+
         return true;
     }
-    
+
     return false;
 }
 
 MenuComponent* Menu::activate()
 {
     MenuComponent* pComponent = _menu_components[_cur_menu_component_num];
-    
+
     if (pComponent == NULL)
         return NULL;
-    
+
     return pComponent->select();
 }
 
@@ -84,13 +84,17 @@ MenuComponent* Menu::select()
 
 void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
 {
+    // Prevent memory overrun
+    if (_num_menu_components == MAX_MENU_ITEMS)
+        return;
+
     _menu_components[_num_menu_components] = pItem;
-    
+
     pItem->set_select_function(on_select);
-    
+
     if (_num_menu_components == 0)
         _p_sel_menu_component = pItem;
-    
+
     _num_menu_components++;
 }
 
@@ -107,18 +111,18 @@ void Menu::set_parent(Menu* pParent)
 Menu const* Menu::add_menu(Menu* pMenu)
 {
     pMenu->set_parent(this);
-    
+
     _menu_components[_num_menu_components] = pMenu;
-    
+
     if (_num_menu_components == 0)
         _p_sel_menu_component = pMenu;
-    
+
     _num_menu_components++;
-    
+
     return pMenu;
 }
 
-MenuComponent const* Menu::get_menu_component(int index) const
+MenuComponent const* Menu::get_menu_component(byte index) const
 {
   return _menu_components[index];
 }
@@ -157,7 +161,7 @@ MenuComponent* MenuItem::select()
 {
     if (_on_select != NULL)
         _on_select(this);
-    
+
     return 0;
 }
 
@@ -184,7 +188,7 @@ boolean MenuSystem::prev()
 void MenuSystem::select()
 {
     MenuComponent* pComponent = _p_curr_menu->activate();
-    
+
     if (pComponent != NULL)
     {
         _p_curr_menu = (Menu*) pComponent;
@@ -197,10 +201,16 @@ void MenuSystem::select()
     }
 }
 
-void MenuSystem::back()
+boolean MenuSystem::back()
 {
     if (_p_curr_menu != _p_root_menu)
+    {
         _p_curr_menu = const_cast<Menu*>(_p_curr_menu->get_parent());
+        return true;
+    }
+
+    // We are already in the root menu
+    return false;
 }
 
 void MenuSystem::set_root_menu(Menu* p_root_menu)
