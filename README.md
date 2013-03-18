@@ -18,6 +18,15 @@ Changelog
 The library isn't versioned in a coherent way; there are no version numbers you
 can refer to. There are, however, a bunch of dates when I made some changes:
 
+**18/03/2013**
+
+* Merged in minor improvements provided by thomasjfox
+** get_menu_component(): Use 'byte' instead of 16bit integer for index
+** Add return value to MenuSystem.back()
+** Prevent memory corruption by inserting too many items
+** Whitespace cleanup
+
+
 **25/05/2012**
 
 * Added support for displaying all current menu items (thanks to arcachofo)
