@@ -84,6 +84,10 @@ MenuComponent* Menu::select()
 
 void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
 {
+    // Prevent memory overrun
+    if (_num_menu_components == MAX_MENU_ITEMS)
+        return;
+
     _menu_components[_num_menu_components] = pItem;
     
     pItem->set_select_function(on_select);
