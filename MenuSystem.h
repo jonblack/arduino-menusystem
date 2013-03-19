@@ -53,8 +53,8 @@ class Menu : public MenuComponent
 public:
     Menu(char* name);
 
-    boolean next();
-    boolean prev();
+    boolean next(boolean loop=false);
+    boolean prev(boolean loop=false);
     MenuComponent* activate();
     virtual MenuComponent* select();
 
@@ -84,8 +84,8 @@ class MenuSystem
 public:
     MenuSystem();
 
-    boolean next();
-    boolean prev();
+    boolean next(boolean loop=false);
+    boolean prev(boolean loop=false);
     void select();
     boolean back();
 

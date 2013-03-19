@@ -41,11 +41,17 @@ Menu::Menu(char* name)
 {
 }
 
-boolean Menu::next()
+boolean Menu::next(boolean loop)
 {
     if (_cur_menu_component_num != _num_menu_components - 1)
     {
         _cur_menu_component_num++;
+        _p_sel_menu_component = _menu_components[_cur_menu_component_num];
+
+        return true;
+    } else if (loop)
+    {
+        _cur_menu_component_num = 0;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
@@ -54,11 +60,17 @@ boolean Menu::next()
     return false;
 }
 
-boolean Menu::prev()
+boolean Menu::prev(boolean loop)
 {
     if (_cur_menu_component_num != 0)
     {
         _cur_menu_component_num--;
+        _p_sel_menu_component = _menu_components[_cur_menu_component_num];
+
+        return true;
+    } else if (loop)
+    {
+        _cur_menu_component_num = _num_menu_components - 1;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
@@ -175,14 +187,14 @@ MenuSystem::MenuSystem()
 {
 }
 
-boolean MenuSystem::next()
+boolean MenuSystem::next(boolean loop)
 {
-    return _p_curr_menu->next();
+    return _p_curr_menu->next(loop);
 }
 
-boolean MenuSystem::prev()
+boolean MenuSystem::prev(boolean loop)
 {
-    return _p_curr_menu->prev();
+    return _p_curr_menu->prev(loop);
 }
 
 void MenuSystem::select()
