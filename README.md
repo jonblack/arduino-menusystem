@@ -18,6 +18,11 @@ Changelog
 The library isn't versioned in a coherent way; there are no version numbers you
 can refer to. There are, however, a bunch of dates when I made some changes:
 
+**23/03/2013**
+
+* Merged in another minor improvement provided by thomasjfox:
+** Add the ability to loop through a menu in prev() and next()
+
 **18/03/2013**
 
 * Merged in minor improvements provided by thomasjfox
