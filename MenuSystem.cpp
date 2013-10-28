@@ -209,7 +209,7 @@ void MenuSystem::select()
     {
         // A menu item was selected, so reset the menu ready for when
         // it's used again.
-        _p_curr_menu = _p_root_menu;
+        //_p_curr_menu = _p_root_menu;
     }
 }
 
