@@ -50,7 +50,7 @@ void setup()
    -Item1
    -Item2
    -Item3
-   -Item1
+   --Item1
    
    */
   mm.add_item(&mm_mi1, &on_item1_selected);
@@ -124,8 +124,8 @@ void serialHandler() {
 
 void serialPrintHelp() {
   Serial.println("***************");
-  Serial.println("w: go to previus itme (up)");
-  Serial.println("s: got to next item (down)");
+  Serial.println("w: go to previus item (up)");
+  Serial.println("s: go to next item (down)");
   Serial.println("a: go back (right)");
   Serial.println("d: select \"selected\" item");
   Serial.println("?: print this help");
