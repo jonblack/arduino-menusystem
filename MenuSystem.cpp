@@ -197,7 +197,7 @@ boolean MenuSystem::prev(boolean loop)
     return _p_curr_menu->prev(loop);
 }
 
-void MenuSystem::select()
+void MenuSystem::select(boolean return_to_root)
 {
     MenuComponent* pComponent = _p_curr_menu->activate();
 
@@ -207,9 +207,11 @@ void MenuSystem::select()
     }
     else
     {
-        // A menu item was selected, so reset the menu ready for when
-        // it's used again.
-        _p_curr_menu = _p_root_menu;
+        // A menu item was selected.
+        // If return_to_root is true, reset the menu ready for when it's used
+        // again; otherwise, the current menu is remembered.
+        if (return_to_root)
+            _p_curr_menu = _p_root_menu;
     }
 }
 
