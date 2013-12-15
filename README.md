@@ -12,18 +12,30 @@ useful to you:
 * [www.jonblack.org](http://www.jonblack.org/)
 * [Arduino forum post](http://arduino.cc/forum/index.php/topic,105866.0.html)
 
+Contribution
+------------
+
+If you'd like to contribute to `menusystem`, please create your pull request
+from the `develop` branch.
+
 Changelog
 ---------
 
 The library isn't versioned in a coherent way; there are no version numbers you
 can refer to. There are, however, a bunch of dates when I made some changes:
 
-**23/03/2013**
+**1.0.0 - 15/12/2013**
+
+* Selected menu item can be remembered (thanks to KipK)
+* Examples for serial and LCDs (thanks to niesteszeck)
+* Add AUTHORS file
+
+**0.3.0 - 23/03/2013**
 
 * Merged in another minor improvement provided by thomasjfox:
  * Add the ability to loop through a menu in prev() and next()
 
-**18/03/2013**
+**0.2.0 - 18/03/2013**
 
 * Merged in minor improvements provided by thomasjfox
  * get_menu_component(): Use 'byte' instead of 16bit integer for index
@@ -31,8 +43,7 @@ can refer to. There are, however, a bunch of dates when I made some changes:
  * Prevent memory corruption by inserting too many items
  * Whitespace cleanup
 
-
-**25/05/2012**
+**0.1.0 - 25/05/2012**
 
 * Added support for displaying all current menu items (thanks to arcachofo)
 * Added this readme
