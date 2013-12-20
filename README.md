@@ -15,14 +15,21 @@ useful to you:
 Contribution
 ------------
 
-If you'd like to contribute to `menusystem`, please create your pull request
-from the `develop` branch.
+If you'd like to contribute to `arduino-menusystem`, please create your pull
+request from the `develop` branch.
 
 Changelog
 ---------
 
 The library isn't versioned in a coherent way; there are no version numbers you
 can refer to. There are, however, a bunch of dates when I made some changes:
+
+**1.0.1 - 20/13/2013**
+
+* Renamed project to `arduino-menusystem`;
+* Fix buffer overflow when adding a menu;
+* Menu components are now dynamically allocated (previously it was fixed at
+  five items).
 
 **1.0.0 - 15/12/2013**
 
