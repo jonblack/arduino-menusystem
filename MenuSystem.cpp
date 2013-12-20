@@ -35,6 +35,7 @@ void MenuComponent::set_name(char* name)
 Menu::Menu(char* name)
 : MenuComponent(name),
   _p_sel_menu_component(NULL),
+  _menu_components(NULL),
   _p_parent(NULL),
   _num_menu_components(0),
   _cur_menu_component_num(0)
@@ -96,9 +97,13 @@ MenuComponent* Menu::select()
 
 void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
 {
-    // Prevent memory overrun
-    if (_num_menu_components == MAX_MENU_ITEMS)
-        return;
+    // Resize menu component list, keeping existing items.
+    // If it fails, there the item is not added and the function returns.
+    _menu_components = (MenuComponent**) realloc(_menu_components,
+                                                 (_num_menu_components + 1)
+                                                 * sizeof(MenuComponent*));
+    if (_menu_components == NULL)
+      return;
 
     _menu_components[_num_menu_components] = pItem;
 
@@ -122,6 +127,14 @@ void Menu::set_parent(Menu* pParent)
 
 Menu const* Menu::add_menu(Menu* pMenu)
 {
+    // Resize menu component list, keeping existing items.
+    // If it fails, there the item is not added and the function returns.
+    _menu_components = (MenuComponent**) realloc(_menu_components,
+                                                 (_num_menu_components + 1)
+                                                 * sizeof(MenuComponent*));
+    if (_menu_components == NULL)
+      return NULL;
+
     pMenu->set_parent(this);
 
     _menu_components[_num_menu_components] = pMenu;

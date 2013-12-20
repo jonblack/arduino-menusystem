@@ -15,10 +15,6 @@
   #include <WProgram.h>
 #endif
 
-
-#define MAX_MENU_ITEMS 5
-
-
 class MenuComponent
 {
 public:
@@ -72,7 +68,7 @@ public:
 
 private:
     MenuComponent* _p_sel_menu_component;
-    MenuComponent* _menu_components[MAX_MENU_ITEMS];
+    MenuComponent** _menu_components;
     Menu* _p_parent;
     byte _num_menu_components;
     byte _cur_menu_component_num;
