@@ -1,0 +1,46 @@
+#######################################
+# Syntax Coloring Map For MenuSystem
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MenuSystem	KEYWORD1
+Menu	KEYWORD1
+MenuItem	KEYWORD1
+MenuComponent	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+########### MenuSystem ################
+next	KEYWORD2
+prev	KEYWORD2
+select	KEYWORD2
+back	KEYWORD2
+set_root_menu	KEYWORD2
+get_current_menu	KEYWORD2
+
+########## Menu #######################
+activate	KEYWORD2
+add_item	KEYWORD2
+add_menu	KEYWORD2
+set_parent	KEYWORD2
+get_parent	KEYWORD2
+get_selected	KEYWORD2
+get_menu_component	KEYWORD2
+get_num_menu_components	KEYWORD2
+get_cur_menu_component_num	KEYWORD2
+
+########### MenuItem ##################
+set_select_function
+
+########## MenuComponent ##############
+set_name
+get_name
+
+#######################################
+# Constants (LITERAL1)
+#######################################
