@@ -25,6 +25,7 @@ Changelog
 
 * Add LCD Nav Keypad example from (thanks to @SauleVire)
 * Remove AUTHORS file: too much hassle to maintain
+* Add library.properties
 
 **1.0.1 - 20/13/2013**
 
