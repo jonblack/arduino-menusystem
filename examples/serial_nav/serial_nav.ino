@@ -1,11 +1,10 @@
 /*
-  SerialNav.ino - Example code using the menu system library
- that use serial to display the menu.
- 
- Created by Niesteszeck, Dec 1th 2013.
- Released into the public domain.
- 
- License: GPL 3
+ * serial_nav.ino - Example code using the menu system library
+ *
+ * This example shows the menu system being controlled over the serial port.
+ *
+ * Copyright (c) 2015 arduino-menusystem
+ * Licensed under the MIT license (see LICENSE)
  */
 
 #include <MenuSystem.h>

@@ -1,10 +1,7 @@
 /*
-  MenuSystem.h - Library for creating menu structures.
-  Created by Jon Black, August 8th 2011.
-  Released into the public domain.
-
-  License: LGPL 3
-*/
+ * Copyright (c) 2015 arduino-menusystem
+ * Licensed under the MIT license (see LICENSE)
+ */
 
 #ifndef MENUSYSTEM_H
 #define MENUSYSTEM_H

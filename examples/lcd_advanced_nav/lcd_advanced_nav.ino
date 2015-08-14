@@ -1,11 +1,11 @@
 /*
-  LCDAdvancedNav.ino - Example code using the menu system library
- and a lcd 16x2 display (controled over serial).
- 
- Created by Niesteszeck, Dec 8th 2013.
- Released into the public domain.
- 
- License: GPL 3
+ * lcd_advanced_nav.ino - Example code using the menu system library
+ *
+ * This example shows using the menu system with a 16x2 LCD display
+ * (controled over serial).
+ *
+ * Copyright (c) 2015 arduino-menusystem
+ * Licensed under the MIT license (see LICENSE)
  */
 
 #include <MenuSystem.h>

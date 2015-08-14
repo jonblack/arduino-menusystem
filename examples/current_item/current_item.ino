@@ -1,13 +1,11 @@
 /*
-  current_item.ino - Example code using the menu system library.
-  
-  This example shows only the current menu item.
-  
-  Created by Jon Black, May 25th 2012.
-  Released into the public domain.
-  
-  License: GPL 3
-*/
+ * current_item.ino - Example code using the menu system library.
+ *
+ * This example shows only the current menu item.
+ *
+ * Copyright (c) 2015 arduino-menusystem
+ * Licensed under the MIT license (see LICENSE)
+ */
 
 #include <MenuSystem.h>
 
