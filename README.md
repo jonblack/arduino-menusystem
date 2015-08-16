@@ -21,6 +21,10 @@ pull-request.
 Changelog
 ---------
 
+**2.0.1 - 16/08/2015**
+
+* Add Sure Electronics LED Matrix example
+
 **2.0.0 - 14/08/2015**
 
 * Add LCD Nav Keypad example from (thanks to @SauleVire)
