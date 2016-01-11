@@ -15,22 +15,22 @@
 class MenuComponent
 {
 public:
-    MenuComponent(char* name);
+    MenuComponent(const char* name);
 
-    void set_name(char* name);
-    char* get_name() const;
+    void set_name(const char* name);
+    const char* get_name() const;
 
     virtual MenuComponent* select() = 0;
 
 protected:
-    char* _name;
+    const char* _name;
 };
 
 
 class MenuItem : public MenuComponent
 {
 public:
-    MenuItem(char* name);
+    MenuItem(const char* name);
 
     void set_select_function(void (*on_select)(MenuItem*));
 
@@ -44,7 +44,7 @@ private:
 class Menu : public MenuComponent
 {
 public:
-    Menu(char* name);
+    Menu(const char* name);
 
     boolean next(boolean loop=false);
     boolean prev(boolean loop=false);
