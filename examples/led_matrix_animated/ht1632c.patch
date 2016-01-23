@@ -1,0 +1,241 @@
+diff --git a/font.h b/font.h
+index 52cff88..37c801a 100644
+--- a/font.h
++++ b/font.h
+@@ -1,6 +1,6 @@
+ #ifdef FONT_4x6
+ // -Misc-Fixed-Medium-R-Normal--6-60-75-75-C-40-ISO10646-1
+-uint8_t PROGMEM font_4x6[95][4] = {
++const uint8_t PROGMEM font_4x6[95][4] = {
+ {0x00,0x00,0x00,0x00}, //   
+ {0x00,0x3a,0x00,0x00}, // ! 
+ {0x30,0x00,0x30,0x00}, // " 
+@@ -100,7 +100,7 @@ uint8_t PROGMEM font_4x6[95][4] = {
+ #endif
+ #ifdef FONT_5x7
+ // -Misc-Fixed-Medium-R-Normal--7-70-75-75-C-50-ISO10646-1
+-uint8_t PROGMEM font_5x7[95][5] = {
++const uint8_t PROGMEM font_5x7[95][5] = {
+ {0x00,0x00,0x00,0x00,0x00}, //   
+ {0x00,0x00,0x7a,0x00,0x00}, // ! 
+ {0x00,0x70,0x00,0x70,0x00}, // " 
+@@ -200,7 +200,7 @@ uint8_t PROGMEM font_5x7[95][5] = {
+ #endif
+ #ifdef FONT_5x8
+ // -Misc-Fixed-Medium-R-Normal--8-80-75-75-C-50-ISO10646-1
+-uint8_t PROGMEM font_5x8[95][5] = {
++const uint8_t PROGMEM font_5x8[95][5] = {
+ {0x00,0x00,0x00,0x00,0x00}, //   
+ {0x00,0x00,0x7a,0x00,0x00}, // ! 
+ {0x00,0x70,0x00,0x70,0x00}, // " 
+@@ -299,7 +299,7 @@ uint8_t PROGMEM font_5x8[95][5] = {
+ };
+ #endif
+ #ifdef FONT_5x7W
+-uint8_t PROGMEM font_5x7w[95][5] = {
++const uint8_t PROGMEM font_5x7w[95][5] = {
+ {0x00,0x00,0x00,0x00,0x00}, //
+ {0x00,0x00,0xfa,0x00,0x00}, // !
+ {0x00,0xe0,0x00,0xe0,0x00}, // "
+@@ -398,7 +398,7 @@ uint8_t PROGMEM font_5x7w[95][5] = {
+ };
+ #endif
+ #ifdef FONT_8x8
+-uint8_t PROGMEM font_8x8[95][8] = {
++const uint8_t PROGMEM font_8x8[95][8] = {
+ {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}, //
+ {0x00,0x60,0xfa,0xfa,0x60,0x00,0x00,0x00}, // !
+ {0x00,0xe0,0xe0,0x00,0xe0,0xe0,0x00,0x00}, // "
+@@ -498,7 +498,7 @@ uint8_t PROGMEM font_8x8[95][8] = {
+ #endif
+ #ifdef FONT_6x10
+ // -Misc-Fixed-Medium-R-Normal--10-100-75-75-C-60-ISO10646-1
+-uint16_t PROGMEM font_6x10[95][6] = {
++const uint16_t PROGMEM font_6x10[95][6] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x01f4,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x01c0,0x0000,0x01c0,0x0000,0x0000}, // " 
+@@ -598,7 +598,7 @@ uint16_t PROGMEM font_6x10[95][6] = {
+ #endif
+ #ifdef FONT_6x12
+ // -Misc-Fixed-Medium-R-SemiCondensed--12-110-75-75-C-60-ISO10646-1
+-uint16_t PROGMEM font_6x12[95][6] = {
++const uint16_t PROGMEM font_6x12[95][6] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x01f4,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0380,0x0000,0x0380,0x0000,0x0000}, // " 
+@@ -698,7 +698,7 @@ uint16_t PROGMEM font_6x12[95][6] = {
+ #endif
+ #ifdef FONT_6x13
+ // -Misc-Fixed-Medium-R-SemiCondensed--13-120-75-75-C-60-ISO10646-1
+-uint16_t PROGMEM font_6x13[95][6] = {
++const uint16_t PROGMEM font_6x13[95][6] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x07f4,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0700,0x0000,0x0700,0x0000,0x0000}, // " 
+@@ -798,7 +798,7 @@ uint16_t PROGMEM font_6x13[95][6] = {
+ #endif
+ #ifdef FONT_6x13B
+ // -Misc-Fixed-Bold-R-SemiCondensed--13-120-75-75-C-60-ISO10646-1
+-uint16_t PROGMEM font_6x13B[95][6] = {
++const uint16_t PROGMEM font_6x13B[95][6] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x07f4,0x07f4,0x0000,0x0000}, // ! 
+ {0x0700,0x0700,0x0000,0x0700,0x0700,0x0000}, // " 
+@@ -898,7 +898,7 @@ uint16_t PROGMEM font_6x13B[95][6] = {
+ #endif
+ #ifdef FONT_6x13O
+ // -Misc-Fixed-Medium-O-SemiCondensed--13-120-75-75-C-60-ISO10646-1
+-uint16_t PROGMEM font_6x13O[95][6] = {
++const uint16_t PROGMEM font_6x13O[95][6] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x0074,0x0780,0x0000,0x0000}, // ! 
+ {0x0000,0x0000,0x0100,0x0600,0x0100,0x0600}, // " 
+@@ -998,7 +998,7 @@ uint16_t PROGMEM font_6x13O[95][6] = {
+ #endif
+ #ifdef FONT_6x9
+ // -Misc-Fixed-Medium-R-Normal--9-90-75-75-C-60-ISO10646-1
+-uint16_t PROGMEM font_6x9[95][6] = {
++const uint16_t PROGMEM font_6x9[95][6] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x00f4,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x00e0,0x0000,0x00e0,0x0000,0x0000}, // " 
+@@ -1098,7 +1098,7 @@ uint16_t PROGMEM font_6x9[95][6] = {
+ #endif
+ #ifdef FONT_7x13
+ // -Misc-Fixed-Medium-R-Normal--13-120-75-75-C-70-ISO10646-1
+-uint16_t PROGMEM font_7x13[95][7] = {
++const uint16_t PROGMEM font_7x13[95][7] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x0000,0x07f4,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0000,0x0700,0x0000,0x0700,0x0000,0x0000}, // " 
+@@ -1198,7 +1198,7 @@ uint16_t PROGMEM font_7x13[95][7] = {
+ #endif
+ #ifdef FONT_7x13B
+ // -Misc-Fixed-Bold-R-Normal--13-120-75-75-C-70-ISO10646-1
+-uint16_t PROGMEM font_7x13B[95][7] = {
++const uint16_t PROGMEM font_7x13B[95][7] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x07ec,0x07ec,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0700,0x0700,0x0000,0x0700,0x0700,0x0000}, // " 
+@@ -1298,7 +1298,7 @@ uint16_t PROGMEM font_7x13B[95][7] = {
+ #endif
+ #ifdef FONT_7x13O
+ // -Misc-Fixed-Medium-O-Normal--13-120-75-75-C-70-ISO10646-1
+-uint16_t PROGMEM font_7x13O[95][7] = {
++const uint16_t PROGMEM font_7x13O[95][7] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x0074,0x0780,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0000,0x0700,0x0000,0x0700,0x0000,0x0000}, // " 
+@@ -1398,7 +1398,7 @@ uint16_t PROGMEM font_7x13O[95][7] = {
+ #endif
+ #ifdef FONT_7x14
+ // -Misc-Fixed-Medium-R-Normal--14-130-75-75-C-70-ISO10646-1
+-uint16_t PROGMEM font_7x14[95][7] = {
++const uint16_t PROGMEM font_7x14[95][7] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x0000,0x0fec,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0000,0x1e00,0x0000,0x1e00,0x0000,0x0000}, // " 
+@@ -1498,7 +1498,7 @@ uint16_t PROGMEM font_7x14[95][7] = {
+ #endif
+ #ifdef FONT_7x14B
+ // -Misc-Fixed-Bold-R-Normal--14-130-75-75-C-70-ISO10646-1
+-uint16_t PROGMEM font_7x14B[95][7] = {
++const uint16_t PROGMEM font_7x14B[95][7] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x0fec,0x0fec,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x1e00,0x1e00,0x0000,0x1e00,0x1e00,0x0000}, // " 
+@@ -1598,7 +1598,7 @@ uint16_t PROGMEM font_7x14B[95][7] = {
+ #endif
+ #ifdef FONT_8x13
+ // -Misc-Fixed-Medium-R-Normal--13-120-75-75-C-80-ISO10646-1
+-uint16_t PROGMEM font_8x13[95][8] = {
++const uint16_t PROGMEM font_8x13[95][8] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x0000,0x07f4,0x0000,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0000,0x0700,0x0000,0x0000,0x0700,0x0000,0x0000}, // " 
+@@ -1698,7 +1698,7 @@ uint16_t PROGMEM font_8x13[95][8] = {
+ #endif
+ #ifdef FONT_8x13B
+ // -Misc-Fixed-Bold-R-Normal--13-120-75-75-C-80-ISO10646-1
+-uint16_t PROGMEM font_8x13B[95][8] = {
++const uint16_t PROGMEM font_8x13B[95][8] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x0000,0x0fec,0x0fec,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0f00,0x0f00,0x0000,0x0f00,0x0f00,0x0000,0x0000}, // " 
+@@ -1798,7 +1798,7 @@ uint16_t PROGMEM font_8x13B[95][8] = {
+ #endif
+ #ifdef FONT_8x13O
+ // -Misc-Fixed-Medium-O-Normal--13-120-75-75-C-80-ISO10646-1
+-uint16_t PROGMEM font_8x13O[95][8] = {
++const uint16_t PROGMEM font_8x13O[95][8] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x0000,0x0074,0x0780,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0x0000,0x0700,0x0000,0x0000,0x0700,0x0000,0x0000}, // " 
+@@ -1898,7 +1898,7 @@ uint16_t PROGMEM font_8x13O[95][8] = {
+ #endif
+ #ifdef FONT_9x15
+ // -Misc-Fixed-Medium-R-Normal--15-140-75-75-C-90-ISO10646-1
+-uint16_t PROGMEM font_9x15[95][9] = {
++const uint16_t PROGMEM font_9x15[95][9] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //
+ {0x0000,0x0000,0x0000,0x0000,0x3f98,0x0000,0x0000,0x0000,0x0000}, // !
+ {0x0000,0x0000,0x0000,0x1c00,0x0000,0x0000,0x1c00,0x0000,0x0000}, // "
+@@ -1998,7 +1998,7 @@ uint16_t PROGMEM font_9x15[95][9] = {
+ #endif
+ #ifdef FONT_9x15B
+ // -Misc-Fixed-Bold-R-Normal--15-140-75-75-C-90-ISO10646-1
+-uint16_t PROGMEM font_9x15b[95][9] = {
++const uint16_t PROGMEM font_9x15b[95][9] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //
+ {0x0000,0x0000,0x0000,0x1fe8,0x1fe8,0x0000,0x0000,0x0000,0x0000}, // !
+ {0x0000,0x0000,0x1c00,0x1c00,0x0000,0x1c00,0x1c00,0x0000,0x0000}, // "
+@@ -2098,7 +2098,7 @@ uint16_t PROGMEM font_9x15b[95][9] = {
+ #endif
+ #ifdef FONT_8x16
+ // -Sony-Fixed-Medium-R-Normal--16-120-100-100-C-80-ISO8859-1
+-uint16_t PROGMEM font_8x16[95][8] = {
++const uint16_t PROGMEM font_8x16[95][8] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x7e02,0x7fe7,0x7e02,0x0000,0x0000,0x0000}, // ! 
+ {0x0000,0xc800,0xf000,0x0000,0xc800,0xf000,0x0000,0x0000}, // " 
+@@ -2197,7 +2197,7 @@ uint16_t PROGMEM font_8x16[95][8] = {
+ };
+ #endif
+ #ifdef FONT_8x16B
+-uint16_t PROGMEM font_8x16b[95][8] = {
++const uint16_t PROGMEM font_8x16b[95][8] = {
+ {0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000}, //   
+ {0x0000,0x0000,0x7e02,0x7fe7,0x7fe7,0x7e02,0x0000,0x0000}, // ! 
+ {0x0000,0xc800,0xf800,0xf000,0x0800,0xf800,0xf000,0x0000}, // " 
+diff --git a/ht1632c.cpp b/ht1632c.cpp
+index f78aa15..3097cf8 100644
+--- a/ht1632c.cpp
++++ b/ht1632c.cpp
+@@ -3,7 +3,7 @@
+ #include <string.h>
+ #include "ht1632c.h"
+ #include "Print.h"
+-#include "font_b.h"
++#include "font.h"
+ #include "font_koi8.h"
+ 
+ /* fast integer (1 uint8_t) modulus - returns n % d */
+diff --git a/ht1632c.h b/ht1632c.h
+index bd18a7b..eb024ff 100644
+--- a/ht1632c.h
++++ b/ht1632c.h
+@@ -24,11 +24,11 @@
+ 
+ /* Leaflab Maple specific definitions */
+ 
++typedef unsigned char prog_uint8_t;
++typedef unsigned int prog_uint16_t;
+ #if defined (__ARMEL__)
+ typedef unsigned char uint8_t;
+ typedef unsigned int uint16_t;
+-typedef unsigned char prog_uint8_t;
+-typedef unsigned int prog_uint16_t;
+ uint8_t inline pgm_read_byte_near(uint8_t *ptr) { return (uint8_t)*ptr; }
+ uint16_t inline pgm_read_word_near(uint16_t *ptr) { return (uint16_t)*ptr; }
+ #define PROGMEM __FLASH__
