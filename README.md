@@ -1,25 +1,28 @@
-menusystem
-==========
+# menusystem
 
 An arduino library for implementing a menu system.
 
-Documentation
--------------
+## Documentation
 
 Other than the examples included in the library, the following pages might be
 useful to you:
 
 * [Arduino forum post](http://arduino.cc/forum/index.php/topic,105866.0.html)
 * [Humble Coder](http://www.humblecoder.com/)
+* [Arduino Menu System Library](http://blog.humblecoder.com/arduino-menu-system-library/)
+* [Animated LED matrix menu transitions on the Arduino](http://blog.humblecoder.com/animated-led-matrix-menu-transitions-on-the-arduino/)
 
-Contribution
-------------
+## Contribution
 
 If you'd like to contribute to `arduino-menusystem`, please submit a
 pull-request.
 
-Changelog
----------
+## Changelog
+
+**2.0.2 - 23/01/2016**
+
+* Fix deprecated conversion from string constant to char*
+* Add Sure Electronics animated LED matrix example
 
 **2.0.1 - 16/08/2015**
 
