@@ -92,6 +92,14 @@ MenuComponent* Menu::select()
     return this;
 }
 
+void Menu::reset()
+{
+    for (int i = 0; i < _num_menu_components; ++i)
+        _menu_components[i]->reset();
+    _cur_menu_component_num = 0;
+    _p_sel_menu_component = _menu_components[0];
+}
+
 void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
 {
     // Resize menu component list, keeping existing items.
@@ -187,6 +195,11 @@ MenuComponent* MenuItem::select()
     return 0;
 }
 
+void MenuItem::reset()
+{
+    // Do nothing.
+}
+
 // *********************************************************
 // MenuSystem
 // *********************************************************
@@ -207,22 +220,18 @@ boolean MenuSystem::prev(boolean loop)
     return _p_curr_menu->prev(loop);
 }
 
-void MenuSystem::select(boolean return_to_root)
+void MenuSystem::reset()
+{
+    _p_curr_menu = _p_root_menu;
+    _p_root_menu->reset();
+}
+
+void MenuSystem::select()
 {
     MenuComponent* pComponent = _p_curr_menu->activate();
 
     if (pComponent != NULL)
-    {
         _p_curr_menu = (Menu*) pComponent;
-    }
-    else
-    {
-        // A menu item was selected.
-        // If return_to_root is true, reset the menu ready for when it's used
-        // again; otherwise, the current menu is remembered.
-        if (return_to_root)
-            _p_curr_menu = _p_root_menu;
-    }
 }
 
 boolean MenuSystem::back()
