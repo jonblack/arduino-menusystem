@@ -21,6 +21,7 @@ public:
     const char* get_name() const;
 
     virtual MenuComponent* select() = 0;
+    virtual void reset() = 0;
 
 protected:
     const char* _name;
@@ -35,6 +36,7 @@ public:
     void set_select_function(void (*on_select)(MenuItem*));
 
     virtual MenuComponent* select();
+    virtual void reset();
 
 private:
     void (*_on_select)(MenuItem*);
@@ -50,6 +52,7 @@ public:
     boolean prev(boolean loop=false);
     MenuComponent* activate();
     virtual MenuComponent* select();
+    virtual void reset();
 
     void add_item(MenuItem* pItem, void (*on_select)(MenuItem*));
     Menu const* add_menu(Menu* pMenu);
@@ -79,7 +82,8 @@ public:
 
     boolean next(boolean loop=false);
     boolean prev(boolean loop=false);
-    void select(boolean return_to_root=true);
+    void reset();
+    void select();
     boolean back();
 
     void set_root_menu(Menu* p_root_menu);
