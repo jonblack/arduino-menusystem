@@ -19,6 +19,10 @@ pull-request.
 
 ## Changelog
 
+**2.1.0 - 20/03/2016**
+
+* Fix bug resetting the menu. Now possible via `reset()`
+
 **2.0.2 - 23/01/2016**
 
 * Fix deprecated conversion from string constant to char*
