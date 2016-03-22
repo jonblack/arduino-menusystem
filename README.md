@@ -19,6 +19,10 @@ pull-request.
 
 ## Changelog
 
+**2.1.1 - 22/03/2016**
+
+* Fix regression - add reset option to select
+
 **2.1.0 - 20/03/2016**
 
 * Fix bug resetting the menu. Now possible via `reset()`
