@@ -83,7 +83,7 @@ public:
     boolean next(boolean loop=false);
     boolean prev(boolean loop=false);
     void reset();
-    void select();
+    void select(boolean reset=false);
     boolean back();
 
     void set_root_menu(Menu* p_root_menu);

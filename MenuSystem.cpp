@@ -226,12 +226,14 @@ void MenuSystem::reset()
     _p_root_menu->reset();
 }
 
-void MenuSystem::select()
+void MenuSystem::select(bool reset)
 {
     MenuComponent* pComponent = _p_curr_menu->activate();
 
     if (pComponent != NULL)
         _p_curr_menu = (Menu*) pComponent;
+    else
+        if (reset) this->reset();
 }
 
 boolean MenuSystem::back()
