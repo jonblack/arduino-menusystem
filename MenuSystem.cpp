@@ -29,7 +29,7 @@ void MenuComponent::set_name(const char* name)
 // Menu
 // *********************************************************
 
-Menu(const char* name, void (*callback)(Menu*) = NULL)
+Menu::Menu(const char* name, void (*callback)(Menu*))
 : MenuComponent(name),
   _disp_callback(callback),
   _p_sel_menu_component(NULL),
@@ -51,7 +51,7 @@ boolean Menu::display()
     return false;
 }
 
-void set_display_callback(void (*callback)(Menu*))
+void Menu::set_display_callback(void (*callback)(Menu*))
 {
     _disp_callback = callback;
 }
@@ -59,7 +59,7 @@ void set_display_callback(void (*callback)(Menu*))
 
 boolean Menu::next(boolean loop)
 {
-    _prev_menu_component_num; = _cur_menu_component_num;
+    _prev_menu_component_num = _cur_menu_component_num;
     if (_cur_menu_component_num != _num_menu_components - 1)
     {
         _cur_menu_component_num++;
@@ -77,10 +77,10 @@ boolean Menu::next(boolean loop)
 
 boolean Menu::prev(boolean loop)
 {
-    _prev_menu_component_num; = _cur_menu_component_num;
+    _prev_menu_component_num = _cur_menu_component_num;
     if (_cur_menu_component_num != 0)
     {
-        cur_menu_component_num--;
+        _cur_menu_component_num--;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
@@ -113,7 +113,7 @@ void Menu::reset()
 {
     for (int i = 0; i < _num_menu_components; ++i)
         _menu_components[i]->reset();
-    _prev_menu_component_num; = 0;
+    _prev_menu_component_num = 0;
     _cur_menu_component_num = 0;
     _p_sel_menu_component = _menu_components[0];
 }
