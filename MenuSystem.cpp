@@ -29,16 +29,33 @@ void MenuComponent::set_name(const char* name)
 // Menu
 // *********************************************************
 
-Menu::Menu(const char* name)
+Menu(const char* name, void (*callback)(Menu*) = NULL)
 : MenuComponent(name),
+  _disp_callback(callback),
   _p_sel_menu_component(NULL),
   _menu_components(NULL),
   _p_parent(NULL),
   _num_menu_components(0),
   _cur_menu_component_num(0),
-  _prev_menu_component_num;(0)
+  _prev_menu_component_num(0)
 {
 }
+
+
+boolean Menu::display()
+{
+    if (_disp_callback) {
+        (*_disp_callback)(this);
+        return true;
+    }
+    return false;
+}
+
+void set_display_callback(void (*callback)(Menu*))
+{
+    _disp_callback = callback;
+}
+
 
 boolean Menu::next(boolean loop)
 {
@@ -49,8 +66,7 @@ boolean Menu::next(boolean loop)
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
-    } else if (loop)
-    {
+    } else if (loop) {
         _cur_menu_component_num = 0;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
@@ -264,4 +280,10 @@ void MenuSystem::set_root_menu(Menu* p_root_menu)
 Menu const* MenuSystem::get_current_menu() const
 {
   return _p_curr_menu;
+}
+
+boolean MenuSystem::display()
+{
+    if (_p_curr_menu != NULL) return _p_curr_menu->display();
+    return false;
 }
