@@ -65,6 +65,7 @@ public:
 
     byte get_num_menu_components() const;
     byte get_cur_menu_component_num() const;
+    byte get_prev_menu_component_num() const;
 
 private:
     MenuComponent* _p_sel_menu_component;
@@ -72,6 +73,7 @@ private:
     Menu* _p_parent;
     byte _num_menu_components;
     byte _cur_menu_component_num;
+    byte _prev_menu_component_num;
 };
 
 

@@ -35,12 +35,14 @@ Menu::Menu(const char* name)
   _menu_components(NULL),
   _p_parent(NULL),
   _num_menu_components(0),
-  _cur_menu_component_num(0)
+  _cur_menu_component_num(0),
+  _prev_menu_component_num;(0)
 {
 }
 
 boolean Menu::next(boolean loop)
 {
+    _prev_menu_component_num; = _cur_menu_component_num;
     if (_cur_menu_component_num != _num_menu_components - 1)
     {
         _cur_menu_component_num++;
@@ -54,15 +56,15 @@ boolean Menu::next(boolean loop)
 
         return true;
     }
-
     return false;
 }
 
 boolean Menu::prev(boolean loop)
 {
+    _prev_menu_component_num; = _cur_menu_component_num;
     if (_cur_menu_component_num != 0)
     {
-        _cur_menu_component_num--;
+        cur_menu_component_num--;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
@@ -73,7 +75,6 @@ boolean Menu::prev(boolean loop)
 
         return true;
     }
-
     return false;
 }
 
@@ -96,6 +97,7 @@ void Menu::reset()
 {
     for (int i = 0; i < _num_menu_components; ++i)
         _menu_components[i]->reset();
+    _prev_menu_component_num; = 0;
     _cur_menu_component_num = 0;
     _p_sel_menu_component = _menu_components[0];
 }
@@ -170,6 +172,11 @@ byte Menu::get_num_menu_components() const
 byte Menu::get_cur_menu_component_num() const
 {
     return _cur_menu_component_num;
+}
+
+byte Menu::get_prev_menu_component_num() const
+{
+    return _prev_menu_component_num;
 }
 
 // *********************************************************
