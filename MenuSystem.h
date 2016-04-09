@@ -17,10 +17,10 @@
 #endif
 
 class MenuSystem;
-//extern char menuSystemTextBuffer[MENUSYSTEM_TEXTBUFFER_SIZE];
 
 class MenuComponent
 {
+	friend class MenuSystem;
 public:
     MenuComponent(const char* name);
 
@@ -29,13 +29,13 @@ public:
 
     virtual MenuComponent* select() = 0;
     virtual void reset() = 0;
-
     // modal methods
     virtual bool is_modal() const {return false;}
+
+protected:
     virtual bool modal_next() {return false;}
     virtual bool modal_prev() {return false;}
 
-protected:
     const char* _name;
 };
 
@@ -82,14 +82,14 @@ class NumericMenuItem : public MenuItem
 public:
   NumericMenuItem(const char* basename, float value, float minValue, float maxValue, float increment=1.0, void (*numberFormat)(float value, char* buffer)=NULL );
   void set_number_formatter(void (*numberFormat)(float value, char* buffer));
-  virtual bool is_modal() const;
-  virtual bool modal_next();
-  virtual bool modal_prev();
   virtual MenuComponent* select();
   virtual const char* get_name();
   float get_value() {return _value;}
+  virtual bool is_modal() const;
 
 protected:
+  virtual bool modal_next();
+  virtual bool modal_prev();
 
   float _value;
   //char _valueAsText[NUMERIC_MENU_ITEM_BUFFER];
