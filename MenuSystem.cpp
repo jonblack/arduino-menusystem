@@ -17,7 +17,7 @@ MenuComponent::MenuComponent(const char* name)
 {
 }
 
-const char* MenuComponent::get_name()
+const char* MenuComponent::get_name() const
 {
     return _name;
 }
@@ -266,7 +266,7 @@ bool NumericMenuItem::modal_prev(){
   return true;
 }
 
-const char* NumericMenuItem::get_name() {
+const char* NumericMenuItem::get_name() const {
   int i = strlen(_name);
   memcpy( menuSystemTextBuffer, _name, i );
   if (is_modal()) {

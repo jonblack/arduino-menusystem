@@ -25,7 +25,7 @@ public:
     MenuComponent(const char* name);
 
     void set_name(const char* name);
-    virtual const char* get_name();
+    virtual const char* get_name() const;
 
     virtual MenuComponent* select() = 0;
     virtual void reset() = 0;
@@ -83,7 +83,7 @@ public:
   NumericMenuItem(const char* basename, float value, float minValue, float maxValue, float increment=1.0, void (*numberFormat)(float value, char* buffer)=NULL );
   void set_number_formatter(void (*numberFormat)(float value, char* buffer));
   virtual MenuComponent* select();
-  virtual const char* get_name();
+  virtual const char* get_name() const;
   float get_value() {return _value;}
   virtual bool is_modal() const;
 
