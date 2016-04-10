@@ -22,9 +22,10 @@ MenuItem mm_mi2("Level 1 - Item 2 (Item)");
 Menu mu1("Level 1 - Item 3 (Menu)");
 BackMenuItem mu1_mi0(&ms, "Level 2 - Back (Item)");
 MenuItem mu1_mi1("Level 2 - Item 1 (Item)");
-NumericMenuItem mm_mi3("Level 1 - NumericItem 3 (Item)", 0.5, 0.0, 1.0, 0.1, floatMenuFormat);
-NumericMenuItem mm_mi4("Level 1 - NumericItem 4 (Item)", 50, -100, 100, 1, intMenuFormat);
-NumericMenuItem mm_mi5("Level 1 - NumericItem 5 (Item)", 0, 0, 2, 1, colorMenuFormat);
+NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", 0, 0, 2, 1, colorMenuFormat);
+NumericMenuItem mm_mi4("Level 1 - Float Item 4 (Item)", 0.5, 0.0, 1.0, 0.1, floatMenuFormat);
+NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", 50, -100, 100, 1, intMenuFormat);
+
 
 // Menu callback function
 
@@ -72,6 +73,11 @@ void on_item3_selected(MenuItem* p_menu_item)
   Serial.println("Item3 Selected");
 }
 
+void on_back_item_selected(MenuItem* p_menu_item)
+{
+  Serial.println("Back item Selected");
+}
+
 // Standard arduino functions
 
 void setup()
@@ -91,11 +97,13 @@ void setup()
   mm.add_item(&mm_mi1, &on_item1_selected);
   mm.add_item(&mm_mi2, &on_item2_selected);
   mm.add_menu(&mu1);
-  mu1.add_item(&mu1_mi0);
+  // the on_select callback is optional on a BackMenuItem
+  mu1.add_item(&mu1_mi0, &on_back_item_selected);
   mu1.add_item(&mu1_mi1, &on_item3_selected);
-  mm.add_item(&mm_mi3);
+  mu1.add_item(&mu1_mi2);
   mm.add_item(&mm_mi4);
   mm.add_item(&mm_mi5);
+ 
   ms.set_root_menu(&mm);
   Serial.println("Menu setted.");
   displayMenu();
