@@ -190,7 +190,7 @@ MenuComponent* BackMenuItem::select()
 {
     if (menu_system!=NULL)
         menu_system->back();
-    return 0;
+    return NULL;
 }
 
 // *********************************************************
@@ -213,7 +213,12 @@ MenuComponent* MenuItem::select()
     if (_on_select != NULL)
         _on_select(this);
 
-    return 0;
+    return NULL;
+}
+
+void MenuItem::reset()
+{
+    // Do nothing
 }
 
 // *********************************************************
@@ -223,63 +228,62 @@ MenuComponent* MenuItem::select()
 NumericMenuItem::NumericMenuItem(const char* basename, float value, float minValue, float maxValue, float increment, void (*numberFormat)(float value, char* buffer)):
     MenuItem(basename), _value(value), _minValue(minValue), _maxValue(maxValue), _increment(increment), _modal(false), _numberFormat(numberFormat)
 {
-  menuSystemTextBuffer[0] = 0;
-  if (increment < 0.0) increment = -increment;
-  if (minValue > maxValue){
-	  float tmp = maxValue;
-	  maxValue = minValue;
-	  minValue = tmp;
-  }
+    menuSystemTextBuffer[0] = 0;
+    if (increment < 0.0) increment = -increment;
+    if (minValue > maxValue)
+    {
+        float tmp = maxValue;
+        maxValue = minValue;
+        minValue = tmp;
+    }
 };
 
 void NumericMenuItem::set_number_formatter(void (*numberFormat)(float value, char* buffer)){
-	_numberFormat = numberFormat;
+    _numberFormat = numberFormat;
 }
 
 bool NumericMenuItem::is_modal() const {
-  return _modal;
+    return _modal;
 }
 
 MenuComponent* NumericMenuItem::select() {
-  _modal = !_modal;
-  // only run _on_select when the user is done editing the value
-  if (!_modal && _on_select != NULL)
-      _on_select(this);
-  return NULL;
+    _modal = !_modal;
+    // only run _on_select when the user is done editing the value
+    if (!_modal && _on_select != NULL)
+        _on_select(this);
+    return NULL;
 }
 
-bool NumericMenuItem::modal_next(){
-  _value += _increment;
-  if (_value > _maxValue) _value = _maxValue;
-  return true;
+bool NumericMenuItem::modal_next() {
+    _value += _increment;
+    if (_value > _maxValue) _value = _maxValue;
+    return true;
 }
 
-bool NumericMenuItem::modal_prev(){
-  _value -= _increment;
-  if (_value < _minValue) _value = _minValue;
-  return true;
+bool NumericMenuItem::modal_prev() {
+    _value -= _increment;
+    if (_value < _minValue) _value = _minValue;
+    return true;
 }
 
 const char* NumericMenuItem::get_name() const {
-  int i = strlen(_name);
-  memcpy( menuSystemTextBuffer, _name, i );
-  if (is_modal()) {
-	menuSystemTextBuffer[i++] = '<';
-  } else {
-	menuSystemTextBuffer[i++] = '=';
-  }
-  if (_numberFormat!=NULL) {
-    _numberFormat(_value, menuSystemTextBuffer+i);
-    i+=strlen(menuSystemTextBuffer+i);
-  } else {
-    i+=strlen(dtostrf(_value, 5, 2, menuSystemTextBuffer+i));
-  }
+    int i = strlen(_name);
+    memcpy( menuSystemTextBuffer, _name, i );
+    if (is_modal())
+        menuSystemTextBuffer[i++] = '<';
+    else 
+        menuSystemTextBuffer[i++] = '=';
+    
+    if (_numberFormat!=NULL) {
+        _numberFormat(_value, menuSystemTextBuffer+i);
+        i+=strlen(menuSystemTextBuffer+i);
+    } else 
+        i+=strlen(dtostrf(_value, 5, 2, menuSystemTextBuffer+i));
 
-  if (is_modal()) {
-	  menuSystemTextBuffer[i++] = '>';
-  }
-  menuSystemTextBuffer[i] = 0;
-  return menuSystemTextBuffer;
+    if (is_modal())
+        menuSystemTextBuffer[i++] = '>';
+    menuSystemTextBuffer[i] = 0;
+    return menuSystemTextBuffer;
 }
 
 // *********************************************************
@@ -348,5 +352,5 @@ void MenuSystem::set_root_menu(Menu* p_root_menu)
 
 Menu * MenuSystem::get_current_menu() const
 {
-  return _p_curr_menu;
+    return _p_curr_menu;
 }
