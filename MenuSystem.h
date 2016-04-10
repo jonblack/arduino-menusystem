@@ -28,7 +28,7 @@ public:
     /* returns _name + _value concatenation if applicable */
     virtual const char* get_name() const;
     /* returns the un-altered name assigned by set_name() */
-    const char* get_base_name() { return _name; }
+    const char* get_base_name() const { return _name; }
 
     virtual MenuComponent* select() = 0;
     virtual void reset() = 0;
