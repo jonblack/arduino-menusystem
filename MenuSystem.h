@@ -136,7 +136,7 @@ public:
 
     void set_root_menu(Menu* p_root_menu);
 
-    Menu * get_current_menu() const;
+    Menu const* get_current_menu() const;
 
 private:
     Menu* _p_root_menu;

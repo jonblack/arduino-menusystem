@@ -188,6 +188,8 @@ BackMenuItem::BackMenuItem(MenuSystem* ms, const char* name): MenuItem(name), me
 
 MenuComponent* BackMenuItem::select()
 {
+	if (_on_select!=NULL)
+		_on_select(this);
     if (menu_system!=NULL)
         menu_system->back();
     return NULL;
@@ -218,7 +220,7 @@ MenuComponent* MenuItem::select()
 
 void MenuItem::reset()
 {
-    // Do nothing
+    // Do nothing.
 }
 
 // *********************************************************
@@ -350,7 +352,7 @@ void MenuSystem::set_root_menu(Menu* p_root_menu)
     _p_curr_menu = p_root_menu;
 }
 
-Menu * MenuSystem::get_current_menu() const
+Menu const* MenuSystem::get_current_menu() const
 {
     return _p_curr_menu;
 }
