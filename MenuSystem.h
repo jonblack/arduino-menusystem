@@ -25,11 +25,14 @@ public:
     MenuComponent(const char* name);
 
     void set_name(const char* name);
+    /* returns _name + _value concatenation if applicable */
     virtual const char* get_name() const;
+    /* returns the un-altered name assigned by set_name() */
+    const char* get_base_name() { return _name; }
 
     virtual MenuComponent* select() = 0;
     virtual void reset() = 0;
-    // modal methods
+    /* returns true if the menu component is on modal/edit mode. */
     virtual bool is_modal() const {return false;}
 
 protected:
@@ -60,32 +63,45 @@ class BackMenuItem : public MenuItem
 {
 public:
     BackMenuItem(MenuSystem* ms, const char* name = "back");
-
+    /* Call _on_select() function (if defined) and call MenuSystem::back() */
     virtual MenuComponent* select();
 protected:
     MenuSystem* menu_system;
 };
 
+/* The function signature for the number formatting callback of NumericMenuItem */ 
+typedef void (*NumberFormat_t)(float value, char* buffer, uint16_t buffer_size);
+
 class NumericMenuItem : public MenuItem
 {
 public:
-  NumericMenuItem(const char* basename, float value, float minValue, float maxValue, float increment=1.0, void (*numberFormat)(float value, char* buffer)=NULL );
-  void set_number_formatter(void (*numberFormat)(float value, char* buffer));
-  virtual MenuComponent* select();
-  virtual const char* get_name() const;
-  float get_value() {return _value;}
-  virtual bool is_modal() const;
+    NumericMenuItem(const char* basename, float value, float minValue, float maxValue, float increment=1.0, NumberFormat_t numberFormat=NULL );
+    /* set the custom number formatter. */
+    void set_number_formatter(NumberFormat_t numberFormat);
+    /* Toggles modal mode and invokes the _on_select function. */
+    virtual MenuComponent* select();
+    /* Returns a concatenated string composed of _name and 
+     * the user formatted _value.
+     * Warning: Do not call this from inside the numberFormat function. 
+     * Use get_base_name() if you require the string set by set_name()
+     */
+    virtual const char* get_name() const;
+    float get_value() {return _value;}
+    /* Returns true if this menuitem is in modal mode. i.e. it is using next() 
+     * and prev() events to increase and decrease its value.
+     */
+    virtual bool is_modal() const;
 
 protected:
-  virtual bool modal_next();
-  virtual bool modal_prev();
+    virtual bool modal_next();
+    virtual bool modal_prev();
 
-  float _value;
-  float _minValue;
-  float _maxValue;
-  float _increment;
-  bool _modal;
-  void (*_numberFormat)(float value, char* buffer);
+    float _value;
+    float _minValue;
+    float _maxValue;
+    float _increment;
+    bool _modal;
+    NumberFormat_t _numberFormat;
 };
 
 class Menu : public MenuComponent
@@ -111,9 +127,6 @@ public:
 
     byte get_num_menu_components() const;
     byte get_cur_menu_component_num() const;
-protected:
-    // non-const version of get_selected()
-    MenuComponent* get_selected_nc() const;
 private:
     MenuComponent* _p_sel_menu_component;
     MenuComponent** _menu_components;

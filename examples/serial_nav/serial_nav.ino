@@ -10,9 +10,9 @@
 #include <MenuSystem.h>
 
 // forward declarations
-void floatMenuFormat(float value, char* buffer);
-void intMenuFormat(float value, char* buffer);
-void colorMenuFormat(float value, char* buffer);
+void floatMenuFormat(float value, char* buffer, uint16_t buffer_size);
+void intMenuFormat(float value, char* buffer, uint16_t buffer_size);
+void colorMenuFormat(float value, char* buffer, uint16_t buffer_size);
 
 // Menu variables
 MenuSystem ms;
@@ -30,20 +30,23 @@ NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", 50, -100, 100, 1, intMenuF
 // Menu callback function
 
 // writes the (int) value of a float into a char buffer.
-void intMenuFormat(float value, char* buffer) 
+void intMenuFormat(float value, char* buffer, uint16_t buffer_size) 
 {
+  // TODO check buffer size 
   sprintf(buffer, "%d", (int)value);
 }
 
 // writes the value of a float into a char buffer.
-void floatMenuFormat(float value, char* buffer) 
+void floatMenuFormat(float value, char* buffer, uint16_t buffer_size) 
 {
+  // TODO check buffer size 
   dtostrf(value, 3, 2, buffer);
 }
 
 // writes the value of a float into a char buffer as predefined colors.
-void colorMenuFormat(float value, char* buffer) 
+void colorMenuFormat(float value, char* buffer, uint16_t buffer_size) 
 {
+  // TODO check buffer size 
   switch((int) value) {
     case 0: sprintf(buffer,"Red");
       break;
