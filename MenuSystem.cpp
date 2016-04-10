@@ -103,7 +103,7 @@ void Menu::reset()
     _p_sel_menu_component = _menu_components[0];
 }
 
-void Menu::add_item(MenuItemBase* pItem)
+void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
 {
     // Resize menu component list, keeping existing items.
     // If it fails, there the item is not added and the function returns.
@@ -115,16 +115,12 @@ void Menu::add_item(MenuItemBase* pItem)
 
     _menu_components[_num_menu_components] = pItem;
 
+    pItem->set_select_function(on_select);
+
     if (_num_menu_components == 0)
         _p_sel_menu_component = pItem;
 
     _num_menu_components++;
-}
-
-void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
-{
-	add_item(pItem);
-    pItem->set_select_function(on_select);
 }
 
 Menu const* Menu::get_parent() const
@@ -164,7 +160,12 @@ MenuComponent const* Menu::get_menu_component(byte index) const
   return _menu_components[index];
 }
 
-MenuComponent* Menu::get_selected() const
+MenuComponent const* Menu::get_selected() const
+{
+    return get_selected_nc();
+}
+
+MenuComponent* Menu::get_selected_nc() const
 {
     return _p_sel_menu_component;
 }
@@ -180,22 +181,15 @@ byte Menu::get_cur_menu_component_num() const
 }
 
 // *********************************************************
-// MenuItemBase
-// *********************************************************
-MenuItemBase::MenuItemBase(const char* name): MenuComponent(name) {
-}
-
-// *********************************************************
 // BackMenuItem
 // *********************************************************
-BackMenuItem::BackMenuItem(MenuSystem* ms, const char* name): MenuItemBase(name), menu_system(ms) {
+BackMenuItem::BackMenuItem(MenuSystem* ms, const char* name): MenuItem(name), menu_system(ms) {
 }
 
 MenuComponent* BackMenuItem::select()
 {
-	if (menu_system!=NULL){
-  	  menu_system->back();
-	}
+    if (menu_system!=NULL)
+        menu_system->back();
     return 0;
 }
 
@@ -204,7 +198,7 @@ MenuComponent* BackMenuItem::select()
 // *********************************************************
 
 MenuItem::MenuItem(const char* name)
-: MenuItemBase(name),
+: MenuComponent(name),
   _on_select(0)
 {
 }
@@ -301,7 +295,7 @@ MenuSystem::MenuSystem()
 boolean MenuSystem::next(boolean loop)
 {
     if (_p_curr_menu->get_selected()->is_modal()) {
-      _p_curr_menu->get_selected()->modal_next();
+      _p_curr_menu->get_selected_nc()->modal_next();
       return true;
     } else {
       return _p_curr_menu->next(loop);
@@ -310,12 +304,12 @@ boolean MenuSystem::next(boolean loop)
 
 boolean MenuSystem::prev(boolean loop)
 {
-  if (_p_curr_menu->get_selected()->is_modal()) {
-    _p_curr_menu->get_selected()->modal_prev();
-    return true;
-  } else {
-    return _p_curr_menu->prev(loop);
-  }
+    if (_p_curr_menu->get_selected()->is_modal()) {
+        _p_curr_menu->get_selected_nc()->modal_prev();
+        return true;
+    } else {
+        return _p_curr_menu->prev(loop);
+    }
 }
 
 void MenuSystem::reset()

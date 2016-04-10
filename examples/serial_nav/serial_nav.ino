@@ -9,16 +9,52 @@
 
 #include <MenuSystem.h>
 
+// forward declarations
+void floatMenuFormat(float value, char* buffer);
+void intMenuFormat(float value, char* buffer);
+void colorMenuFormat(float value, char* buffer);
+
 // Menu variables
 MenuSystem ms;
 Menu mm("ROOT Menu Title");
 MenuItem mm_mi1("Level 1 - Item 1 (Item)");
 MenuItem mm_mi2("Level 1 - Item 2 (Item)");
 Menu mu1("Level 1 - Item 3 (Menu)");
+BackMenuItem mu1_mi0(&ms, "Level 2 - Back (Item)");
 MenuItem mu1_mi1("Level 2 - Item 1 (Item)");
-
+NumericMenuItem mm_mi3("Level 1 - NumericItem 3 (Item)", 0.5, 0.0, 1.0, 0.1, floatMenuFormat);
+NumericMenuItem mm_mi4("Level 1 - NumericItem 4 (Item)", 50, -100, 100, 1, intMenuFormat);
+NumericMenuItem mm_mi5("Level 1 - NumericItem 5 (Item)", 0, 0, 2, 1, colorMenuFormat);
 
 // Menu callback function
+
+// writes the (int) value of a float into a char buffer.
+void intMenuFormat(float value, char* buffer) 
+{
+  sprintf(buffer, "%d", (int)value);
+}
+
+// writes the value of a float into a char buffer.
+void floatMenuFormat(float value, char* buffer) 
+{
+  dtostrf(value, 3, 2, buffer);
+}
+
+// writes the value of a float into a char buffer as predefined colors.
+void colorMenuFormat(float value, char* buffer) 
+{
+  switch((int) value) {
+    case 0: sprintf(buffer,"Red");
+      break;
+    case 1: sprintf(buffer,"Green");
+      break;
+    case 2: sprintf(buffer,"Blue");
+      break;
+    default:
+      sprintf(buffer,"undef");
+  }
+}
+
 // In this example all menu items use the same callback.
 
 void on_item1_selected(MenuItem* p_menu_item)
@@ -55,7 +91,11 @@ void setup()
   mm.add_item(&mm_mi1, &on_item1_selected);
   mm.add_item(&mm_mi2, &on_item2_selected);
   mm.add_menu(&mu1);
+  mu1.add_item(&mu1_mi0);
   mu1.add_item(&mu1_mi1, &on_item3_selected);
+  mm.add_item(&mm_mi3);
+  mm.add_item(&mm_mi4);
+  mm.add_item(&mm_mi5);
   ms.set_root_menu(&mm);
   Serial.println("Menu setted.");
   displayMenu();
@@ -130,6 +170,5 @@ void serialPrintHelp() {
   Serial.println("?: print this help");
   Serial.println("h: print this help");
   Serial.println("***************");
-
 }
 
