@@ -12,10 +12,6 @@
   #include <WProgram.h>
 #endif
 
-#ifndef MENUSYSTEM_TEXTBUFFER_SIZE
-#define MENUSYSTEM_TEXTBUFFER_SIZE 40
-#endif
-
 class MenuSystem;
 
 class MenuComponent
@@ -25,10 +21,14 @@ public:
     MenuComponent(const char* name);
 
     void set_name(const char* name);
-    /* returns _name + _value concatenation if applicable */
-    virtual const char* get_name() const;
+    /* returns _name + _value concatenation if applicable.
+     * The method returns the same object as sent in, and it relies 
+     * on the user to clean up any memory used by the String.
+     */
+    virtual String& get_composite_name(String& buffer) const;
+    
     /* returns the un-altered name assigned by set_name() */
-    const char* get_base_name() const { return _name; }
+    const char* get_name() const;
 
     virtual MenuComponent* select() = 0;
     virtual void reset() = 0;
@@ -69,24 +69,49 @@ protected:
     MenuSystem* menu_system;
 };
 
-/* The function signature for the number formatting callback of NumericMenuItem */ 
-typedef void (*NumberFormat_t)(float value, char* buffer, uint16_t buffer_size);
+class NumericMenuItem;
+
+/* The function signature for the number formatting callback of NumericMenuItem. 
+ * When using this function you are supposed to append your custom formatting of
+ * menuitem.get_value() to the buffer.
+ */ 
+typedef void (*NumberFormat_t)(const NumericMenuItem& menuitem, String& buffer);
 
 class NumericMenuItem : public MenuItem
 {
 public:
-    NumericMenuItem(const char* basename, float value, float minValue, float maxValue, float increment=1.0, NumberFormat_t numberFormat=NULL );
-    /* set the custom number formatter. */
+    /* constructor for NumericMenuItem
+     * @param name the name of the menu item
+     * @param value default value
+     * @param minValue the minimum value
+     * @param maxValue the maximum value
+     * @param increment how much next() and prev() should increment the value
+     * @param numberFormat the custom formatter. If NULL the String float formatter will be used (2 decimals)
+     */
+    NumericMenuItem(const char* name, float value, float minValue, float maxValue, float increment=1.0, NumberFormat_t numberFormat=NULL );
+
+    /* set the custom number formatter. 
+     * @param numberFormat the custom formatter. If NULL the String float formatter will be used (2 decimals)
+     */
     void set_number_formatter(NumberFormat_t numberFormat);
-    /* Toggles modal mode and invokes the _on_select function. */
+
+    /* Toggles modal mode and invokes the _on_select function (if not NULL) */
     virtual MenuComponent* select();
+
     /* Returns a concatenated string composed of _name and 
      * the user formatted _value.
-     * Warning: Do not call this from inside the numberFormat function. 
-     * Use get_base_name() if you require the string set by set_name()
+     * Do not call this from inside the numberFormat function (infinite loop)
+     * Use get_name() if you require the string set by set_name().
+     * The returned string is the same object as sent in.
      */
-    virtual const char* get_name() const;
-    float get_value() {return _value;}
+    virtual String& get_composite_name(String& buffer) const;
+
+    /* Returns the value */
+    float get_value() const {return _value;}
+
+    /* Sets the value */
+    void set_value(float value) {_value = value;}
+    
     /* Returns true if this menuitem is in modal mode. i.e. it is using next() 
      * and prev() events to increase and decrease its value.
      */

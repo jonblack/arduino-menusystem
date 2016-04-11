@@ -10,9 +10,9 @@
 #include <MenuSystem.h>
 
 // forward declarations
-void floatMenuFormat(float value, char* buffer, uint16_t buffer_size);
-void intMenuFormat(float value, char* buffer, uint16_t buffer_size);
-void colorMenuFormat(float value, char* buffer, uint16_t buffer_size);
+void floatMenuFormat(const NumericMenuItem& menuitem, String& buffer);
+void intMenuFormat(const NumericMenuItem& menuitem, String& buffer);
+void colorMenuFormat(const NumericMenuItem& menuitem, String& buffer);
 
 // Menu variables
 MenuSystem ms;
@@ -30,32 +30,30 @@ NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", 50, -100, 100, 1, intMenuF
 // Menu callback function
 
 // writes the (int) value of a float into a char buffer.
-void intMenuFormat(float value, char* buffer, uint16_t buffer_size) 
+void intMenuFormat(const NumericMenuItem& menuitem, String& buffer) 
 {
-  // TODO check buffer size 
-  sprintf(buffer, "%d", (int)value);
+  buffer += String((int)menuitem.get_value());
 }
 
 // writes the value of a float into a char buffer.
-void floatMenuFormat(float value, char* buffer, uint16_t buffer_size) 
+void floatMenuFormat(const NumericMenuItem& menuitem, String& buffer) 
 {
-  // TODO check buffer size 
-  dtostrf(value, 3, 2, buffer);
+  buffer += String(menuitem.get_value());
 }
 
 // writes the value of a float into a char buffer as predefined colors.
-void colorMenuFormat(float value, char* buffer, uint16_t buffer_size) 
+void colorMenuFormat(const NumericMenuItem& menuitem, String& buffer) 
 {
   // TODO check buffer size 
-  switch((int) value) {
-    case 0: sprintf(buffer,"Red");
+  switch((int) menuitem.get_value()) {
+    case 0: buffer += "Red";
       break;
-    case 1: sprintf(buffer,"Green");
+    case 1: buffer += "Green";
       break;
-    case 2: sprintf(buffer,"Blue");
+    case 2: buffer += "Blue";
       break;
     default:
-      sprintf(buffer,"undef");
+      buffer += "undef";
   }
 }
 
@@ -128,12 +126,13 @@ void displayMenu() {
 
   Serial.print("Current menu name: ");
   Serial.println(cp_menu->get_name());
-
+  
   MenuComponent const* cp_menu_sel = cp_menu->get_selected();
   for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
   {
     MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
-    Serial.print(cp_m_comp->get_name());
+    String s;
+    Serial.print(cp_m_comp->get_composite_name(s));
 
     if (cp_menu_sel == cp_m_comp)
       Serial.print("<<< ");

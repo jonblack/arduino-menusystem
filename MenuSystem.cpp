@@ -6,8 +6,6 @@
 #include "MenuSystem.h"
 #include <stdlib.h>
 
-// ideally this should be a static member of NumericMenuItem
-char menuSystemTextBuffer[MENUSYSTEM_TEXTBUFFER_SIZE];
 
 // *********************************************************
 // MenuComponent
@@ -21,6 +19,13 @@ MenuComponent::MenuComponent(const char* name)
 const char* MenuComponent::get_name() const
 {
     return _name;
+}
+
+String& MenuComponent::get_composite_name(String& buffer) const
+{
+    // this replaces the content of buffer
+    buffer = _name; 
+    return buffer;
 }
 
 void MenuComponent::set_name(const char* name)
@@ -226,7 +231,6 @@ void MenuItem::reset()
 NumericMenuItem::NumericMenuItem(const char* basename, float value, float minValue, float maxValue, float increment, NumberFormat_t numberFormat):
     MenuItem(basename), _value(value), _minValue(minValue), _maxValue(maxValue), _increment(increment), _modal(false), _numberFormat(numberFormat)
 {
-    menuSystemTextBuffer[0] = 0;
     if (increment < 0.0) increment = -increment;
     if (minValue > maxValue)
     {
@@ -271,31 +275,22 @@ bool NumericMenuItem::modal_prev()
     return true;
 }
 
-const char* NumericMenuItem::get_name() const 
+String& NumericMenuItem::get_composite_name(String& buffer) const 
 {
-    int i = strlen(_name);
-    memcpy( menuSystemTextBuffer, _name, i );
-    if (is_modal())
-        menuSystemTextBuffer[i++] = '<';
-    else 
-        menuSystemTextBuffer[i++] = '=';
+    buffer += _name;
+    buffer += is_modal()?'<':'=';
     
-    if (MENUSYSTEM_TEXTBUFFER_SIZE-i > 0)
+    if (_numberFormat!=NULL)
     {
-        if (_numberFormat!=NULL)
-        {
-            _numberFormat(_value, menuSystemTextBuffer+i, MENUSYSTEM_TEXTBUFFER_SIZE-i);
-            i+=strlen(menuSystemTextBuffer+i);
-        } else
-        {
-            i+=strlen(dtostrf(_value, 5, 2, menuSystemTextBuffer+i));
-        }
-
-        if (is_modal())
-            menuSystemTextBuffer[i++] = '>';
+        _numberFormat(*this, buffer);
+    } else
+    {
+        buffer += _value;
     }
-    menuSystemTextBuffer[i] = 0;
-    return menuSystemTextBuffer;
+
+    if (is_modal())
+        buffer += '>';
+    return buffer;
 }
 
 // *********************************************************
