@@ -277,7 +277,7 @@ bool NumericMenuItem::modal_prev()
 
 String& NumericMenuItem::get_composite_name(String& buffer) const 
 {
-    buffer += _name;
+    buffer = _name;
     buffer += is_modal()?'<':'=';
     
     if (_numberFormat!=NULL)

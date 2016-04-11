@@ -120,6 +120,7 @@ void loop()
 }
 
 void displayMenu() {
+  String buffer;
   Serial.println("");
   // Display the menu
   Menu const* cp_menu = ms.get_current_menu();
@@ -131,8 +132,7 @@ void displayMenu() {
   for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
   {
     MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
-    String s;
-    Serial.print(cp_m_comp->get_composite_name(s));
+    Serial.print(cp_m_comp->get_composite_name(buffer));
 
     if (cp_menu_sel == cp_m_comp)
       Serial.print("<<< ");
