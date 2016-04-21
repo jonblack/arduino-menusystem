@@ -75,7 +75,7 @@ class NumericMenuItem;
  * When using this function you are supposed to append your custom formatting of
  * menuitem.get_value() to the buffer.
  */ 
-typedef void (*NumberFormat_t)(const float value, String& buffer);
+typedef const String (*NumberFormat_t)(const float value);
 
 class NumericMenuItem : public MenuItem
 {

@@ -10,9 +10,9 @@
 #include <MenuSystem.h>
 
 // forward declarations
-void floatMenuFormat(const float value, String& buffer);
-void intMenuFormat(const float value, String& buffer);
-void colorMenuFormat(const float value, String& buffer);
+const String floatMenuFormat(const float value);
+const String intMenuFormat(const float value);
+const String colorMenuFormat(const float value);
 
 // Menu variables
 MenuSystem ms;
@@ -30,22 +30,23 @@ NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", 50, -100, 100, 1, intMenuF
 // Menu callback function
 
 // writes the (int) value of a float into a char buffer.
-void intMenuFormat(const float value, String& buffer) 
+const String intMenuFormat(const float value) 
 {
-  buffer += String((int) value);
+  return String((int) value);
 }
 
 // writes the value of a float into a char buffer.
-void floatMenuFormat(const float value, String& buffer) 
+const String floatMenuFormat(const float value) 
 {
-  buffer += String(value);
+  return String(value);
 }
 
 // writes the value of a float into a char buffer as predefined colors.
-void colorMenuFormat(const float value, String& buffer) 
+const String colorMenuFormat(const float value) 
 {
-  // TODO check buffer size 
-  switch((int) value) {
+  String buffer;
+
+  switch((int) value){
     case 0: buffer += "Red";
       break;
     case 1: buffer += "Green";
@@ -55,6 +56,8 @@ void colorMenuFormat(const float value, String& buffer)
     default:
       buffer += "undef";
   }
+
+  return buffer;
 }
 
 // In this example all menu items use the same callback.

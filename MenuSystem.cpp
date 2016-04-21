@@ -282,7 +282,7 @@ String& NumericMenuItem::get_composite_name(String& buffer) const
     
     if (_numberFormat!=NULL)
     {
-        _numberFormat(this->_value, buffer);
+        buffer += _numberFormat(this->_value);
     } else
     {
         buffer += _value;
