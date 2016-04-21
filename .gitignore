@@ -1,7 +1,3 @@
-# Binaries
-testpix
-pix
-
 # Compiled Object files
 *.slo
 *.lo
@@ -20,3 +16,6 @@ pix
 *~
 *.swp
 *.swo
+
+# arduino-mk
+**/build-*

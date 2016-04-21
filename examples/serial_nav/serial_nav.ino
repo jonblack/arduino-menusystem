@@ -10,9 +10,9 @@
 #include <MenuSystem.h>
 
 // forward declarations
-void floatMenuFormat(const NumericMenuItem& menuitem, String& buffer);
-void intMenuFormat(const NumericMenuItem& menuitem, String& buffer);
-void colorMenuFormat(const NumericMenuItem& menuitem, String& buffer);
+void floatMenuFormat(const float value, String& buffer);
+void intMenuFormat(const float value, String& buffer);
+void colorMenuFormat(const float value, String& buffer);
 
 // Menu variables
 MenuSystem ms;
@@ -30,22 +30,22 @@ NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", 50, -100, 100, 1, intMenuF
 // Menu callback function
 
 // writes the (int) value of a float into a char buffer.
-void intMenuFormat(const NumericMenuItem& menuitem, String& buffer) 
+void intMenuFormat(const float value, String& buffer) 
 {
-  buffer += String((int)menuitem.get_value());
+  buffer += String((int) value);
 }
 
 // writes the value of a float into a char buffer.
-void floatMenuFormat(const NumericMenuItem& menuitem, String& buffer) 
+void floatMenuFormat(const float value, String& buffer) 
 {
-  buffer += String(menuitem.get_value());
+  buffer += String(value);
 }
 
 // writes the value of a float into a char buffer as predefined colors.
-void colorMenuFormat(const NumericMenuItem& menuitem, String& buffer) 
+void colorMenuFormat(const float value, String& buffer) 
 {
   // TODO check buffer size 
-  switch((int) menuitem.get_value()) {
+  switch((int) value) {
     case 0: buffer += "Red";
       break;
     case 1: buffer += "Green";
@@ -77,6 +77,70 @@ void on_item3_selected(MenuItem* p_menu_item)
 void on_back_item_selected(MenuItem* p_menu_item)
 {
   Serial.println("Back item Selected");
+}
+
+void displayMenu() {
+  String buffer;
+  Serial.println("");
+  // Display the menu
+  Menu const* cp_menu = ms.get_current_menu();
+
+  Serial.print("Current menu name: ");
+  Serial.println(cp_menu->get_name());
+  
+  MenuComponent const* cp_menu_sel = cp_menu->get_selected();
+  for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
+  {
+    MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
+    Serial.print(cp_m_comp->get_composite_name(buffer));
+
+    if (cp_menu_sel == cp_m_comp)
+      Serial.print("<<< ");
+
+    Serial.println("");
+  }
+}
+
+
+void serialPrintHelp() {
+  Serial.println("***************");
+  Serial.println("w: go to previus item (up)");
+  Serial.println("s: go to next item (down)");
+  Serial.println("a: go back (right)");
+  Serial.println("d: select \"selected\" item");
+  Serial.println("?: print this help");
+  Serial.println("h: print this help");
+  Serial.println("***************");
+}
+
+void serialHandler() {
+  char inChar;
+  if((inChar = Serial.read())>0) {
+    switch (inChar) {
+    case 'w': // Previus item
+      ms.prev();
+      displayMenu();
+      break;
+    case 's': // Next item
+      ms.next();
+      displayMenu();
+      break;
+    case 'a': // Back presed
+      ms.back();
+      displayMenu();
+      break;
+    case 'd': // Select presed
+      ms.select();
+      displayMenu();
+      break;
+    case '?':
+    case 'h': // Display help
+      serialPrintHelp();
+      break;
+    default:
+      break;
+    }
+  }
 }
 
 // Standard arduino functions
@@ -118,67 +182,3 @@ void loop()
   // Wait for two seconds so the output is viewable
   //delay(2000);
 }
-
-void displayMenu() {
-  String buffer;
-  Serial.println("");
-  // Display the menu
-  Menu const* cp_menu = ms.get_current_menu();
-
-  Serial.print("Current menu name: ");
-  Serial.println(cp_menu->get_name());
-  
-  MenuComponent const* cp_menu_sel = cp_menu->get_selected();
-  for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
-  {
-    MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
-    Serial.print(cp_m_comp->get_composite_name(buffer));
-
-    if (cp_menu_sel == cp_m_comp)
-      Serial.print("<<< ");
-
-    Serial.println("");
-  }
-}
-
-void serialHandler() {
-  char inChar;
-  if((inChar = Serial.read())>0) {
-    switch (inChar) {
-    case 'w': // Previus item
-      ms.prev();
-      displayMenu();
-      break;
-    case 's': // Next item
-      ms.next();
-      displayMenu();
-      break;
-    case 'a': // Back presed
-      ms.back();
-      displayMenu();
-      break;
-    case 'd': // Select presed
-      ms.select();
-      displayMenu();
-      break;
-    case '?':
-    case 'h': // Display help
-      serialPrintHelp();
-      break;
-    default:
-      break;
-    }
-  }
-}
-
-void serialPrintHelp() {
-  Serial.println("***************");
-  Serial.println("w: go to previus item (up)");
-  Serial.println("s: go to next item (down)");
-  Serial.println("a: go back (right)");
-  Serial.println("d: select \"selected\" item");
-  Serial.println("?: print this help");
-  Serial.println("h: print this help");
-  Serial.println("***************");
-}
-
