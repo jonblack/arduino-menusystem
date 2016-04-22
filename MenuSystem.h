@@ -21,23 +21,34 @@ public:
     MenuComponent(const char* name);
 
     void set_name(const char* name);
-    /* returns _name + _value concatenation if applicable.
-     * The method returns the same object as sent in, and it relies 
-     * on the user to clean up any memory used by the String.
+
+    /**
+     * Returns the composite name
+     *
+     * The composite name is the original _name plus _value if applicable.
+     * Do not call this from inside the numberFormat function (infinite loop).
      */
     virtual String& get_composite_name(String& buffer) const;
-    
-    /* returns the un-altered name assigned by set_name() */
+
+    /**
+     * Gets the original name
+     *
+     * Returns the original name assigned in the constructor or via set_name.
+     */
     const char* get_name() const;
 
     virtual MenuComponent* select() = 0;
     virtual void reset() = 0;
-    /* returns true if the menu component is on modal/edit mode. */
-    virtual bool is_modal() const {return false;}
+
+    /**
+     * Returns true if the MenuComponent's value is being edited; false
+     * otherwise.
+     */
+    virtual bool is_editing_value() const { return false; }
 
 protected:
-    virtual bool modal_next() {return false;}
-    virtual bool modal_prev() {return false;}
+    virtual bool next_value() { return false; }
+    virtual bool prev_value() { return false; }
 
     const char* _name;
 };
@@ -57,76 +68,82 @@ protected:
 };
 
 /**
- * This is a menu item that will execute MenuSystem::back() when selected.
+ * A MenuItem executes MenuSystem::back() when selected.
  */
 class BackMenuItem : public MenuItem
 {
 public:
     BackMenuItem(MenuSystem* ms, const char* name = "back");
-    /* Call _on_select() function (if defined) and call MenuSystem::back() */
+
     virtual MenuComponent* select();
+
 protected:
     MenuSystem* menu_system;
 };
 
 class NumericMenuItem;
 
-/* The function signature for the number formatting callback of NumericMenuItem. 
- * When using this function you are supposed to append your custom formatting of
- * menuitem.get_value() to the buffer.
- */ 
-typedef const String (*NumberFormat_t)(const float value);
 
 class NumericMenuItem : public MenuItem
 {
 public:
-    /* constructor for NumericMenuItem
-     * @param name the name of the menu item
-     * @param value default value
-     * @param minValue the minimum value
-     * @param maxValue the maximum value
-     * @param increment how much next() and prev() should increment the value
-     * @param numberFormat the custom formatter. If NULL the String float formatter will be used (2 decimals)
+    /**
+     * Callback for formatting the numeric value into a String.
+     *
+     * @param value The value to convert.
+     * @returns The String representation of value.
      */
-    NumericMenuItem(const char* name, float value, float minValue, float maxValue, float increment=1.0, NumberFormat_t numberFormat=NULL );
+    typedef const String (*ValueFormatter_t)(const float value);
 
-    /* set the custom number formatter. 
-     * @param numberFormat the custom formatter. If NULL the String float formatter will be used (2 decimals)
+public:
+    /**
+     * @param name The name of the menu item.
+     * @param value Default value.
+     * @param minValue The minimum value.
+     * @param maxValue The maximum value.
+     * @param increment How much the value should be incremented by.
+     * @param valueFormatter The custom formatter. If NULL the String float
+     *                       formatter will be used.
      */
-    void set_number_formatter(NumberFormat_t numberFormat);
+    NumericMenuItem(const char* name, float value, float minValue,
+                    float maxValue, float increment=1.0,
+                    ValueFormatter_t value_formatter=NULL);
 
-    /* Toggles modal mode and invokes the _on_select function (if not NULL) */
+    /**
+     * Sets the custom number formatter.
+     *
+     * @param numberFormat the custom formatter. If NULL the String float
+     *                     formatter will be used (2 decimals)
+     */
+    void set_number_formatter(ValueFormatter_t value_formatter);
+
+    /**
+     * Toggles edit mode and invokes the _on_select function (if not NULL).
+     */
     virtual MenuComponent* select();
 
-    /* Returns a concatenated string composed of _name and 
-     * the user formatted _value.
-     * Do not call this from inside the numberFormat function (infinite loop)
-     * Use get_name() if you require the string set by set_name().
-     * The returned string is the same object as sent in.
-     */
     virtual String& get_composite_name(String& buffer) const;
 
-    /* Returns the value */
-    float get_value() const {return _value;}
+    float get_value() const { return _value; }
+    void set_value(float value) { _value = value; }
 
-    /* Sets the value */
-    void set_value(float value) {_value = value;}
-    
-    /* Returns true if this menuitem is in modal mode. i.e. it is using next() 
+    /**
+     * Returns true if this menuitem is in modal mode. i.e. it is using next()
      * and prev() events to increase and decrease its value.
      */
-    virtual bool is_modal() const;
+    virtual bool is_editing_value() const;
 
 protected:
-    virtual bool modal_next();
-    virtual bool modal_prev();
+    virtual bool next_value();
+    virtual bool prev_value();
 
+protected:
     float _value;
     float _minValue;
     float _maxValue;
     float _increment;
-    bool _modal;
-    NumberFormat_t _numberFormat;
+    bool _editing_value;
+    ValueFormatter_t _value_formatter;
 };
 
 class Menu : public MenuComponent
@@ -152,6 +169,7 @@ public:
 
     byte get_num_menu_components() const;
     byte get_cur_menu_component_num() const;
+
 private:
     MenuComponent* _p_sel_menu_component;
     MenuComponent** _menu_components;

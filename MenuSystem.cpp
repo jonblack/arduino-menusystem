@@ -24,7 +24,7 @@ const char* MenuComponent::get_name() const
 String& MenuComponent::get_composite_name(String& buffer) const
 {
     // this replaces the content of buffer
-    buffer = _name; 
+    buffer = _name;
     return buffer;
 }
 
@@ -184,15 +184,20 @@ byte Menu::get_cur_menu_component_num() const
 // *********************************************************
 // BackMenuItem
 // *********************************************************
-BackMenuItem::BackMenuItem(MenuSystem* ms, const char* name): MenuItem(name), menu_system(ms) {
+BackMenuItem::BackMenuItem(MenuSystem* ms, const char* name)
+: MenuItem(name),
+  menu_system(ms)
+{
 }
 
 MenuComponent* BackMenuItem::select()
 {
     if (_on_select!=NULL)
         _on_select(this);
+
     if (menu_system!=NULL)
         menu_system->back();
+
     return NULL;
 }
 
@@ -228,8 +233,17 @@ void MenuItem::reset()
 // NumericMenuItem
 // *********************************************************
 
-NumericMenuItem::NumericMenuItem(const char* basename, float value, float minValue, float maxValue, float increment, NumberFormat_t numberFormat):
-    MenuItem(basename), _value(value), _minValue(minValue), _maxValue(maxValue), _increment(increment), _modal(false), _numberFormat(numberFormat)
+NumericMenuItem::NumericMenuItem(const char* basename, float value,
+                                 float minValue, float maxValue,
+                                 float increment,
+                                 ValueFormatter_t value_formatter)
+: MenuItem(basename),
+  _value(value),
+  _minValue(minValue),
+  _maxValue(maxValue),
+  _increment(increment),
+  _editing_value(false),
+  _value_formatter(value_formatter)
 {
     if (increment < 0.0) increment = -increment;
     if (minValue > maxValue)
@@ -240,56 +254,55 @@ NumericMenuItem::NumericMenuItem(const char* basename, float value, float minVal
     }
 };
 
-void NumericMenuItem::set_number_formatter(NumberFormat_t numberFormat)
+void NumericMenuItem::set_number_formatter(ValueFormatter_t value_formatter)
 {
-    _numberFormat = numberFormat;
+    _value_formatter = value_formatter;
 }
 
-bool NumericMenuItem::is_modal() const 
+bool NumericMenuItem::is_editing_value() const
 {
-    return _modal;
+    return _editing_value;
 }
 
-MenuComponent* NumericMenuItem::select() 
+MenuComponent* NumericMenuItem::select()
 {
-    _modal = !_modal;
-    // only run _on_select when the user is done editing the value
-    if (!_modal && _on_select != NULL)
+    _editing_value = !_editing_value;
+
+    // Only run _on_select when the user is done editing the value
+    if (!_editing_value && _on_select != NULL)
         _on_select(this);
     return NULL;
 }
 
-bool NumericMenuItem::modal_next() 
+bool NumericMenuItem::next_value()
 {
     _value += _increment;
-    if (_value > _maxValue) 
+    if (_value > _maxValue)
         _value = _maxValue;
     return true;
 }
 
-bool NumericMenuItem::modal_prev() 
+bool NumericMenuItem::prev_value()
 {
     _value -= _increment;
-    if (_value < _minValue) 
+    if (_value < _minValue)
         _value = _minValue;
     return true;
 }
 
-String& NumericMenuItem::get_composite_name(String& buffer) const 
+String& NumericMenuItem::get_composite_name(String& buffer) const
 {
     buffer = _name;
-    buffer += is_modal()?'<':'=';
-    
-    if (_numberFormat!=NULL)
-    {
-        buffer += _numberFormat(this->_value);
-    } else
-    {
-        buffer += _value;
-    }
+    buffer += is_editing_value() ? '<' : '=';
 
-    if (is_modal())
+    if (_value_formatter != NULL)
+        buffer += _value_formatter(_value);
+    else
+        buffer += _value;
+
+    if (is_editing_value())
         buffer += '>';
+
     return buffer;
 }
 
@@ -305,11 +318,12 @@ MenuSystem::MenuSystem()
 
 boolean MenuSystem::next(boolean loop)
 {
-    if (_p_curr_menu->get_selected()->is_modal()) 
+    if (_p_curr_menu->get_selected()->is_editing_value())
     {
-        _p_curr_menu->_p_sel_menu_component->modal_next();
+        _p_curr_menu->_p_sel_menu_component->next_value();
         return true;
-    } else 
+    }
+    else
     {
         return _p_curr_menu->next(loop);
     }
@@ -317,11 +331,12 @@ boolean MenuSystem::next(boolean loop)
 
 boolean MenuSystem::prev(boolean loop)
 {
-    if (_p_curr_menu->get_selected()->is_modal()) 
+    if (_p_curr_menu->get_selected()->is_editing_value())
     {
-        _p_curr_menu->_p_sel_menu_component->modal_prev();
+        _p_curr_menu->_p_sel_menu_component->prev_value();
         return true;
-    } else 
+    }
+    else
     {
         return _p_curr_menu->prev(loop);
     }
@@ -340,7 +355,7 @@ void MenuSystem::select(bool reset)
     if (pComponent != NULL)
         _p_curr_menu = (Menu*) pComponent;
     else
-        if (reset) 
+        if (reset)
             this->reset();
 }
 
