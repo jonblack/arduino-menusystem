@@ -348,7 +348,7 @@ void MenuSystem::reset()
     _p_root_menu->reset();
 }
 
-void MenuSystem::select(bool reset)
+void MenuSystem::select(boolean reset)
 {
     MenuComponent* pComponent = _p_curr_menu->activate();
 
