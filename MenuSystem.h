@@ -129,7 +129,7 @@ public:
     void set_value(float value) { _value = value; }
 
     /**
-     * Returns true if this menuitem is in modal mode. i.e. it is using next()
+     * Returns true if this menuitem is in editing mode. i.e. it is using next()
      * and prev() events to increase and decrease its value.
      */
     virtual bool is_editing_value() const;
