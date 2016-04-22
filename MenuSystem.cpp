@@ -245,12 +245,12 @@ NumericMenuItem::NumericMenuItem(const char* basename, float value,
   _editing_value(false),
   _value_formatter(value_formatter)
 {
-    if (increment < 0.0) increment = -increment;
-    if (minValue > maxValue)
+    if (_increment < 0.0) _increment = -_increment;
+    if (_minValue > _maxValue)
     {
-        float tmp = maxValue;
-        maxValue = minValue;
-        minValue = tmp;
+        float tmp = _maxValue;
+        maxValue = _minValue;
+        _minValue = tmp;
     }
 };
 
