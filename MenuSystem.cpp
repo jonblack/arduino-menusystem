@@ -1,9 +1,11 @@
 /*
- * Copyright (c) 2015 arduino-menusystem
+ * Copyright (c) 2015, 2016 arduino-menusystem
  * Licensed under the MIT license (see LICENSE)
  */
 
 #include "MenuSystem.h"
+#include <stdlib.h>
+
 
 // *********************************************************
 // MenuComponent
@@ -17,6 +19,13 @@ MenuComponent::MenuComponent(const char* name)
 const char* MenuComponent::get_name() const
 {
     return _name;
+}
+
+String& MenuComponent::get_composite_name(String& buffer) const
+{
+    // this replaces the content of buffer
+    buffer = _name;
+    return buffer;
 }
 
 void MenuComponent::set_name(const char* name)
@@ -173,6 +182,26 @@ byte Menu::get_cur_menu_component_num() const
 }
 
 // *********************************************************
+// BackMenuItem
+// *********************************************************
+BackMenuItem::BackMenuItem(MenuSystem* ms, const char* name)
+: MenuItem(name),
+  menu_system(ms)
+{
+}
+
+MenuComponent* BackMenuItem::select()
+{
+    if (_on_select!=NULL)
+        _on_select(this);
+
+    if (menu_system!=NULL)
+        menu_system->back();
+
+    return NULL;
+}
+
+// *********************************************************
 // MenuItem
 // *********************************************************
 
@@ -192,12 +221,89 @@ MenuComponent* MenuItem::select()
     if (_on_select != NULL)
         _on_select(this);
 
-    return 0;
+    return NULL;
 }
 
 void MenuItem::reset()
 {
     // Do nothing.
+}
+
+// *********************************************************
+// NumericMenuItem
+// *********************************************************
+
+NumericMenuItem::NumericMenuItem(const char* basename, float value,
+                                 float minValue, float maxValue,
+                                 float increment,
+                                 ValueFormatter_t value_formatter)
+: MenuItem(basename),
+  _value(value),
+  _minValue(minValue),
+  _maxValue(maxValue),
+  _increment(increment),
+  _editing_value(false),
+  _value_formatter(value_formatter)
+{
+    if (increment < 0.0) increment = -increment;
+    if (minValue > maxValue)
+    {
+        float tmp = maxValue;
+        maxValue = minValue;
+        minValue = tmp;
+    }
+};
+
+void NumericMenuItem::set_number_formatter(ValueFormatter_t value_formatter)
+{
+    _value_formatter = value_formatter;
+}
+
+bool NumericMenuItem::is_editing_value() const
+{
+    return _editing_value;
+}
+
+MenuComponent* NumericMenuItem::select()
+{
+    _editing_value = !_editing_value;
+
+    // Only run _on_select when the user is done editing the value
+    if (!_editing_value && _on_select != NULL)
+        _on_select(this);
+    return NULL;
+}
+
+bool NumericMenuItem::next_value()
+{
+    _value += _increment;
+    if (_value > _maxValue)
+        _value = _maxValue;
+    return true;
+}
+
+bool NumericMenuItem::prev_value()
+{
+    _value -= _increment;
+    if (_value < _minValue)
+        _value = _minValue;
+    return true;
+}
+
+String& NumericMenuItem::get_composite_name(String& buffer) const
+{
+    buffer = _name;
+    buffer += is_editing_value() ? '<' : '=';
+
+    if (_value_formatter != NULL)
+        buffer += _value_formatter(_value);
+    else
+        buffer += _value;
+
+    if (is_editing_value())
+        buffer += '>';
+
+    return buffer;
 }
 
 // *********************************************************
@@ -212,12 +318,28 @@ MenuSystem::MenuSystem()
 
 boolean MenuSystem::next(boolean loop)
 {
-    return _p_curr_menu->next(loop);
+    if (_p_curr_menu->get_selected()->is_editing_value())
+    {
+        _p_curr_menu->_p_sel_menu_component->next_value();
+        return true;
+    }
+    else
+    {
+        return _p_curr_menu->next(loop);
+    }
 }
 
 boolean MenuSystem::prev(boolean loop)
 {
-    return _p_curr_menu->prev(loop);
+    if (_p_curr_menu->get_selected()->is_editing_value())
+    {
+        _p_curr_menu->_p_sel_menu_component->prev_value();
+        return true;
+    }
+    else
+    {
+        return _p_curr_menu->prev(loop);
+    }
 }
 
 void MenuSystem::reset()
@@ -231,9 +353,12 @@ void MenuSystem::select(bool reset)
     MenuComponent* pComponent = _p_curr_menu->activate();
 
     if (pComponent != NULL)
+    {
         _p_curr_menu = (Menu*) pComponent;
+    }
     else
-        if (reset) this->reset();
+        if (reset)
+            this->reset();
 }
 
 boolean MenuSystem::back()
@@ -256,5 +381,5 @@ void MenuSystem::set_root_menu(Menu* p_root_menu)
 
 Menu const* MenuSystem::get_current_menu() const
 {
-  return _p_curr_menu;
+    return _p_curr_menu;
 }
