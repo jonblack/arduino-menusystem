@@ -249,7 +249,7 @@ NumericMenuItem::NumericMenuItem(const char* basename, float value,
     if (_minValue > _maxValue)
     {
         float tmp = _maxValue;
-        maxValue = _minValue;
+        _maxValue = _minValue;
         _minValue = tmp;
     }
 };
