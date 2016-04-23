@@ -3,11 +3,12 @@
  *
  * This example shows the menu system being controlled over the serial port.
  *
- * Copyright (c) 2015 arduino-menusystem
+ * Copyright (c) 2015, 2016 arduino-menusystem
  * Licensed under the MIT license (see LICENSE)
  */
 
 #include <MenuSystem.h>
+#include "CustomNumericMenuItem.h"
 
 // forward declarations
 const String format_float(const float value);
@@ -23,6 +24,7 @@ Menu mu1("Level 1 - Item 3 (Menu)");
 BackMenuItem mu1_mi0(&ms, "Level 2 - Back (Item)");
 MenuItem mu1_mi1("Level 2 - Item 1 (Item)");
 NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", 0, 0, 2, 1, format_color);
+CustomNumericMenuItem mu1_mi3(12, "Level 2 - Cust Item 3 (Item)", 80, 65, 121, 3, format_int);
 NumericMenuItem mm_mi4("Level 1 - Float Item 4 (Item)", 0.5, 0.0, 1.0, 0.1, format_float);
 NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", 50, -100, 100, 1, format_int);
 
@@ -162,6 +164,7 @@ void setup()
     mu1.add_item(&mu1_mi0, &on_back_item_selected);
     mu1.add_item(&mu1_mi1, &on_item3_selected);
     mu1.add_item(&mu1_mi2);
+    mu1.add_item(&mu1_mi3);
     mm.add_item(&mm_mi4);
     mm.add_item(&mm_mi5);
     ms.set_root_menu(&mm);
