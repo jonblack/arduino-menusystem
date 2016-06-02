@@ -48,7 +48,7 @@ Menu::Menu(const char* name)
 {
 }
 
-boolean Menu::next(boolean loop)
+bool Menu::next(bool loop)
 {
     if (_cur_menu_component_num != _num_menu_components - 1)
     {
@@ -67,7 +67,7 @@ boolean Menu::next(boolean loop)
     return false;
 }
 
-boolean Menu::prev(boolean loop)
+bool Menu::prev(bool loop)
 {
     if (_cur_menu_component_num != 0)
     {
@@ -316,7 +316,7 @@ MenuSystem::MenuSystem()
 {
 }
 
-boolean MenuSystem::next(boolean loop)
+bool MenuSystem::next(bool loop)
 {
     if (_p_curr_menu->get_selected()->is_editing_value())
     {
@@ -329,7 +329,7 @@ boolean MenuSystem::next(boolean loop)
     }
 }
 
-boolean MenuSystem::prev(boolean loop)
+bool MenuSystem::prev(bool loop)
 {
     if (_p_curr_menu->get_selected()->is_editing_value())
     {
@@ -348,7 +348,7 @@ void MenuSystem::reset()
     _p_root_menu->reset();
 }
 
-void MenuSystem::select(boolean reset)
+void MenuSystem::select(bool reset)
 {
     MenuComponent* pComponent = _p_curr_menu->activate();
 
@@ -361,7 +361,7 @@ void MenuSystem::select(boolean reset)
             this->reset();
 }
 
-boolean MenuSystem::back()
+bool MenuSystem::back()
 {
     if (_p_curr_menu != _p_root_menu)
     {

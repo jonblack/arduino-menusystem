@@ -153,8 +153,8 @@ class Menu : public MenuComponent
 public:
     Menu(const char* name);
 
-    boolean next(boolean loop=false);
-    boolean prev(boolean loop=false);
+    bool next(bool loop=false);
+    bool prev(bool loop=false);
     MenuComponent* activate();
     virtual MenuComponent* select();
     virtual void reset();
@@ -185,11 +185,11 @@ class MenuSystem
 public:
     MenuSystem();
 
-    boolean next(boolean loop=false);
-    boolean prev(boolean loop=false);
+    bool next(bool loop=false);
+    bool prev(bool loop=false);
     void reset();
-    void select(boolean reset=false);
-    boolean back();
+    void select(bool reset=false);
+    bool back();
 
     void set_root_menu(Menu* p_root_menu);
 

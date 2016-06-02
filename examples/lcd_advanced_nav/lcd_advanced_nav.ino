@@ -40,8 +40,8 @@ LiquidCrystal lcd(8     ,     9 ,      4 ,      5 ,      6 ,      7 );
 //                selected. The plan is to update acordingly the LCD
 //                if we want to use the display to other thing
 //                like set up a variable (show on this example with time)
-boolean menuSelected = false; // no menu item has been selected
-boolean commandReceived = false;// no command has been received (Seria, button, etc)
+bool menuSelected = false; // no menu item has been selected
+bool commandReceived = false;// no command has been received (Seria, button, etc)
 enum setMenuSelected_Type { 
   DATETIME, OTHER }; // this enum is in case we want to expand this example
 setMenuSelected_Type setMenu;
