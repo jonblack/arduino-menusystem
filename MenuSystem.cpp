@@ -145,6 +145,12 @@ void Menu::reset()
 
 void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
 {
+    pItem->set_select_function(on_select);
+    return add_item(pItem);
+}
+
+void Menu::add_item(MenuItem* pItem)
+{
     // Resize menu component list, keeping existing items.
     // If it fails, there the item is not added and the function returns.
     _menu_components = (MenuComponent**) realloc(_menu_components,
@@ -154,8 +160,6 @@ void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
       return;
 
     _menu_components[_num_menu_components] = pItem;
-
-    pItem->set_select_function(on_select);
 
     if (_num_menu_components == 0)
         _p_cur_menu_component = pItem;
@@ -228,6 +232,13 @@ byte Menu::get_prev_menu_component_num() const
 // *********************************************************
 // BackMenuItem
 // *********************************************************
+BackMenuItem::BackMenuItem(void (*on_select)(MenuItem*), MenuSystem* ms,
+                           const char* name)
+: MenuItem(name, on_select),
+  menu_system(ms)
+{
+}
+
 BackMenuItem::BackMenuItem(MenuSystem* ms, const char* name)
 : MenuItem(name),
   menu_system(ms)
@@ -255,6 +266,12 @@ MenuItem::MenuItem(const char* name)
 {
 }
 
+MenuItem::MenuItem(const char* name, void (*on_select)(MenuItem*))
+: MenuComponent(name),
+  _on_select(on_select)
+{
+}
+
 void MenuItem::set_select_function(void (*on_select)(MenuItem*))
 {
     _on_select = on_select;
@@ -277,11 +294,12 @@ void MenuItem::reset()
 // NumericMenuItem
 // *********************************************************
 
-NumericMenuItem::NumericMenuItem(const char* basename, float value,
+NumericMenuItem::NumericMenuItem(const char* basename,
+                                 void (*on_select)(MenuItem*), float value,
                                  float minValue, float maxValue,
                                  float increment,
                                  ValueFormatter_t value_formatter)
-: MenuItem(basename),
+: MenuItem(basename, on_select),
   _value(value),
   _minValue(minValue),
   _maxValue(maxValue),
@@ -296,6 +314,15 @@ NumericMenuItem::NumericMenuItem(const char* basename, float value,
         _maxValue = _minValue;
         _minValue = tmp;
     }
+};
+
+NumericMenuItem::NumericMenuItem(const char* basename, float value,
+                                 float minValue, float maxValue,
+                                 float increment,
+                                 ValueFormatter_t value_formatter)
+: NumericMenuItem(basename, 0, value, minValue, maxValue, increment,
+                  value_formatter)
+{
 };
 
 void NumericMenuItem::set_number_formatter(ValueFormatter_t value_formatter)

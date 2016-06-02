@@ -57,7 +57,13 @@ protected:
 class MenuItem : public MenuComponent
 {
 public:
+    /// Constructor
+    ///
+    /// @deprecated
     MenuItem(const char* name);
+
+    /// Constructor
+    MenuItem(const char* name, void (*on_select)(MenuItem*));
 
     void set_select_function(void (*on_select)(MenuItem*));
 
@@ -74,7 +80,13 @@ protected:
 class BackMenuItem : public MenuItem
 {
 public:
+    /// Constructor
+    ///
+    /// @deprecated
     BackMenuItem(MenuSystem* ms, const char* name = "back");
+
+    BackMenuItem(void (*on_select)(MenuItem*), MenuSystem* ms,
+                 const char* name = "back");
 
     virtual MenuComponent* select();
 
@@ -97,17 +109,26 @@ public:
     typedef const String (*ValueFormatter_t)(const float value);
 
 public:
-    /**
-     * @param name The name of the menu item.
-     * @param value Default value.
-     * @param minValue The minimum value.
-     * @param maxValue The maximum value.
-     * @param increment How much the value should be incremented by.
-     * @param valueFormatter The custom formatter. If NULL the String float
-     *                       formatter will be used.
-     */
+    /// Constructor
+    ///
+    /// @deprecated
     NumericMenuItem(const char* name, float value, float minValue,
                     float maxValue, float increment=1.0,
+                    ValueFormatter_t value_formatter=NULL);
+
+    /// Constructor
+    ///
+    /// @param name The name of the menu item.
+    /// @param on_select The function to call when this MenuItem is selected.
+    /// @param value Default value.
+    /// @param minValue The minimum value.
+    /// @param maxValue The maximum value.
+    /// @param increment How much the value should be incremented by.
+    /// @param valueFormatter The custom formatter. If NULL the String float
+    ///                       formatter will be used.
+    NumericMenuItem(const char* name, void (*on_select)(MenuItem*),
+                    float value, float minValue, float maxValue,
+                    float increment=1.0,
                     ValueFormatter_t value_formatter=NULL);
 
     /**
@@ -162,7 +183,11 @@ public:
     virtual MenuComponent* select();
     virtual void reset();
 
-    void add_item(MenuItem* pItem, void (*on_select)(MenuItem*) = NULL);
+    /// Adds a MenuItem to this Menu
+    ///
+    /// @deprecated Use add_item(MenuItem* pItem)
+    void add_item(MenuItem* pItem, void (*on_select)(MenuItem*));
+    void add_item(MenuItem* pItem);
     Menu const* add_menu(Menu* pMenu);
 
     void set_parent(Menu* pParent);

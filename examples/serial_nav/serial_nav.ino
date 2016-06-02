@@ -15,15 +15,19 @@ const String format_float(const float value);
 const String format_int(const float value);
 const String format_color(const float value);
 void display_menu(Menu* p_menu);
+void on_item1_selected(MenuItem* p_menu_item);
+void on_item2_selected(MenuItem* p_menu_item);
+void on_item3_selected(MenuItem* p_menu_item);
+void on_back_item_selected(MenuItem* p_menu_item);
 
 // Menu variables
 MenuSystem ms;
 Menu mm("ROOT Menu Title", &display_menu);
-MenuItem mm_mi1("Level 1 - Item 1 (Item)");
-MenuItem mm_mi2("Level 1 - Item 2 (Item)");
+MenuItem mm_mi1("Level 1 - Item 1 (Item)", &on_item1_selected);
+MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_item2_selected);
 Menu mu1("Level 1 - Item 3 (Menu)", &display_menu);
-BackMenuItem mu1_mi0(&ms, "Level 2 - Back (Item)");
-MenuItem mu1_mi1("Level 2 - Item 1 (Item)");
+BackMenuItem mu1_mi0(&on_back_item_selected, &ms, "Level 2 - Back (Item)");
+MenuItem mu1_mi1("Level 2 - Item 1 (Item)", &on_item3_selected);
 NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", 0, 0, 2, 1, format_color);
 CustomNumericMenuItem mu1_mi3(12, "Level 2 - Cust Item 3 (Item)", 80, 65, 121, 3, format_int);
 NumericMenuItem mm_mi4("Level 1 - Float Item 4 (Item)", 0.5, 0.0, 1.0, 0.1, format_float);
@@ -159,11 +163,11 @@ void setup()
 {
     Serial.begin(9600);
 
-    mm.add_item(&mm_mi1, &on_item1_selected);
-    mm.add_item(&mm_mi2, &on_item2_selected);
+    mm.add_item(&mm_mi1);
+    mm.add_item(&mm_mi2);
     mm.add_menu(&mu1);
-    mu1.add_item(&mu1_mi0, &on_back_item_selected);
-    mu1.add_item(&mu1_mi1, &on_item3_selected);
+    mu1.add_item(&mu1_mi0);
+    mu1.add_item(&mu1_mi1);
     mu1.add_item(&mu1_mi2);
     mu1.add_item(&mu1_mi3);
     mm.add_item(&mm_mi4);
