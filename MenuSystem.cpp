@@ -38,56 +38,88 @@ void MenuComponent::set_name(const char* name)
 // Menu
 // *********************************************************
 
-Menu::Menu(const char* name)
+Menu::Menu(const char* name, void (*callback)(Menu*))
 : MenuComponent(name),
+  _disp_callback(callback),
   _p_sel_menu_component(NULL),
   _menu_components(NULL),
   _p_parent(NULL),
   _num_menu_components(0),
-  _cur_menu_component_num(0)
+  _cur_menu_component_num(0),
+  _prev_menu_component_num(0)
 {
 }
 
+bool Menu::display()
+{
+    if (_disp_callback) {
+        (*_disp_callback)(this);
+        return true;
+    }
+    return false;
+}
+
+void Menu::set_display_callback(void (*callback)(Menu*))
+{
+    _disp_callback = callback;
+}
+
+
 bool Menu::next(bool loop)
 {
-    if (_cur_menu_component_num != _num_menu_components - 1)
+    _prev_menu_component_num = _cur_menu_component_num;
+
+    if (!_num_menu_components)
+    {
+        return false;
+    }
+    else if (_cur_menu_component_num != _num_menu_components - 1)
     {
         _cur_menu_component_num++;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
-    } else if (loop)
+    }
+    else if (loop)
     {
         _cur_menu_component_num = 0;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
     }
-
     return false;
 }
 
 bool Menu::prev(bool loop)
 {
-    if (_cur_menu_component_num != 0)
+    _prev_menu_component_num = _cur_menu_component_num;
+
+    if (!_num_menu_components)
+    {
+        return false;
+    }
+    else if (_cur_menu_component_num != 0)
     {
         _cur_menu_component_num--;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
-    } else if (loop)
+    }
+    else if (loop)
     {
         _cur_menu_component_num = _num_menu_components - 1;
         _p_sel_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
     }
-
     return false;
 }
 
 MenuComponent* Menu::activate()
 {
+    if (!_num_menu_components)
+        return NULL;
+
     MenuComponent* pComponent = _menu_components[_cur_menu_component_num];
 
     if (pComponent == NULL)
@@ -105,8 +137,10 @@ void Menu::reset()
 {
     for (int i = 0; i < _num_menu_components; ++i)
         _menu_components[i]->reset();
+
+    _prev_menu_component_num = 0;
     _cur_menu_component_num = 0;
-    _p_sel_menu_component = _menu_components[0];
+    _p_sel_menu_component = _num_menu_components ? _menu_components[0] : NULL;
 }
 
 void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
@@ -179,6 +213,11 @@ byte Menu::get_num_menu_components() const
 byte Menu::get_cur_menu_component_num() const
 {
     return _cur_menu_component_num;
+}
+
+byte Menu::get_prev_menu_component_num() const
+{
+    return _prev_menu_component_num;
 }
 
 // *********************************************************
@@ -353,9 +392,7 @@ void MenuSystem::select(bool reset)
     MenuComponent* pComponent = _p_curr_menu->activate();
 
     if (pComponent != NULL)
-    {
         _p_curr_menu = (Menu*) pComponent;
-    }
     else
         if (reset)
             this->reset();
@@ -382,4 +419,11 @@ void MenuSystem::set_root_menu(Menu* p_root_menu)
 Menu const* MenuSystem::get_current_menu() const
 {
     return _p_curr_menu;
+}
+
+boolean MenuSystem::display()
+{
+    if (_p_curr_menu != NULL)
+        return _p_curr_menu->display();
+    return false;
 }
