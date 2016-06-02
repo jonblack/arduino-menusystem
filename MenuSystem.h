@@ -151,10 +151,10 @@ class Menu : public MenuComponent
 {
     friend class MenuSystem;
 public:
-    Menu(const char* name, void (*callback)(Menu*) = NULL);
-    // returns true if there is a callbak (_disp_callback pointer not null)
-    boolean display();
-    void set_display_callback(void (*callback)(Menu*));
+    Menu(const char* name, void (*on_display)(Menu*)=NULL);
+
+    bool display();
+    void set_display_function(void (*on_display)(Menu*));
 
     bool next(bool loop=false);
     bool prev(bool loop=false);
@@ -182,7 +182,7 @@ private:
     byte _num_menu_components;
     byte _cur_menu_component_num;
     byte _prev_menu_component_num;
-    void (*_disp_callback)(Menu*);
+    void (*_on_display)(Menu*);
 };
 
 

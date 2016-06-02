@@ -38,9 +38,9 @@ void MenuComponent::set_name(const char* name)
 // Menu
 // *********************************************************
 
-Menu::Menu(const char* name, void (*callback)(Menu*))
+Menu::Menu(const char* name, void (*on_display)(Menu*))
 : MenuComponent(name),
-  _disp_callback(callback),
+  _on_display(on_display),
   _p_sel_menu_component(NULL),
   _menu_components(NULL),
   _p_parent(NULL),
@@ -52,18 +52,18 @@ Menu::Menu(const char* name, void (*callback)(Menu*))
 
 bool Menu::display()
 {
-    if (_disp_callback) {
-        (*_disp_callback)(this);
+    if (_on_display)
+    {
+        _on_display(this);
         return true;
     }
     return false;
 }
 
-void Menu::set_display_callback(void (*callback)(Menu*))
+void Menu::set_display_function(void (*on_display)(Menu*))
 {
-    _disp_callback = callback;
+    _on_display = on_display;
 }
-
 
 bool Menu::next(bool loop)
 {
@@ -421,7 +421,7 @@ Menu const* MenuSystem::get_current_menu() const
     return _p_curr_menu;
 }
 
-boolean MenuSystem::display()
+bool MenuSystem::display()
 {
     if (_p_curr_menu != NULL)
         return _p_curr_menu->display();
