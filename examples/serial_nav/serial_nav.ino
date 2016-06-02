@@ -26,7 +26,7 @@ Menu mm("ROOT Menu Title", &display_menu);
 MenuItem mm_mi1("Level 1 - Item 1 (Item)", &on_item1_selected);
 MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_item2_selected);
 Menu mu1("Level 1 - Item 3 (Menu)", &display_menu);
-BackMenuItem mu1_mi0(&on_back_item_selected, &ms, "Level 2 - Back (Item)");
+BackMenuItem mu1_mi0("Level 2 - Back (Item)", &on_back_item_selected, &ms);
 MenuItem mu1_mi1("Level 2 - Item 1 (Item)", &on_item3_selected);
 NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", 0, 0, 2, 1, format_color);
 CustomNumericMenuItem mu1_mi3(12, "Level 2 - Cust Item 3 (Item)", 80, 65, 121, 3, format_int);

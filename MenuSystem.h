@@ -83,10 +83,10 @@ public:
     /// Constructor
     ///
     /// @deprecated
-    BackMenuItem(MenuSystem* ms, const char* name = "back");
+    BackMenuItem(const char* name, MenuSystem* ms);
 
-    BackMenuItem(void (*on_select)(MenuItem*), MenuSystem* ms,
-                 const char* name = "back");
+    BackMenuItem(const char* name, void (*on_select)(MenuItem*),
+                 MenuSystem* ms);
 
     virtual MenuComponent* select();
 

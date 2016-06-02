@@ -232,14 +232,14 @@ byte Menu::get_prev_menu_component_num() const
 // *********************************************************
 // BackMenuItem
 // *********************************************************
-BackMenuItem::BackMenuItem(void (*on_select)(MenuItem*), MenuSystem* ms,
-                           const char* name)
+BackMenuItem::BackMenuItem(const char* name, void (*on_select)(MenuItem*),
+                           MenuSystem* ms)
 : MenuItem(name, on_select),
   menu_system(ms)
 {
 }
 
-BackMenuItem::BackMenuItem(MenuSystem* ms, const char* name)
+BackMenuItem::BackMenuItem(const char* name, MenuSystem* ms)
 : MenuItem(name),
   menu_system(ms)
 {
