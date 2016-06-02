@@ -206,10 +206,10 @@ void loop() {
     Menu const* menu;
 
     menu = ms.get_current_menu();
-    const char* menu1_name = menu->get_selected()->get_name();
+    const char* menu1_name = menu->get_current_component()->get_name();
     ms.next(true);
     menu = ms.get_current_menu();
-    const char* menu2_name = menu->get_selected()->get_name();
+    const char* menu2_name = menu->get_current_component()->get_name();
 
     //vslide(menu1_name, menu2_name, VSLIDE_UP);
     //hslide(menu1_name, menu2_name, HSLIDE_LEFT);

@@ -65,7 +65,7 @@ void setup()
 
 void loop()
 {
-  Serial.println(ms.get_current_menu()->get_selected()->get_name());
+  Serial.println(ms.get_current_menu()->get_current_component()->get_name());
   ms.select();
   if (bRanCallback)
   {

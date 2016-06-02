@@ -103,7 +103,7 @@ void displayMenu() {
   
   lcd.setCursor(0,1);
   
-  lcd.print(cp_menu->get_selected()->get_name());
+  lcd.print(cp_menu->get_current_component()->get_name());
 }
 
 void serialHandler() {

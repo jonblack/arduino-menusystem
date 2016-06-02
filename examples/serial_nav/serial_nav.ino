@@ -95,7 +95,7 @@ void display_menu(Menu* p_menu)
     Serial.println(p_menu->get_name());
 
     String buffer;
-    MenuComponent const* cp_menu_sel = p_menu->get_selected();
+    MenuComponent const* cp_menu_sel = p_menu->get_current_component();
     for (int i = 0; i < p_menu->get_num_menu_components(); ++i)
     {
         MenuComponent const* cp_m_comp = p_menu->get_menu_component(i);

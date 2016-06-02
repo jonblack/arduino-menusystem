@@ -64,7 +64,7 @@ void loop()
   
   // Display the menu
   Menu const* cp_menu = ms.get_current_menu();
-  MenuComponent const* cp_menu_sel = cp_menu->get_selected();
+  MenuComponent const* cp_menu_sel = cp_menu->get_current_component();
   for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
   {
     MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);

@@ -141,7 +141,7 @@ void displayMenu() {
 
   // Display the menu
   Menu const* cp_menu = ms.get_current_menu();
-  lcd.print(cp_menu->get_selected()->get_name());
+  lcd.print(cp_menu->get_current_component()->get_name());
 }
 
 void updateDisplay() {

@@ -125,7 +125,7 @@ void displayMenu() {
   //lcd.print("Current menu name: ");
   lcd.print(cp_menu->get_name());
   lcd.setCursor(0,1*PCD8544_CHAR_HEIGHT);
-  lcd.print(cp_menu->get_selected()->get_name());
+  lcd.print(cp_menu->get_current_component()->get_name());
   lcd.display();
 }
 

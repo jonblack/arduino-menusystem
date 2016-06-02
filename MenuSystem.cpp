@@ -41,7 +41,7 @@ void MenuComponent::set_name(const char* name)
 Menu::Menu(const char* name, void (*on_display)(Menu*))
 : MenuComponent(name),
   _on_display(on_display),
-  _p_sel_menu_component(NULL),
+  _p_cur_menu_component(NULL),
   _menu_components(NULL),
   _p_parent(NULL),
   _num_menu_components(0),
@@ -76,14 +76,14 @@ bool Menu::next(bool loop)
     else if (_cur_menu_component_num != _num_menu_components - 1)
     {
         _cur_menu_component_num++;
-        _p_sel_menu_component = _menu_components[_cur_menu_component_num];
+        _p_cur_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
     }
     else if (loop)
     {
         _cur_menu_component_num = 0;
-        _p_sel_menu_component = _menu_components[_cur_menu_component_num];
+        _p_cur_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
     }
@@ -101,14 +101,14 @@ bool Menu::prev(bool loop)
     else if (_cur_menu_component_num != 0)
     {
         _cur_menu_component_num--;
-        _p_sel_menu_component = _menu_components[_cur_menu_component_num];
+        _p_cur_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
     }
     else if (loop)
     {
         _cur_menu_component_num = _num_menu_components - 1;
-        _p_sel_menu_component = _menu_components[_cur_menu_component_num];
+        _p_cur_menu_component = _menu_components[_cur_menu_component_num];
 
         return true;
     }
@@ -140,7 +140,7 @@ void Menu::reset()
 
     _prev_menu_component_num = 0;
     _cur_menu_component_num = 0;
-    _p_sel_menu_component = _num_menu_components ? _menu_components[0] : NULL;
+    _p_cur_menu_component = _num_menu_components ? _menu_components[0] : NULL;
 }
 
 void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
@@ -158,7 +158,7 @@ void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
     pItem->set_select_function(on_select);
 
     if (_num_menu_components == 0)
-        _p_sel_menu_component = pItem;
+        _p_cur_menu_component = pItem;
 
     _num_menu_components++;
 }
@@ -188,7 +188,7 @@ Menu const* Menu::add_menu(Menu* pMenu)
     _menu_components[_num_menu_components] = pMenu;
 
     if (_num_menu_components == 0)
-        _p_sel_menu_component = pMenu;
+        _p_cur_menu_component = pMenu;
 
     _num_menu_components++;
 
@@ -202,7 +202,12 @@ MenuComponent const* Menu::get_menu_component(byte index) const
 
 MenuComponent const* Menu::get_selected() const
 {
-    return _p_sel_menu_component;
+    return get_current_component();
+}
+
+MenuComponent const* Menu::get_current_component() const
+{
+    return _p_cur_menu_component;
 }
 
 byte Menu::get_num_menu_components() const
@@ -357,9 +362,9 @@ MenuSystem::MenuSystem()
 
 bool MenuSystem::next(bool loop)
 {
-    if (_p_curr_menu->get_selected()->is_editing_value())
+    if (_p_curr_menu->get_current_component()->is_editing_value())
     {
-        _p_curr_menu->_p_sel_menu_component->next_value();
+        _p_curr_menu->_p_cur_menu_component->next_value();
         return true;
     }
     else
@@ -370,9 +375,9 @@ bool MenuSystem::next(bool loop)
 
 bool MenuSystem::prev(bool loop)
 {
-    if (_p_curr_menu->get_selected()->is_editing_value())
+    if (_p_curr_menu->get_current_component()->is_editing_value())
     {
-        _p_curr_menu->_p_sel_menu_component->prev_value();
+        _p_curr_menu->_p_cur_menu_component->prev_value();
         return true;
     }
     else

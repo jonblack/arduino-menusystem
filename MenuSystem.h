@@ -168,7 +168,11 @@ public:
     void set_parent(Menu* pParent);
     Menu const* get_parent() const;
 
+    /// Gets the current component
+    ///
+    /// @deprecated Use get_current_component().
     MenuComponent const* get_selected() const;
+    MenuComponent const* get_current_component() const;
     MenuComponent const* get_menu_component(byte index) const;
 
     byte get_num_menu_components() const;
@@ -176,7 +180,7 @@ public:
     byte get_prev_menu_component_num() const;
 
 private:
-    MenuComponent* _p_sel_menu_component;
+    MenuComponent* _p_cur_menu_component;
     MenuComponent** _menu_components;
     Menu* _p_parent;
     byte _num_menu_components;

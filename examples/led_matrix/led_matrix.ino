@@ -46,7 +46,7 @@ void update_menu() {
     ledMatrix.setfont(FONT_5x7);
 
     Menu const* menu = ms.get_current_menu();
-    const char* name = menu->get_selected()->get_name();
+    const char* name = menu->get_current_component()->get_name();
 
     // Calculate indentation for center alignment
     int text_width = FONT_WIDTH * strlen(name);
