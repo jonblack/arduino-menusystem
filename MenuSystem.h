@@ -151,7 +151,7 @@ class Menu : public MenuComponent
 {
     friend class MenuSystem;
 public:
-    Menu(const char* name, void (*on_display)(Menu*)=NULL);
+    Menu(const char* name, void (*on_display)(Menu*) = NULL);
 
     bool display();
     void set_display_function(void (*on_display)(Menu*));

@@ -14,7 +14,6 @@
 
 class CustomNumericMenuItem : public NumericMenuItem
 {
-
 public:
     /**
      * @param width the width of the edit mode 'ASCII graphics', must be > 1
@@ -26,29 +25,30 @@ public:
      * @param valueFormatter The custom formatter. If NULL the String float
      *                       formatter will be used.
      */
-    CustomNumericMenuItem(uint8_t width, const char* name, float value, float minValue,
-                          float maxValue, float increment=1.0,
+    CustomNumericMenuItem(uint8_t width, const char* name, float value,
+                          float minValue, float maxValue, float increment=1.0,
                           ValueFormatter_t value_formatter=NULL)
-    : _width(width),
-      NumericMenuItem(name, value, minValue, maxValue, increment, value_formatter)
+    : NumericMenuItem(name, value, minValue, maxValue, increment,
+                      value_formatter),
+      _width(width)
     {
     }
 
-    virtual String& get_composite_name(String& buffer) const 
+    virtual String& get_composite_name(String& buffer) const
     {
-        if (is_editing_value()) 
+        if (is_editing_value())
         {
             // Only display the ASCII graphics in edit mode.
 
             // make room for a ' ' at the end and the terminating 0
-            char graphics[_width+2];
+            char graphics[_width + 2];
             // fill the string with '-'
-            for (int i=0; i<_width; i++) 
+            for (int i = 0; i <_width; i++)
                 graphics[i] = '-';
             // insert a '|' at the relative _value position
-            graphics[ int( (_width-1)*(_value-_minValue)/(_maxValue-_minValue))] = '|';
+            graphics[int((_width - 1) * (_value - _minValue) / (_maxValue - _minValue))] = '|';
             graphics[_width] = ' ';
-            graphics[_width+1] = 0;   
+            graphics[_width+1] = 0;
             buffer = graphics;
 
             if (_value_formatter != NULL)
@@ -56,13 +56,15 @@ public:
             else
                 buffer += _value;
             return buffer;
-        } else 
+        }
+        else
         {
             // Non edit mode: Let parent class handle this
             return NumericMenuItem::get_composite_name(buffer);
         }
     }
-    
+
+private:
     const uint8_t _width;
 };
 

@@ -14,13 +14,14 @@
 const String format_float(const float value);
 const String format_int(const float value);
 const String format_color(const float value);
+void display_menu(Menu* p_menu);
 
 // Menu variables
 MenuSystem ms;
-Menu mm("ROOT Menu Title");
+Menu mm("ROOT Menu Title", &display_menu);
 MenuItem mm_mi1("Level 1 - Item 1 (Item)");
 MenuItem mm_mi2("Level 1 - Item 2 (Item)");
-Menu mu1("Level 1 - Item 3 (Menu)");
+Menu mu1("Level 1 - Item 3 (Menu)", &display_menu);
 BackMenuItem mu1_mi0(&ms, "Level 2 - Back (Item)");
 MenuItem mu1_mi1("Level 2 - Item 1 (Item)");
 NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", 0, 0, 2, 1, format_color);
@@ -48,7 +49,8 @@ const String format_color(const float value)
 {
     String buffer;
 
-    switch((int) value){
+    switch((int) value)
+    {
         case 0:
             buffer += "Red";
             break;
@@ -87,17 +89,16 @@ void on_back_item_selected(MenuItem* p_menu_item)
     Serial.println("Back item Selected");
 }
 
-void display_menu() {
-    Menu const* cp_menu = ms.get_current_menu();
-
+void display_menu(Menu* p_menu)
+{
     Serial.print("\nCurrent menu name: ");
-    Serial.println(cp_menu->get_name());
+    Serial.println(p_menu->get_name());
 
     String buffer;
-    MenuComponent const* cp_menu_sel = cp_menu->get_selected();
-    for (int i = 0; i < cp_menu->get_num_menu_components(); ++i)
+    MenuComponent const* cp_menu_sel = p_menu->get_selected();
+    for (int i = 0; i < p_menu->get_num_menu_components(); ++i)
     {
-        MenuComponent const* cp_m_comp = cp_menu->get_menu_component(i);
+        MenuComponent const* cp_m_comp = p_menu->get_menu_component(i);
         Serial.print(cp_m_comp->get_composite_name(buffer));
 
         if (cp_menu_sel == cp_m_comp)
@@ -128,23 +129,23 @@ void serial_handler()
         {
             case 'w': // Previus item
                 ms.prev();
-                display_menu();
+                ms.display();
                 break;
             case 's': // Next item
                 ms.next();
-                display_menu();
+                ms.display();
                 break;
             case 'a': // Back presed
                 ms.back();
-                display_menu();
+                ms.display();
                 break;
             case 'd': // Select presed
                 ms.select();
-                display_menu();
+                ms.display();
                 break;
             case '?':
             case 'h': // Display help
-                display_help();
+                ms.display();
                 break;
             default:
                 break;
@@ -170,7 +171,7 @@ void setup()
     ms.set_root_menu(&mm);
 
     display_help();
-    display_menu();
+    ms.display();
 }
 
 void loop()
