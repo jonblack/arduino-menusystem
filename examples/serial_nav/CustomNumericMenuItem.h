@@ -11,6 +11,12 @@
 #define _CUSTOMNUMERICMENUITEM_H
 
 #include <MenuSystem.h>
+#include "MyRenderer.h"
+
+// TODO get this working with the new rendering system. Mean moving
+// get_composite_name to a function in renderer.
+
+class MyRenderer;
 
 class CustomNumericMenuItem : public NumericMenuItem
 {
@@ -27,42 +33,14 @@ public:
      */
     CustomNumericMenuItem(uint8_t width, const char* name, float value,
                           float minValue, float maxValue, float increment=1.0,
-                          ValueFormatter_t value_formatter=NULL)
-    : NumericMenuItem(name, value, minValue, maxValue, increment,
-                      value_formatter),
-      _width(width)
-    {
-    }
+                          ValueFormatter_t value_formatter=NULL);
 
-    virtual String& get_composite_name(String& buffer) const
-    {
-        if (is_editing_value())
-        {
-            // Only display the ASCII graphics in edit mode.
+    uint8_t get_width() const;
 
-            // make room for a ' ' at the end and the terminating 0
-            char graphics[_width + 2];
-            // fill the string with '-'
-            for (int i = 0; i <_width; i++)
-                graphics[i] = '-';
-            // insert a '|' at the relative _value position
-            graphics[int((_width - 1) * (_value - _minValue) / (_maxValue - _minValue))] = '|';
-            graphics[_width] = ' ';
-            graphics[_width+1] = 0;
-            buffer = graphics;
-
-            if (_value_formatter != NULL)
-                buffer += _value_formatter(_value);
-            else
-                buffer += _value;
-            return buffer;
-        }
-        else
-        {
-            // Non edit mode: Let parent class handle this
-            return NumericMenuItem::get_composite_name(buffer);
-        }
-    }
+    // TODO: this HAS to override the base class to get called. c++11 override
+    //       keyword would help here. If it doesn't override it won't call the
+    //       base class and that's really well hidden.
+    virtual void render(MenuComponentRenderer const& renderer) const;
 
 private:
     const uint8_t _width;

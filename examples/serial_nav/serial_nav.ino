@@ -9,30 +9,33 @@
 
 #include <MenuSystem.h>
 #include "CustomNumericMenuItem.h"
+#include "MyRenderer.h"
 
 // forward declarations
 const String format_float(const float value);
 const String format_int(const float value);
 const String format_color(const float value);
-void display_menu(Menu* p_menu);
 void on_item1_selected(MenuItem* p_menu_item);
 void on_item2_selected(MenuItem* p_menu_item);
 void on_item3_selected(MenuItem* p_menu_item);
 void on_back_item_selected(MenuItem* p_menu_item);
 
 // Menu variables
-MenuSystem ms;
-Menu mm("ROOT Menu Title", &display_menu);
+
+MyRenderer my_renderer;
+
+Menu mm("ROOT Menu Title");
+MenuSystem ms(&mm, my_renderer);
+
 MenuItem mm_mi1("Level 1 - Item 1 (Item)", &on_item1_selected);
 MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_item2_selected);
-Menu mu1("Level 1 - Item 3 (Menu)", &display_menu);
+Menu mu1("Level 1 - Item 3 (Menu)");
 BackMenuItem mu1_mi0("Level 2 - Back (Item)", &on_back_item_selected, &ms);
 MenuItem mu1_mi1("Level 2 - Item 1 (Item)", &on_item3_selected);
-NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", 0, 0, 2, 1, format_color);
+NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", NULL, 0, 0, 2, 1, format_color);
 CustomNumericMenuItem mu1_mi3(12, "Level 2 - Cust Item 3 (Item)", 80, 65, 121, 3, format_int);
-NumericMenuItem mm_mi4("Level 1 - Float Item 4 (Item)", 0.5, 0.0, 1.0, 0.1, format_float);
-NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", 50, -100, 100, 1, format_int);
-
+NumericMenuItem mm_mi4("Level 1 - Float Item 4 (Item)", NULL, 0.5, 0.0, 1.0, 0.1, format_float);
+NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", NULL, 50, -100, 100, 1, format_int);
 
 // Menu callback function
 
@@ -93,26 +96,6 @@ void on_back_item_selected(MenuItem* p_menu_item)
     Serial.println("Back item Selected");
 }
 
-void display_menu(Menu* p_menu)
-{
-    Serial.print("\nCurrent menu name: ");
-    Serial.println(p_menu->get_name());
-
-    String buffer;
-    MenuComponent const* cp_menu_sel = p_menu->get_current_component();
-    for (int i = 0; i < p_menu->get_num_menu_components(); ++i)
-    {
-        MenuComponent const* cp_m_comp = p_menu->get_menu_component(i);
-        Serial.print(cp_m_comp->get_composite_name(buffer));
-
-        if (cp_menu_sel == cp_m_comp)
-            Serial.print("<<< ");
-
-        Serial.println("");
-    }
-}
-
-
 void display_help() {
     Serial.println("***************");
     Serial.println("w: go to previus item (up)");
@@ -134,22 +117,27 @@ void serial_handler()
             case 'w': // Previus item
                 ms.prev();
                 ms.display();
+                Serial.println("");
                 break;
             case 's': // Next item
                 ms.next();
                 ms.display();
+                Serial.println("");
                 break;
             case 'a': // Back presed
                 ms.back();
                 ms.display();
+                Serial.println("");
                 break;
             case 'd': // Select presed
                 ms.select();
                 ms.display();
+                Serial.println("");
                 break;
             case '?':
             case 'h': // Display help
                 ms.display();
+                Serial.println("");
                 break;
             default:
                 break;
@@ -172,10 +160,10 @@ void setup()
     mu1.add_item(&mu1_mi3);
     mm.add_item(&mm_mi4);
     mm.add_item(&mm_mi5);
-    ms.set_root_menu(&mm);
 
     display_help();
     ms.display();
+    Serial.println("");
 }
 
 void loop()

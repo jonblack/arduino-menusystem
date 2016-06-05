@@ -12,7 +12,8 @@
 // *********************************************************
 
 MenuComponent::MenuComponent(const char* name)
-: _name(name)
+: _name(name),
+  _has_focus(false)
 {
 }
 
@@ -21,26 +22,17 @@ const char* MenuComponent::get_name() const
     return _name;
 }
 
-String& MenuComponent::get_composite_name(String& buffer) const
-{
-    // this replaces the content of buffer
-    buffer = _name;
-    return buffer;
-}
-
 void MenuComponent::set_name(const char* name)
 {
     _name = name;
 }
 
-
 // *********************************************************
 // Menu
 // *********************************************************
 
-Menu::Menu(const char* name, void (*on_display)(Menu*))
+Menu::Menu(const char* name)
 : MenuComponent(name),
-  _on_display(on_display),
   _p_cur_menu_component(NULL),
   _menu_components(NULL),
   _p_parent(NULL),
@@ -48,21 +40,6 @@ Menu::Menu(const char* name, void (*on_display)(Menu*))
   _cur_menu_component_num(0),
   _prev_menu_component_num(0)
 {
-}
-
-bool Menu::display()
-{
-    if (_on_display)
-    {
-        _on_display(this);
-        return true;
-    }
-    return false;
-}
-
-void Menu::set_display_function(void (*on_display)(Menu*))
-{
-    _on_display = on_display;
 }
 
 bool Menu::next(bool loop)
@@ -143,12 +120,6 @@ void Menu::reset()
     _p_cur_menu_component = _num_menu_components ? _menu_components[0] : NULL;
 }
 
-void Menu::add_item(MenuItem* pItem, void (*on_select)(MenuItem*))
-{
-    pItem->set_select_function(on_select);
-    return add_item(pItem);
-}
-
 void Menu::add_item(MenuItem* pItem)
 {
     // Resize menu component list, keeping existing items.
@@ -177,7 +148,7 @@ void Menu::set_parent(Menu* pParent)
     _p_parent = pParent;
 }
 
-Menu const* Menu::add_menu(Menu* pMenu)
+void Menu::add_menu(Menu* pMenu)
 {
     // Resize menu component list, keeping existing items.
     // If it fails, there the item is not added and the function returns.
@@ -185,7 +156,7 @@ Menu const* Menu::add_menu(Menu* pMenu)
                                                  (_num_menu_components + 1)
                                                  * sizeof(MenuComponent*));
     if (_menu_components == NULL)
-      return NULL;
+      return;
 
     pMenu->set_parent(this);
 
@@ -195,18 +166,11 @@ Menu const* Menu::add_menu(Menu* pMenu)
         _p_cur_menu_component = pMenu;
 
     _num_menu_components++;
-
-    return pMenu;
 }
 
 MenuComponent const* Menu::get_menu_component(byte index) const
 {
-  return _menu_components[index];
-}
-
-MenuComponent const* Menu::get_selected() const
-{
-    return get_current_component();
+    return _menu_components[index];
 }
 
 MenuComponent const* Menu::get_current_component() const
@@ -229,18 +193,17 @@ byte Menu::get_prev_menu_component_num() const
     return _prev_menu_component_num;
 }
 
+void Menu::render(MenuComponentRenderer const& renderer) const
+{
+    renderer.render_menu(*this);
+}
+
 // *********************************************************
 // BackMenuItem
 // *********************************************************
 BackMenuItem::BackMenuItem(const char* name, void (*on_select)(MenuItem*),
                            MenuSystem* ms)
 : MenuItem(name, on_select),
-  menu_system(ms)
-{
-}
-
-BackMenuItem::BackMenuItem(const char* name, MenuSystem* ms)
-: MenuItem(name),
   menu_system(ms)
 {
 }
@@ -256,15 +219,14 @@ MenuComponent* BackMenuItem::select()
     return NULL;
 }
 
+void BackMenuItem::render(MenuComponentRenderer const& renderer) const
+{
+    renderer.render_back_menu_item(*this);
+}
+
 // *********************************************************
 // MenuItem
 // *********************************************************
-
-MenuItem::MenuItem(const char* name)
-: MenuComponent(name),
-  _on_select(0)
-{
-}
 
 MenuItem::MenuItem(const char* name, void (*on_select)(MenuItem*))
 : MenuComponent(name),
@@ -290,6 +252,11 @@ void MenuItem::reset()
     // Do nothing.
 }
 
+void MenuItem::render(MenuComponentRenderer const& renderer) const
+{
+    renderer.render_menu_item(*this);
+}
+
 // *********************************************************
 // NumericMenuItem
 // *********************************************************
@@ -304,7 +271,6 @@ NumericMenuItem::NumericMenuItem(const char* basename,
   _minValue(minValue),
   _maxValue(maxValue),
   _increment(increment),
-  _editing_value(false),
   _value_formatter(value_formatter)
 {
     if (_increment < 0.0) _increment = -_increment;
@@ -316,101 +282,78 @@ NumericMenuItem::NumericMenuItem(const char* basename,
     }
 };
 
-NumericMenuItem::NumericMenuItem(const char* basename, float value,
-                                 float minValue, float maxValue,
-                                 float increment,
-                                 ValueFormatter_t value_formatter)
-: NumericMenuItem(basename, 0, value, minValue, maxValue, increment,
-                  value_formatter)
-{
-};
-
 void NumericMenuItem::set_number_formatter(ValueFormatter_t value_formatter)
 {
     _value_formatter = value_formatter;
 }
 
-bool NumericMenuItem::is_editing_value() const
-{
-    return _editing_value;
-}
-
 MenuComponent* NumericMenuItem::select()
 {
-    _editing_value = !_editing_value;
+    _has_focus = !_has_focus;
 
     // Only run _on_select when the user is done editing the value
-    if (!_editing_value && _on_select != NULL)
+    if (!_has_focus && _on_select != NULL)
         _on_select(this);
     return NULL;
 }
 
-bool NumericMenuItem::next_value()
+void NumericMenuItem::render(MenuComponentRenderer const& renderer) const
 {
-    _value += _increment;
-    if (_value > _maxValue)
-        _value = _maxValue;
-    return true;
-}
-
-bool NumericMenuItem::prev_value()
-{
-    _value -= _increment;
-    if (_value < _minValue)
-        _value = _minValue;
-    return true;
-}
-
-String& NumericMenuItem::get_composite_name(String& buffer) const
-{
-    buffer = _name;
-    buffer += is_editing_value() ? '<' : '=';
-
-    if (_value_formatter != NULL)
-        buffer += _value_formatter(_value);
-    else
-        buffer += _value;
-
-    if (is_editing_value())
-        buffer += '>';
-
-    return buffer;
+    renderer.render_numeric_menu_item(*this);
 }
 
 // *********************************************************
 // MenuSystem
 // *********************************************************
 
-MenuSystem::MenuSystem()
-: _p_root_menu(NULL),
-  _p_curr_menu(NULL)
+MenuSystem::MenuSystem(Menu* p_root_menu, MenuComponentRenderer const& renderer)
+: _p_root_menu(p_root_menu),
+  _p_curr_menu(_p_root_menu),
+  _renderer(renderer)
 {
 }
 
 bool MenuSystem::next(bool loop)
 {
-    if (_p_curr_menu->get_current_component()->is_editing_value())
+    if (_p_curr_menu->_p_cur_menu_component->has_focus())
     {
-        _p_curr_menu->_p_cur_menu_component->next_value();
-        return true;
+        return _p_curr_menu->_p_cur_menu_component->next(loop);
     }
     else
     {
         return _p_curr_menu->next(loop);
     }
+
+    //if (_p_curr_menu->get_current_component()->is_editing_value())
+    //{
+        //_p_curr_menu->_p_cur_menu_component->next_value();
+        //return true;
+    //}
+    //else
+    //{
+        //return _p_curr_menu->next(loop);
+    //}
 }
 
 bool MenuSystem::prev(bool loop)
 {
-    if (_p_curr_menu->get_current_component()->is_editing_value())
+    if (_p_curr_menu->_p_cur_menu_component->has_focus())
     {
-        _p_curr_menu->_p_cur_menu_component->prev_value();
-        return true;
+        return _p_curr_menu->_p_cur_menu_component->prev(loop);
     }
     else
     {
         return _p_curr_menu->prev(loop);
     }
+    //if (_p_curr_menu->get_current_component()->is_editing_value())
+    //{
+        //_p_curr_menu->_p_cur_menu_component->prev_value();
+        //return true;
+    //}
+    //else
+    //{
+        //return _p_curr_menu->prev(loop);
+    //}
 }
 
 void MenuSystem::reset()
@@ -442,20 +385,14 @@ bool MenuSystem::back()
     return false;
 }
 
-void MenuSystem::set_root_menu(Menu* p_root_menu)
-{
-    _p_root_menu = p_root_menu;
-    _p_curr_menu = p_root_menu;
-}
-
 Menu const* MenuSystem::get_current_menu() const
 {
     return _p_curr_menu;
 }
 
-bool MenuSystem::display()
+bool MenuSystem::display() const
 {
     if (_p_curr_menu != NULL)
-        return _p_curr_menu->display();
+        return _renderer.render(*_p_curr_menu);
     return false;
 }

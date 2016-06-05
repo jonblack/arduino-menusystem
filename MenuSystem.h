@@ -12,7 +12,16 @@
   #include <WProgram.h>
 #endif
 
+// TODO: coding standards e.g. p_menu vs pMenu
+// TODO: docstrings ala doxygen
+// TODO: update all examples
+// TODO: c++11 or not? arduino-makefile doesn't support it by default but can
+//       set flags. How many users are on a new enough arduino IDE for c++11?
+// TODO: Take a good look at which methods should be public, esp. on components
+//       e.g. MenuItem::select
+
 class MenuSystem;
+class MenuComponentRenderer;
 
 class MenuComponent
 {
@@ -21,14 +30,6 @@ public:
     MenuComponent(const char* name);
 
     void set_name(const char* name);
-
-    /**
-     * Returns the composite name
-     *
-     * The composite name is the original _name plus _value if applicable.
-     * Do not call this from inside the numberFormat function (infinite loop).
-     */
-    virtual String& get_composite_name(String& buffer) const;
 
     /**
      * Gets the original name
@@ -40,35 +41,35 @@ public:
     virtual MenuComponent* select() = 0;
     virtual void reset() = 0;
 
-    /**
-     * Returns true if the MenuComponent's value is being edited; false
-     * otherwise.
-     */
-    virtual bool is_editing_value() const { return false; }
+
+    virtual void render(MenuComponentRenderer const& renderer) const = 0;
+
+    bool has_focus() const { return _has_focus; }
 
 protected:
-    virtual bool next_value() { return false; }
-    virtual bool prev_value() { return false; }
+    virtual bool next(bool loop=false) = 0;
+    virtual bool prev(bool loop=false) = 0;
 
+protected:
     const char* _name;
+    bool _has_focus;
 };
 
 
 class MenuItem : public MenuComponent
 {
 public:
-    /// Constructor
-    ///
-    /// @deprecated
-    MenuItem(const char* name);
-
-    /// Constructor
     MenuItem(const char* name, void (*on_select)(MenuItem*));
 
     void set_select_function(void (*on_select)(MenuItem*));
 
     virtual MenuComponent* select();
     virtual void reset();
+
+    virtual void render(MenuComponentRenderer const& renderer) const;
+
+    virtual bool next(bool loop=false) { return false; }
+    virtual bool prev(bool loop=false) { return false; }
 
 protected:
     void (*_on_select)(MenuItem*);
@@ -80,21 +81,15 @@ protected:
 class BackMenuItem : public MenuItem
 {
 public:
-    /// Constructor
-    ///
-    /// @deprecated
-    BackMenuItem(const char* name, MenuSystem* ms);
-
-    BackMenuItem(const char* name, void (*on_select)(MenuItem*),
-                 MenuSystem* ms);
+    BackMenuItem(const char* name, void (*on_select)(MenuItem*), MenuSystem* ms);
 
     virtual MenuComponent* select();
+
+    virtual void render(MenuComponentRenderer const& renderer) const;
 
 protected:
     MenuSystem* menu_system;
 };
-
-class NumericMenuItem;
 
 
 class NumericMenuItem : public MenuItem
@@ -109,13 +104,6 @@ public:
     typedef const String (*ValueFormatter_t)(const float value);
 
 public:
-    /// Constructor
-    ///
-    /// @deprecated
-    NumericMenuItem(const char* name, float value, float minValue,
-                    float maxValue, float increment=1.0,
-                    ValueFormatter_t value_formatter=NULL);
-
     /// Constructor
     ///
     /// @param name The name of the menu item.
@@ -144,65 +132,80 @@ public:
      */
     virtual MenuComponent* select();
 
-    virtual String& get_composite_name(String& buffer) const;
-
     float get_value() const { return _value; }
+    float get_minValue() const { return _minValue; }
+    float get_maxValue() const { return _maxValue; }
+
+    String get_value_string() const
+    {
+        String buffer;
+        if (_value_formatter != NULL)
+            buffer += _value_formatter(_value);
+        else
+            buffer += _value;
+        return buffer;
+    }
+
     void set_value(float value) { _value = value; }
 
-    /**
-     * Returns true if this menuitem is in editing mode. i.e. it is using next()
-     * and prev() events to increase and decrease its value.
-     */
-    virtual bool is_editing_value() const;
+    virtual void render(MenuComponentRenderer const& renderer) const;
 
-protected:
-    virtual bool next_value();
-    virtual bool prev_value();
+    virtual bool next(bool loop=false)
+    {
+        // TODO: Add loop support here! yay!
+        _value += _increment;
+        if (_value > _maxValue)
+            _value = _maxValue;
+        return true;
+    }
+
+    virtual bool prev(bool loop=false)
+    {
+        // TODO: Add loop support here! yay!
+        _value -= _increment;
+        if (_value < _minValue)
+            _value = _minValue;
+        return true;
+    }
 
 protected:
     float _value;
     float _minValue;
     float _maxValue;
     float _increment;
-    bool _editing_value;
     ValueFormatter_t _value_formatter;
 };
+
 
 class Menu : public MenuComponent
 {
     friend class MenuSystem;
 public:
-    Menu(const char* name, void (*on_display)(Menu*) = NULL);
+    Menu(const char* name);
 
-    bool display();
-    void set_display_function(void (*on_display)(Menu*));
+    virtual bool next(bool loop=false);
+    virtual bool prev(bool loop=false);
 
-    bool next(bool loop=false);
-    bool prev(bool loop=false);
-    MenuComponent* activate();
     virtual MenuComponent* select();
     virtual void reset();
 
-    /// Adds a MenuItem to this Menu
-    ///
-    /// @deprecated Use add_item(MenuItem* pItem)
-    void add_item(MenuItem* pItem, void (*on_select)(MenuItem*));
     void add_item(MenuItem* pItem);
-    Menu const* add_menu(Menu* pMenu);
+    void add_menu(Menu* pMenu);
 
     void set_parent(Menu* pParent);
     Menu const* get_parent() const;
 
-    /// Gets the current component
-    ///
-    /// @deprecated Use get_current_component().
-    MenuComponent const* get_selected() const;
     MenuComponent const* get_current_component() const;
     MenuComponent const* get_menu_component(byte index) const;
 
     byte get_num_menu_components() const;
     byte get_cur_menu_component_num() const;
     byte get_prev_menu_component_num() const;
+
+    void render(MenuComponentRenderer const& renderer) const;
+
+protected:
+    MenuComponent* activate();
 
 private:
     MenuComponent* _p_cur_menu_component;
@@ -211,29 +214,39 @@ private:
     byte _num_menu_components;
     byte _cur_menu_component_num;
     byte _prev_menu_component_num;
-    void (*_on_display)(Menu*);
 };
 
 
 class MenuSystem
 {
 public:
-    MenuSystem();
+    MenuSystem(Menu* p_root_menu, MenuComponentRenderer const& renderer);
 
-    bool display();
+    bool display() const;
     bool next(bool loop=false);
     bool prev(bool loop=false);
     void reset();
     void select(bool reset=false);
     bool back();
 
-    void set_root_menu(Menu* p_root_menu);
-
     Menu const* get_current_menu() const;
 
 private:
     Menu* _p_root_menu;
     Menu* _p_curr_menu;
+    MenuComponentRenderer const& _renderer;
+};
+
+
+class MenuComponentRenderer
+{
+public:
+    virtual bool render(Menu const& menu) const = 0;
+
+    virtual void render_menu_item(MenuItem const& menu_item) const = 0;
+    virtual void render_back_menu_item(BackMenuItem const& menu_item) const = 0;
+    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const = 0;
+    virtual void render_menu(Menu const& menu) const = 0;
 };
 
 
