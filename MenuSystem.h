@@ -17,31 +17,25 @@
 // TODO: update all examples
 // TODO: c++11 or not? arduino-makefile doesn't support it by default but can
 //       set flags. How many users are on a new enough arduino IDE for c++11?
-// TODO: Take a good look at which methods should be public, esp. on components
-//       e.g. MenuItem::select
+// TODO: typedef all callbacks
+// TODO: Move all implementation to cpp file. Find out why this sometimes
+//       increases binary size. Then optimise consciously.
 
 class MenuSystem;
+class Menu;
 class MenuComponentRenderer;
 
 class MenuComponent
 {
     friend class MenuSystem;
+    friend class Menu;
 public:
     MenuComponent(const char* name);
 
     void set_name(const char* name);
-
-    /**
-     * Gets the original name
-     *
-     * Returns the original name assigned in the constructor or via set_name.
-     */
     const char* get_name() const;
 
-    virtual MenuComponent* select() = 0;
-    virtual void reset() = 0;
-
-
+    // TODO: Has to be public. Warn clients not to call this.
     virtual void render(MenuComponentRenderer const& renderer) const = 0;
 
     bool has_focus() const { return _has_focus; }
@@ -49,6 +43,8 @@ public:
 protected:
     virtual bool next(bool loop=false) = 0;
     virtual bool prev(bool loop=false) = 0;
+    virtual void reset() = 0;
+    virtual MenuComponent* select() = 0;
 
 protected:
     const char* _name;
@@ -63,13 +59,13 @@ public:
 
     void set_select_function(void (*on_select)(MenuItem*));
 
-    virtual MenuComponent* select();
-    virtual void reset();
-
     virtual void render(MenuComponentRenderer const& renderer) const;
 
+protected:
     virtual bool next(bool loop=false) { return false; }
     virtual bool prev(bool loop=false) { return false; }
+    virtual void reset();
+    virtual MenuComponent* select();
 
 protected:
     void (*_on_select)(MenuItem*);
@@ -83,9 +79,10 @@ class BackMenuItem : public MenuItem
 public:
     BackMenuItem(const char* name, void (*on_select)(MenuItem*), MenuSystem* ms);
 
-    virtual MenuComponent* select();
-
     virtual void render(MenuComponentRenderer const& renderer) const;
+
+protected:
+    virtual MenuComponent* select();
 
 protected:
     MenuSystem* menu_system;
@@ -127,10 +124,6 @@ public:
      */
     void set_number_formatter(ValueFormatter_t value_formatter);
 
-    /**
-     * Toggles edit mode and invokes the _on_select function (if not NULL).
-     */
-    virtual MenuComponent* select();
 
     float get_value() const { return _value; }
     float get_minValue() const { return _minValue; }
@@ -150,6 +143,8 @@ public:
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
+
+protected:
     virtual bool next(bool loop=false)
     {
         // TODO: Add loop support here! yay!
@@ -168,6 +163,9 @@ public:
         return true;
     }
 
+    virtual MenuComponent* select();
+
+
 protected:
     float _value;
     float _minValue;
@@ -182,12 +180,6 @@ class Menu : public MenuComponent
     friend class MenuSystem;
 public:
     Menu(const char* name);
-
-    virtual bool next(bool loop=false);
-    virtual bool prev(bool loop=false);
-
-    virtual MenuComponent* select();
-    virtual void reset();
 
     void add_item(MenuItem* pItem);
     void add_menu(Menu* pMenu);
@@ -206,6 +198,10 @@ public:
 
 protected:
     MenuComponent* activate();
+    virtual bool next(bool loop=false);
+    virtual bool prev(bool loop=false);
+    virtual MenuComponent* select();
+    virtual void reset();
 
 private:
     MenuComponent* _p_cur_menu_component;
