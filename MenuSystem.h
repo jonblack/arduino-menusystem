@@ -18,33 +18,136 @@
 // TODO: c++11 or not? arduino-makefile doesn't support it by default but can
 //       set flags. How many users are on a new enough arduino IDE for c++11?
 // TODO: typedef all callbacks
-// TODO: Move all implementation to cpp file. Find out why this sometimes
-//       increases binary size. Then optimise consciously.
+// TODO: Don't use String.
+// TODO: Why do MenuSystem::display() and Renderer::render() need to return a
+//       bool?
+// TODO: Rule of 3 (or 5?) and freeing memory (will be needed for dynamic
+//       menus)
+// TODO: Make MenuComponent constructor protected?
 
-class MenuSystem;
 class Menu;
 class MenuComponentRenderer;
+class MenuSystem;
 
+//! \brief Abstract base class that represents a component in the menu
+//!
+//! This is the abstract base class for the main components used to build a
+//! menu structure: Menu and MenuItem.
+//!
+//! MenuComponent should not be used as a base class in clients. Instead use
+//! either Menu or MenuItem.
+//!
+//! MenuComponent is the `Component` part of the composite design pattern (see:
+//! https://en.wikipedia.org/wiki/Composite_pattern).
+//!
+//! \see Menu
+//! \see MenuItem
 class MenuComponent
 {
     friend class MenuSystem;
     friend class Menu;
 public:
+    //! \brief Construct a MenuComponent
+    //! \param[in] name The name of the menu component that is displayed in
+    //!                 clients.
     MenuComponent(const char* name);
 
+    //! \brief Set the component's name
+    //! \param[in] name The name of the menu component that is displayed in
+    //!                 clients.
     void set_name(const char* name);
+
+    //! \brief Gets the component's name
+    //! \returns The component's name.
     const char* get_name() const;
 
-    // TODO: Has to be public. Warn clients not to call this.
+    //! \brief Renders the component using the given MenuComponentRenderer
+    //!
+    //! This is the `accept` method in the visitor design pattern. It should
+    //! call the appropriate method on the given MenuComponentRenderer for
+    //! rendering this type of component. This method should be called from the
+    //! MenuComponent::render method.
+    //!
+    //! \param[in] renderer The MenuComponentRenderer to use to render this
+    //!                     component
+    //!
+    //! \see MenuComponentRenderer
     virtual void render(MenuComponentRenderer const& renderer) const = 0;
 
-    bool has_focus() const { return _has_focus; }
+    //! \brief Returns true if this component has focus; false otherwise
+    //!
+    //! A component has focus when the next and prev functions are able to
+    //! change its state rather than navigate the menu structure. It's
+    //! primarily used in NumericMenuItem so next and prev change the value
+    //! associated with the component.
+    //!
+    //! Subclasses should set _has_focus to true when this behaviour is desired
+    //! and reset it to false when it's no longer required. The usual place to
+    //! do this is in the MenuComponent::select method.
+    //!
+    //! \returns true if this component has focus, false otherwise.
+    //!
+    //! \see MenuComponent::select
+    //! \see NumericMenuComponent
+    bool has_focus() const;
 
 protected:
+    //! \brief Processes the next action
+    //!
+    //! The behaviour of this function can differ depending on whether
+    //! MenuComponent::has_focus returns true or false.
+    //!
+    //! When MenuComponent::has_focus returns true, this method should change
+    //! some state in the component; when it returns false, this method should
+    //! navigate the menu structure.
+    //!
+    //! \param[in] loop if true the action should loop around to the beginning
+    //!                 for finite ranges; otherwise overflow should be
+    //!                 prevented.
+    //! \returns true if the component processed the action, false otherwise.
+    //!
+    //! \see MenuComponent::prev
+    //! \see MenuComponent::has_focus
     virtual bool next(bool loop=false) = 0;
+
+    //! \brief Processes the prev action
+    //!
+    //! The behaviour of this function can differ depending on whether
+    //! MenuComponent::has_focus returns true or false.
+    //!
+    //! When MenuComponent::has_focus returns true, this method should change
+    //! some state in the component; when it returns false, this method should
+    //! navigate the menu structure.
+    //!
+    //! \param[in] loop if true the action should loop around to the end
+    //!                 for finite ranges; otherwise overflow should be
+    //!                 prevented.
+    //! \returns true if the component processed the action, false otherwise.
+    //!
+    //! \see MenuComponent::next
+    //! \see MenuComponent::has_focus
     virtual bool prev(bool loop=false) = 0;
+
+    //! \brief Resets the component to its initial state
     virtual void reset() = 0;
-    virtual MenuComponent* select() = 0;
+
+    //! \brief Processes the select action
+    //!
+    //! When a menu component is selected by the client an action may need to
+    //! performed.
+    //!
+    //! If the component supports focus, this method is the recommended place
+    //! set _has_focus to true so the MenuComponent::next and
+    //! MenuComponent::prev methods can be used to change some state in the
+    //! component.
+    //!
+    //! \returns The Menu instance selected or NULL. The returned Menu
+    //!          instance is used in MenuSystem::activate to set the current
+    //!          menu in the MenuSystem.
+    //!
+    //! \see MenuComponent::has_focus
+    //! \see NumericMenuComponent
+    virtual Menu* select() = 0;
 
 protected:
     const char* _name;
@@ -52,28 +155,57 @@ protected:
 };
 
 
+//! \brief A MenuComponent that calls a callback function when selected.
+//!
+//! MenuItem represents the `Leaf` in the composite design pattern (see:
+//! https://en.wikipedia.org/wiki/Composite_pattern). When a MenuItem is
+//! selected, the user-defined MenuItem::_on_select callback is called.
+//!
+//! \see MenuComponent
+//! \see Menu
 class MenuItem : public MenuComponent
 {
 public:
+    //! \brief Construct a MenuItem
+    //! \param[in] name The name of the menu component that is displayed in
+    //!                 clients.
+    //! \param[in] on_select The function to call when the MenuItem is
+    //!                      selected.
     MenuItem(const char* name, void (*on_select)(MenuItem*));
 
+    //! \brief Sets the function to call when the MenuItem is selected
+    //! \param[in] on_select The function to call when the MenuItem is
+    //!                      selected.
     void set_select_function(void (*on_select)(MenuItem*));
 
+    //! \copydoc MenuComponent::render
     virtual void render(MenuComponentRenderer const& renderer) const;
 
 protected:
-    virtual bool next(bool loop=false) { return false; }
-    virtual bool prev(bool loop=false) { return false; }
+    //! \copydoc MenuComponent::next
+    //!
+    //! This method does nothing in MenyItem.
+    virtual bool next(bool loop=false);
+
+    //! \copydoc MenuComponent::prev
+    //!
+    //! This method does nothing in MenuItem.
+    virtual bool prev(bool loop=false);
+
+    //! \copydoc MenuComponent::reset
+    //!
+    //! This method does nothing in MenuItem.
     virtual void reset();
-    virtual MenuComponent* select();
+
+    //! \copydoc MenuComponent:select
+    virtual Menu* select();
 
 protected:
     void (*_on_select)(MenuItem*);
 };
 
-/**
- * A MenuItem executes MenuSystem::back() when selected.
- */
+//! \brief A MenuItem that calls MenuSystem::back() when selected.
+//! \see MenuItem
 class BackMenuItem : public MenuItem
 {
 public:
@@ -82,7 +214,7 @@ public:
     virtual void render(MenuComponentRenderer const& renderer) const;
 
 protected:
-    virtual MenuComponent* select();
+    virtual Menu* select();
 
 protected:
     MenuSystem* menu_system;
@@ -125,45 +257,21 @@ public:
     void set_number_formatter(ValueFormatter_t value_formatter);
 
 
-    float get_value() const { return _value; }
-    float get_minValue() const { return _minValue; }
-    float get_maxValue() const { return _maxValue; }
+    float get_value() const;
+    float get_minValue() const;
+    float get_maxValue() const;
 
-    String get_value_string() const
-    {
-        String buffer;
-        if (_value_formatter != NULL)
-            buffer += _value_formatter(_value);
-        else
-            buffer += _value;
-        return buffer;
-    }
-
-    void set_value(float value) { _value = value; }
+    String get_value_string() const;
+    void set_value(float value);
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
 
 protected:
-    virtual bool next(bool loop=false)
-    {
-        // TODO: Add loop support here! yay!
-        _value += _increment;
-        if (_value > _maxValue)
-            _value = _maxValue;
-        return true;
-    }
+    virtual bool next(bool loop=false);
+    virtual bool prev(bool loop=false);
 
-    virtual bool prev(bool loop=false)
-    {
-        // TODO: Add loop support here! yay!
-        _value -= _increment;
-        if (_value < _minValue)
-            _value = _minValue;
-        return true;
-    }
-
-    virtual MenuComponent* select();
+    virtual Menu* select();
 
 
 protected:
@@ -190,6 +298,10 @@ public:
     MenuComponent const* get_current_component() const;
     MenuComponent const* get_menu_component(byte index) const;
 
+    // TODO: get_current_component vs get_menu_component,
+    // get_cur_menu_component_num.
+    //
+    // So, shoud it be get_num_components? I think so.
     byte get_num_menu_components() const;
     byte get_cur_menu_component_num() const;
     byte get_prev_menu_component_num() const;
@@ -197,10 +309,10 @@ public:
     void render(MenuComponentRenderer const& renderer) const;
 
 protected:
-    MenuComponent* activate();
+    Menu* activate();
     virtual bool next(bool loop=false);
     virtual bool prev(bool loop=false);
-    virtual MenuComponent* select();
+    virtual Menu* select();
     virtual void reset();
 
 private:

@@ -27,6 +27,11 @@ void MenuComponent::set_name(const char* name)
     _name = name;
 }
 
+bool MenuComponent::has_focus() const
+{
+    return _has_focus;
+}
+
 // *********************************************************
 // Menu
 // *********************************************************
@@ -92,7 +97,7 @@ bool Menu::prev(bool loop)
     return false;
 }
 
-MenuComponent* Menu::activate()
+Menu* Menu::activate()
 {
     if (!_num_menu_components)
         return NULL;
@@ -105,7 +110,7 @@ MenuComponent* Menu::activate()
     return pComponent->select();
 }
 
-MenuComponent* Menu::select()
+Menu* Menu::select()
 {
     return this;
 }
@@ -201,6 +206,7 @@ void Menu::render(MenuComponentRenderer const& renderer) const
 // *********************************************************
 // BackMenuItem
 // *********************************************************
+
 BackMenuItem::BackMenuItem(const char* name, void (*on_select)(MenuItem*),
                            MenuSystem* ms)
 : MenuItem(name, on_select),
@@ -208,7 +214,7 @@ BackMenuItem::BackMenuItem(const char* name, void (*on_select)(MenuItem*),
 {
 }
 
-MenuComponent* BackMenuItem::select()
+Menu* BackMenuItem::select()
 {
     if (_on_select!=NULL)
         _on_select(this);
@@ -239,7 +245,7 @@ void MenuItem::set_select_function(void (*on_select)(MenuItem*))
     _on_select = on_select;
 }
 
-MenuComponent* MenuItem::select()
+Menu* MenuItem::select()
 {
     if (_on_select != NULL)
         _on_select(this);
@@ -255,6 +261,16 @@ void MenuItem::reset()
 void MenuItem::render(MenuComponentRenderer const& renderer) const
 {
     renderer.render_menu_item(*this);
+}
+
+bool MenuItem::next(bool loop)
+{
+    return false;
+}
+
+bool MenuItem::prev(bool loop)
+{
+    return false;
 }
 
 // *********************************************************
@@ -287,7 +303,7 @@ void NumericMenuItem::set_number_formatter(ValueFormatter_t value_formatter)
     _value_formatter = value_formatter;
 }
 
-MenuComponent* NumericMenuItem::select()
+Menu* NumericMenuItem::select()
 {
     _has_focus = !_has_focus;
 
@@ -300,6 +316,55 @@ MenuComponent* NumericMenuItem::select()
 void NumericMenuItem::render(MenuComponentRenderer const& renderer) const
 {
     renderer.render_numeric_menu_item(*this);
+}
+
+float NumericMenuItem::get_value() const
+{
+    return _value;
+}
+
+float NumericMenuItem::get_minValue() const
+{
+    return _minValue;
+}
+
+float NumericMenuItem::get_maxValue() const
+{
+    return _maxValue;
+}
+
+String NumericMenuItem::get_value_string() const
+{
+    String buffer;
+    if (_value_formatter != NULL)
+        buffer += _value_formatter(_value);
+    else
+        buffer += _value;
+    return buffer;
+}
+
+void NumericMenuItem::set_value(float value)
+{
+    _value = value;
+}
+
+
+bool NumericMenuItem::next(bool loop)
+{
+    // TODO: Add loop support here! yay!
+    _value += _increment;
+    if (_value > _maxValue)
+        _value = _maxValue;
+    return true;
+}
+
+bool NumericMenuItem::prev(bool loop)
+{
+    // TODO: Add loop support here! yay!
+    _value -= _increment;
+    if (_value < _minValue)
+        _value = _minValue;
+    return true;
 }
 
 // *********************************************************
@@ -316,44 +381,17 @@ MenuSystem::MenuSystem(Menu* p_root_menu, MenuComponentRenderer const& renderer)
 bool MenuSystem::next(bool loop)
 {
     if (_p_curr_menu->_p_cur_menu_component->has_focus())
-    {
         return _p_curr_menu->_p_cur_menu_component->next(loop);
-    }
     else
-    {
         return _p_curr_menu->next(loop);
-    }
-
-    //if (_p_curr_menu->get_current_component()->is_editing_value())
-    //{
-        //_p_curr_menu->_p_cur_menu_component->next_value();
-        //return true;
-    //}
-    //else
-    //{
-        //return _p_curr_menu->next(loop);
-    //}
 }
 
 bool MenuSystem::prev(bool loop)
 {
     if (_p_curr_menu->_p_cur_menu_component->has_focus())
-    {
         return _p_curr_menu->_p_cur_menu_component->prev(loop);
-    }
     else
-    {
         return _p_curr_menu->prev(loop);
-    }
-    //if (_p_curr_menu->get_current_component()->is_editing_value())
-    //{
-        //_p_curr_menu->_p_cur_menu_component->prev_value();
-        //return true;
-    //}
-    //else
-    //{
-        //return _p_curr_menu->prev(loop);
-    //}
 }
 
 void MenuSystem::reset()
@@ -364,10 +402,10 @@ void MenuSystem::reset()
 
 void MenuSystem::select(bool reset)
 {
-    MenuComponent* pComponent = _p_curr_menu->activate();
+    Menu* pMenu = _p_curr_menu->activate();
 
-    if (pComponent != NULL)
-        _p_curr_menu = (Menu*) pComponent;
+    if (pMenu != NULL)
+        _p_curr_menu = pMenu;
     else
         if (reset)
             this->reset();
