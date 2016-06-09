@@ -371,8 +371,8 @@ bool NumericMenuItem::prev(bool loop)
 // MenuSystem
 // *********************************************************
 
-MenuSystem::MenuSystem(Menu* p_root_menu, MenuComponentRenderer const& renderer)
-: _p_root_menu(p_root_menu),
+MenuSystem::MenuSystem(MenuComponentRenderer const& renderer)
+: _p_root_menu(new Menu("")),
   _p_curr_menu(_p_root_menu),
   _renderer(renderer)
 {
@@ -423,14 +423,18 @@ bool MenuSystem::back()
     return false;
 }
 
+Menu& MenuSystem::get_root_menu() const
+{
+    return *_p_root_menu;
+}
+
 Menu const* MenuSystem::get_current_menu() const
 {
     return _p_curr_menu;
 }
 
-bool MenuSystem::display() const
+void MenuSystem::display() const
 {
     if (_p_curr_menu != NULL)
-        return _renderer.render(*_p_curr_menu);
-    return false;
+        _renderer.render(*_p_curr_menu);
 }

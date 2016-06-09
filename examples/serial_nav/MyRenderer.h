@@ -18,7 +18,7 @@ class CustomNumericMenuItem;
 class MyRenderer : public MenuComponentRenderer
 {
 public:
-    virtual bool render(Menu const& menu) const;
+    virtual void render(Menu const& menu) const;
     virtual void render_menu_item(MenuItem const& menu_item) const;
     virtual void render_back_menu_item(BackMenuItem const& menu_item) const;
     virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const;

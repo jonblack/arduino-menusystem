@@ -19,11 +19,11 @@
 //       set flags. How many users are on a new enough arduino IDE for c++11?
 // TODO: typedef all callbacks
 // TODO: Don't use String.
-// TODO: Why do MenuSystem::display() and Renderer::render() need to return a
-//       bool?
 // TODO: Rule of 3 (or 5?) and freeing memory (will be needed for dynamic
 //       menus)
-// TODO: Make MenuComponent constructor protected?
+// TODO: Support chaining when building the menu structure
+//       e.g. add_item and add_menu return references to the menu they are
+//       being added to.
 
 class Menu;
 class MenuComponentRenderer;
@@ -292,9 +292,6 @@ public:
     void add_item(MenuItem* pItem);
     void add_menu(Menu* pMenu);
 
-    void set_parent(Menu* pParent);
-    Menu const* get_parent() const;
-
     MenuComponent const* get_current_component() const;
     MenuComponent const* get_menu_component(byte index) const;
 
@@ -309,6 +306,9 @@ public:
     void render(MenuComponentRenderer const& renderer) const;
 
 protected:
+    void set_parent(Menu* pParent);
+    Menu const* get_parent() const;
+
     Menu* activate();
     virtual bool next(bool loop=false);
     virtual bool prev(bool loop=false);
@@ -328,15 +328,16 @@ private:
 class MenuSystem
 {
 public:
-    MenuSystem(Menu* p_root_menu, MenuComponentRenderer const& renderer);
+    MenuSystem(MenuComponentRenderer const& renderer);
 
-    bool display() const;
+    void display() const;
     bool next(bool loop=false);
     bool prev(bool loop=false);
     void reset();
     void select(bool reset=false);
     bool back();
 
+    Menu& get_root_menu() const;
     Menu const* get_current_menu() const;
 
 private:
@@ -349,7 +350,7 @@ private:
 class MenuComponentRenderer
 {
 public:
-    virtual bool render(Menu const& menu) const = 0;
+    virtual void render(Menu const& menu) const = 0;
 
     virtual void render_menu_item(MenuItem const& menu_item) const = 0;
     virtual void render_back_menu_item(BackMenuItem const& menu_item) const = 0;

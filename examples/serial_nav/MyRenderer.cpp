@@ -1,6 +1,6 @@
 #include "MyRenderer.h"
 
-bool MyRenderer::render(Menu const& menu) const
+void MyRenderer::render(Menu const& menu) const
 {
     Serial.print("\nCurrent menu name: ");
     Serial.println(menu.get_name());
@@ -16,8 +16,6 @@ bool MyRenderer::render(Menu const& menu) const
             Serial.print("<<< ");
         Serial.println("");
     }
-
-    return true;
 }
 
 void MyRenderer::render_menu_item(MenuItem const& menu_item) const

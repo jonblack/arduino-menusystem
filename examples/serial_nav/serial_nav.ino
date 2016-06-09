@@ -23,9 +23,7 @@ void on_back_item_selected(MenuItem* p_menu_item);
 // Menu variables
 
 MyRenderer my_renderer;
-
-Menu mm("ROOT Menu Title");
-MenuSystem ms(&mm, my_renderer);
+MenuSystem ms(my_renderer);
 
 MenuItem mm_mi1("Level 1 - Item 1 (Item)", &on_item1_selected);
 MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_item2_selected);
@@ -151,15 +149,15 @@ void setup()
 {
     Serial.begin(9600);
 
-    mm.add_item(&mm_mi1);
-    mm.add_item(&mm_mi2);
-    mm.add_menu(&mu1);
+    ms.get_root_menu().add_item(&mm_mi1);
+    ms.get_root_menu().add_item(&mm_mi2);
+    ms.get_root_menu().add_menu(&mu1);
     mu1.add_item(&mu1_mi0);
     mu1.add_item(&mu1_mi1);
     mu1.add_item(&mu1_mi2);
     mu1.add_item(&mu1_mi3);
-    mm.add_item(&mm_mi4);
-    mm.add_item(&mm_mi5);
+    ms.get_root_menu().add_item(&mm_mi4);
+    ms.get_root_menu().add_item(&mm_mi5);
 
     display_help();
     ms.display();

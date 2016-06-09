@@ -14,10 +14,9 @@
 class MyRenderer : public MenuComponentRenderer
 {
 public:
-    virtual bool render(Menu const& menu) const
+    virtual void render(Menu const& menu) const
     {
         menu.get_current_component()->render(*this);
-        return true;
     }
 
     virtual void render_menu_item(MenuItem const& menu_item) const
@@ -51,8 +50,7 @@ void on_item4_selected(MenuItem* p_menu_item);
 
 // Menu variables
 
-Menu mm("");
-MenuSystem ms(&mm, my_renderer);
+MenuSystem ms(my_renderer);
 
 MenuItem mm_mi1("Level 1 - Item 1 (Item)", &on_item1_selected);
 MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_item2_selected);
@@ -95,9 +93,9 @@ void setup()
 {
   Serial.begin(9600);
 
-  mm.add_item(&mm_mi1);
-  mm.add_item(&mm_mi2);
-  mm.add_menu(&mu1);
+  ms.get_root_menu().add_item(&mm_mi1);
+  ms.get_root_menu().add_item(&mm_mi2);
+  ms.get_root_menu().add_menu(&mu1);
   mu1.add_item(&mu1_mi1);
   mu1.add_item(&mu1_mi2);
 }
