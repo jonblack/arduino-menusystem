@@ -159,24 +159,30 @@ protected:
 //!
 //! MenuItem represents the `Leaf` in the composite design pattern (see:
 //! https://en.wikipedia.org/wiki/Composite_pattern). When a MenuItem is
-//! selected, the user-defined MenuItem::_on_select callback is called.
+//! selected, the user-defined MenuItem::_select_fn callback is called.
 //!
 //! \see MenuComponent
 //! \see Menu
 class MenuItem : public MenuComponent
 {
 public:
+    //! \brief Callback for when the MenuItem is selected
+    //!
+    //! \param menu_item The menu item being selected.
+    using SelectFnPtr = void (*)(MenuItem* menu_item);
+
+public:
     //! \brief Construct a MenuItem
     //! \param[in] name The name of the menu component that is displayed in
     //!                 clients.
-    //! \param[in] on_select The function to call when the MenuItem is
+    //! \param[in] select_fn The function to call when the MenuItem is
     //!                      selected.
-    MenuItem(const char* name, void (*on_select)(MenuItem*));
+    MenuItem(const char* name, SelectFnPtr select_fn);
 
     //! \brief Sets the function to call when the MenuItem is selected
-    //! \param[in] on_select The function to call when the MenuItem is
+    //! \param[in] select_fn The function to call when the MenuItem is
     //!                      selected.
-    void set_select_function(void (*on_select)(MenuItem*));
+    void set_select_function(SelectFnPtr select_fn);
 
     //! \copydoc MenuComponent::render
     virtual void render(MenuComponentRenderer const& renderer) const;
@@ -201,7 +207,7 @@ protected:
     virtual Menu* select();
 
 protected:
-    void (*_on_select)(MenuItem*);
+    SelectFnPtr _select_fn;
 };
 
 //! \brief A MenuItem that calls MenuSystem::back() when selected.
@@ -209,7 +215,7 @@ protected:
 class BackMenuItem : public MenuItem
 {
 public:
-    BackMenuItem(const char* name, void (*on_select)(MenuItem*), MenuSystem* ms);
+    BackMenuItem(const char* name, SelectFnPtr select_fn, MenuSystem* ms);
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
@@ -224,29 +230,27 @@ protected:
 class NumericMenuItem : public MenuItem
 {
 public:
-    /**
-     * Callback for formatting the numeric value into a String.
-     *
-     * @param value The value to convert.
-     * @returns The String representation of value.
-     */
-    typedef const String (*ValueFormatter_t)(const float value);
+    //! \brief Callback for formatting the numeric value into a String.
+    //!
+    //! \param value The value to convert.
+    //! \returns The String representation of value.
+    using FormatValueFnPtr = const String (*)(const float value);
 
 public:
     /// Constructor
     ///
     /// @param name The name of the menu item.
-    /// @param on_select The function to call when this MenuItem is selected.
+    /// @param select_fn The function to call when this MenuItem is selected.
     /// @param value Default value.
     /// @param minValue The minimum value.
     /// @param maxValue The maximum value.
     /// @param increment How much the value should be incremented by.
     /// @param valueFormatter The custom formatter. If NULL the String float
     ///                       formatter will be used.
-    NumericMenuItem(const char* name, void (*on_select)(MenuItem*),
+    NumericMenuItem(const char* name, SelectFnPtr select_fn,
                     float value, float minValue, float maxValue,
                     float increment=1.0,
-                    ValueFormatter_t value_formatter=NULL);
+                    FormatValueFnPtr format_value_fn=NULL);
 
     /**
      * Sets the custom number formatter.
@@ -254,8 +258,7 @@ public:
      * @param numberFormat the custom formatter. If NULL the String float
      *                     formatter will be used (2 decimals)
      */
-    void set_number_formatter(ValueFormatter_t value_formatter);
-
+    void set_number_formatter(FormatValueFnPtr format_value_fn);
 
     float get_value() const;
     float get_minValue() const;
@@ -266,20 +269,18 @@ public:
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
-
 protected:
     virtual bool next(bool loop=false);
     virtual bool prev(bool loop=false);
 
     virtual Menu* select();
 
-
 protected:
     float _value;
     float _minValue;
     float _maxValue;
     float _increment;
-    ValueFormatter_t _value_formatter;
+    FormatValueFnPtr _format_value_fn;
 };
 
 

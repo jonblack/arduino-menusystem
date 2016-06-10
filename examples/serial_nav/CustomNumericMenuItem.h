@@ -33,7 +33,7 @@ public:
      */
     CustomNumericMenuItem(uint8_t width, const char* name, float value,
                           float minValue, float maxValue, float increment=1.0,
-                          ValueFormatter_t value_formatter=NULL);
+                          FormatValueFnPtr on_format_value=NULL);
 
     uint8_t get_width() const;
 

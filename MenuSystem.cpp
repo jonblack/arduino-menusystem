@@ -207,17 +207,17 @@ void Menu::render(MenuComponentRenderer const& renderer) const
 // BackMenuItem
 // *********************************************************
 
-BackMenuItem::BackMenuItem(const char* name, void (*on_select)(MenuItem*),
+BackMenuItem::BackMenuItem(const char* name, SelectFnPtr select_fn,
                            MenuSystem* ms)
-: MenuItem(name, on_select),
+: MenuItem(name, select_fn),
   menu_system(ms)
 {
 }
 
 Menu* BackMenuItem::select()
 {
-    if (_on_select!=NULL)
-        _on_select(this);
+    if (_select_fn!=NULL)
+        _select_fn(this);
 
     if (menu_system!=NULL)
         menu_system->back();
@@ -234,21 +234,21 @@ void BackMenuItem::render(MenuComponentRenderer const& renderer) const
 // MenuItem
 // *********************************************************
 
-MenuItem::MenuItem(const char* name, void (*on_select)(MenuItem*))
+MenuItem::MenuItem(const char* name, SelectFnPtr select_fn)
 : MenuComponent(name),
-  _on_select(on_select)
+  _select_fn(select_fn)
 {
 }
 
-void MenuItem::set_select_function(void (*on_select)(MenuItem*))
+void MenuItem::set_select_function(SelectFnPtr select_fn)
 {
-    _on_select = on_select;
+    _select_fn = select_fn;
 }
 
 Menu* MenuItem::select()
 {
-    if (_on_select != NULL)
-        _on_select(this);
+    if (_select_fn != NULL)
+        _select_fn(this);
 
     return NULL;
 }
@@ -277,17 +277,16 @@ bool MenuItem::prev(bool loop)
 // NumericMenuItem
 // *********************************************************
 
-NumericMenuItem::NumericMenuItem(const char* basename,
-                                 void (*on_select)(MenuItem*), float value,
-                                 float minValue, float maxValue,
+NumericMenuItem::NumericMenuItem(const char* basename, SelectFnPtr select_fn,
+                                 float value, float minValue, float maxValue,
                                  float increment,
-                                 ValueFormatter_t value_formatter)
-: MenuItem(basename, on_select),
+                                 FormatValueFnPtr format_value_fn)
+: MenuItem(basename, select_fn),
   _value(value),
   _minValue(minValue),
   _maxValue(maxValue),
   _increment(increment),
-  _value_formatter(value_formatter)
+  _format_value_fn(format_value_fn)
 {
     if (_increment < 0.0) _increment = -_increment;
     if (_minValue > _maxValue)
@@ -298,18 +297,18 @@ NumericMenuItem::NumericMenuItem(const char* basename,
     }
 };
 
-void NumericMenuItem::set_number_formatter(ValueFormatter_t value_formatter)
+void NumericMenuItem::set_number_formatter(FormatValueFnPtr format_value_fn)
 {
-    _value_formatter = value_formatter;
+    _format_value_fn = format_value_fn;
 }
 
 Menu* NumericMenuItem::select()
 {
     _has_focus = !_has_focus;
 
-    // Only run _on_select when the user is done editing the value
-    if (!_has_focus && _on_select != NULL)
-        _on_select(this);
+    // Only run _select_fn when the user is done editing the value
+    if (!_has_focus && _select_fn != NULL)
+        _select_fn(this);
     return NULL;
 }
 
@@ -336,8 +335,8 @@ float NumericMenuItem::get_maxValue() const
 String NumericMenuItem::get_value_string() const
 {
     String buffer;
-    if (_value_formatter != NULL)
-        buffer += _value_formatter(_value);
+    if (_format_value_fn != NULL)
+        buffer += _format_value_fn(_value);
     else
         buffer += _value;
     return buffer;
