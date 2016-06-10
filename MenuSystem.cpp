@@ -352,10 +352,12 @@ bool NumericMenuItem::next(bool loop)
 {
     _value += _increment;
     if (_value > _maxValue)
+    {
         if (loop)
             _value = _minValue;
         else
             _value = _maxValue;
+    }
     return true;
 }
 
@@ -363,10 +365,12 @@ bool NumericMenuItem::prev(bool loop)
 {
     _value -= _increment;
     if (_value < _minValue)
+    {
         if (loop)
             _value = _maxValue;
         else
             _value = _minValue;
+    }
     return true;
 }
 
