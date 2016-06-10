@@ -196,9 +196,9 @@ void setup() {
     ledMatrix.setfont(FONT_5x7);
 
     // Menu
-    mm.add_item(&mi_one, NULL);
-    mm.add_item(&mi_two, NULL);
-    mm.add_item(&mi_three, NULL);
+    mm.add_item(&mi_one, nullptr);
+    mm.add_item(&mi_two, nullptr);
+    mm.add_item(&mi_three, nullptr);
     ms.set_root_menu(&mm);
 }
 

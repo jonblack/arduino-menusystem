@@ -38,9 +38,9 @@ bool MenuComponent::has_focus() const
 
 Menu::Menu(const char* name)
 : MenuComponent(name),
-  _p_cur_menu_component(NULL),
-  _menu_components(NULL),
-  _p_parent(NULL),
+  _p_cur_menu_component(nullptr),
+  _menu_components(nullptr),
+  _p_parent(nullptr),
   _num_menu_components(0),
   _cur_menu_component_num(0),
   _prev_menu_component_num(0)
@@ -100,12 +100,12 @@ bool Menu::prev(bool loop)
 Menu* Menu::activate()
 {
     if (!_num_menu_components)
-        return NULL;
+        return nullptr;
 
     MenuComponent* pComponent = _menu_components[_cur_menu_component_num];
 
-    if (pComponent == NULL)
-        return NULL;
+    if (pComponent == nullptr)
+        return nullptr;
 
     return pComponent->select();
 }
@@ -122,7 +122,7 @@ void Menu::reset()
 
     _prev_menu_component_num = 0;
     _cur_menu_component_num = 0;
-    _p_cur_menu_component = _num_menu_components ? _menu_components[0] : NULL;
+    _p_cur_menu_component = _num_menu_components ? _menu_components[0] : nullptr;
 }
 
 void Menu::add_item(MenuItem* pItem)
@@ -132,7 +132,7 @@ void Menu::add_item(MenuItem* pItem)
     _menu_components = (MenuComponent**) realloc(_menu_components,
                                                  (_num_menu_components + 1)
                                                  * sizeof(MenuComponent*));
-    if (_menu_components == NULL)
+    if (_menu_components == nullptr)
       return;
 
     _menu_components[_num_menu_components] = pItem;
@@ -160,7 +160,7 @@ void Menu::add_menu(Menu* pMenu)
     _menu_components = (MenuComponent**) realloc(_menu_components,
                                                  (_num_menu_components + 1)
                                                  * sizeof(MenuComponent*));
-    if (_menu_components == NULL)
+    if (_menu_components == nullptr)
       return;
 
     pMenu->set_parent(this);
@@ -216,13 +216,13 @@ BackMenuItem::BackMenuItem(const char* name, SelectFnPtr select_fn,
 
 Menu* BackMenuItem::select()
 {
-    if (_select_fn!=NULL)
+    if (_select_fn!=nullptr)
         _select_fn(this);
 
-    if (menu_system!=NULL)
+    if (menu_system!=nullptr)
         menu_system->back();
 
-    return NULL;
+    return nullptr;
 }
 
 void BackMenuItem::render(MenuComponentRenderer const& renderer) const
@@ -247,10 +247,10 @@ void MenuItem::set_select_function(SelectFnPtr select_fn)
 
 Menu* MenuItem::select()
 {
-    if (_select_fn != NULL)
+    if (_select_fn != nullptr)
         _select_fn(this);
 
-    return NULL;
+    return nullptr;
 }
 
 void MenuItem::reset()
@@ -307,9 +307,9 @@ Menu* NumericMenuItem::select()
     _has_focus = !_has_focus;
 
     // Only run _select_fn when the user is done editing the value
-    if (!_has_focus && _select_fn != NULL)
+    if (!_has_focus && _select_fn != nullptr)
         _select_fn(this);
-    return NULL;
+    return nullptr;
 }
 
 void NumericMenuItem::render(MenuComponentRenderer const& renderer) const
@@ -335,7 +335,7 @@ float NumericMenuItem::get_maxValue() const
 String NumericMenuItem::get_value_string() const
 {
     String buffer;
-    if (_format_value_fn != NULL)
+    if (_format_value_fn != nullptr)
         buffer += _format_value_fn(_value);
     else
         buffer += _value;
@@ -403,7 +403,7 @@ void MenuSystem::select(bool reset)
 {
     Menu* pMenu = _p_curr_menu->activate();
 
-    if (pMenu != NULL)
+    if (pMenu != nullptr)
         _p_curr_menu = pMenu;
     else
         if (reset)
@@ -434,6 +434,6 @@ Menu const* MenuSystem::get_current_menu() const
 
 void MenuSystem::display() const
 {
-    if (_p_curr_menu != NULL)
+    if (_p_curr_menu != nullptr)
         _renderer.render(*_p_curr_menu);
 }

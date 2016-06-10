@@ -3,7 +3,7 @@
 CustomNumericMenuItem::CustomNumericMenuItem(
         uint8_t width, const char* name, float value, float minValue,
         float maxValue, float increment, FormatValueFnPtr on_format_value)
-: NumericMenuItem(name, NULL, value, minValue, maxValue, increment,
+: NumericMenuItem(name, nullptr, value, minValue, maxValue, increment,
                   on_format_value),
   _width(width)
 {

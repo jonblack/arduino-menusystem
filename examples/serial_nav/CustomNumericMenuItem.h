@@ -28,12 +28,12 @@ public:
      * @param minValue The minimum value.
      * @param maxValue The maximum value.
      * @param increment How much the value should be incremented by.
-     * @param valueFormatter The custom formatter. If NULL the String float
+     * @param valueFormatter The custom formatter. If nullptr the String float
      *                       formatter will be used.
      */
     CustomNumericMenuItem(uint8_t width, const char* name, float value,
                           float minValue, float maxValue, float increment=1.0,
-                          FormatValueFnPtr on_format_value=NULL);
+                          FormatValueFnPtr on_format_value=nullptr);
 
     uint8_t get_width() const;
 

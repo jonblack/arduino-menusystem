@@ -30,10 +30,10 @@ MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_item2_selected);
 Menu mu1("Level 1 - Item 3 (Menu)");
 BackMenuItem mu1_mi0("Level 2 - Back (Item)", &on_back_item_selected, &ms);
 MenuItem mu1_mi1("Level 2 - Item 1 (Item)", &on_item3_selected);
-NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", NULL, 0, 0, 2, 1, format_color);
+NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", nullptr, 0, 0, 2, 1, format_color);
 CustomNumericMenuItem mu1_mi3(12, "Level 2 - Cust Item 3 (Item)", 80, 65, 121, 3, format_int);
-NumericMenuItem mm_mi4("Level 1 - Float Item 4 (Item)", NULL, 0.5, 0.0, 1.0, 0.1, format_float);
-NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", NULL, 50, -100, 100, 1, format_int);
+NumericMenuItem mm_mi4("Level 1 - Float Item 4 (Item)", nullptr, 0.5, 0.0, 1.0, 0.1, format_float);
+NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", nullptr, 50, -100, 100, 1, format_int);
 
 // Menu callback function
 

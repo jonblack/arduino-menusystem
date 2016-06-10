@@ -15,15 +15,10 @@
 // TODO: coding standards e.g. p_menu vs pMenu
 // TODO: docstrings ala doxygen
 // TODO: update all examples
-// TODO: c++11 or not? arduino-makefile doesn't support it by default but can
-//       set flags. How many users are on a new enough arduino IDE for c++11?
-// TODO: typedef all callbacks
 // TODO: Don't use String.
 // TODO: Rule of 3 (or 5?) and freeing memory (will be needed for dynamic
 //       menus)
-// TODO: Support chaining when building the menu structure
-//       e.g. add_item and add_menu return references to the menu they are
-//       being added to.
+// TODO: unint8_t instead of byte?
 
 class Menu;
 class MenuComponentRenderer;
@@ -141,7 +136,7 @@ protected:
     //! MenuComponent::prev methods can be used to change some state in the
     //! component.
     //!
-    //! \returns The Menu instance selected or NULL. The returned Menu
+    //! \returns The Menu instance selected or nullptr. The returned Menu
     //!          instance is used in MenuSystem::activate to set the current
     //!          menu in the MenuSystem.
     //!
@@ -245,17 +240,17 @@ public:
     /// @param minValue The minimum value.
     /// @param maxValue The maximum value.
     /// @param increment How much the value should be incremented by.
-    /// @param valueFormatter The custom formatter. If NULL the String float
+    /// @param valueFormatter The custom formatter. If nullptr the String float
     ///                       formatter will be used.
     NumericMenuItem(const char* name, SelectFnPtr select_fn,
                     float value, float minValue, float maxValue,
                     float increment=1.0,
-                    FormatValueFnPtr format_value_fn=NULL);
+                    FormatValueFnPtr format_value_fn=nullptr);
 
     /**
      * Sets the custom number formatter.
      *
-     * @param numberFormat the custom formatter. If NULL the String float
+     * @param numberFormat the custom formatter. If nullptr the String float
      *                     formatter will be used (2 decimals)
      */
     void set_number_formatter(FormatValueFnPtr format_value_fn);
