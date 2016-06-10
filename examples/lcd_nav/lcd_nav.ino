@@ -11,13 +11,63 @@
 #include <MenuSystem.h>
 #include <LiquidCrystal.h>
 
+// renderer
+
+class MyRenderer : public MenuComponentRenderer
+{
+public:
+    MyRenderer()
+    : lcd(LiquidCrystal(8, 9, 4, 5, 6, 7))
+    {
+    }
+
+    virtual void render(Menu const& menu) const
+    {
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print(menu.get_name());
+        lcd.setCursor(0,1);
+        menu.get_current_component()->render(*this);
+    }
+
+    virtual void render_menu_item(MenuItem const& menu_item) const
+    {
+        lcd.print(menu_item.get_name());
+    }
+
+    virtual void render_back_menu_item(BackMenuItem const& menu_item) const
+    {
+        lcd.print(menu_item.get_name());
+    }
+
+    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const
+    {
+        lcd.print(menu_item.get_name());
+    }
+
+    virtual void render_menu(Menu const& menu) const
+    {
+        lcd.print(menu.get_name());
+    }
+
+private:
+    mutable LiquidCrystal lcd;
+};
+MyRenderer my_renderer;
+
+// Forward declarations
+
+void on_item1_selected(MenuItem* p_menu_item);
+void on_item2_selected(MenuItem* p_menu_item);
+void on_item3_selected(MenuItem* p_menu_item);
+
 // Menu variables
-MenuSystem ms;
-Menu mm("ROOT Menu Title");
-MenuItem mm_mi1("Level 1 - Item 1 (Item)");
-MenuItem mm_mi2("Level 1 - Item 2 (Item)");
+
+MenuSystem ms(my_renderer);
+MenuItem mm_mi1("Level 1 - Item 1 (Item)", &on_item1_selected);
+MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_item2_selected);
 Menu mu1("Level 1 - Item 3 (Menu)");
-MenuItem mu1_mi1("Level 2 - Item 1 (Item)");
+MenuItem mu1_mi1("Level 2 - Item 1 (Item)", on_item3_selected);
 
 /*
 The LCD circuit:
@@ -56,54 +106,30 @@ void on_item3_selected(MenuItem* p_menu_item)
   delay(1500); // so we can look the result on the LCD
 }
 
-// Standard arduino functions
 
-void setup()
-{
-  Serial.begin(9600);
-  lcd.begin(16, 2);
+/*void displayMenu() {*/
+  /*lcd.clear();*/
+  /*lcd.setCursor(0,0);*/
+  /*// Display the menu*/
+  /*Menu const* cp_menu = ms.get_current_menu();*/
+
+  /*//lcd.print("Current menu name: ");*/
+  /*lcd.print(cp_menu->get_name());*/
   
-  serialPrintHelp();
-  Serial.println("Setting up the menu.");
-  // Menu setup
-  /*
-  Menu Structure:
-   -Item1
-   -Item2
-   -Item3
-   --Item1
-   
-   */
-  mm.add_item(&mm_mi1, &on_item1_selected);
-  mm.add_item(&mm_mi2, &on_item2_selected);
-  mm.add_menu(&mu1);
-  mu1.add_item(&mu1_mi1, &on_item3_selected);
-  ms.set_root_menu(&mm);
-  Serial.println("Menu setted.");
-  displayMenu();
-}
-
-void loop()
-{
-  // Handle serial commands
-  serialHandler();
-
-  // Wait for two seconds so the output is viewable
-  //delay(2000);
-}
-
-void displayMenu() {
-  lcd.clear();
-  lcd.setCursor(0,0);
-  // Display the menu
-  Menu const* cp_menu = ms.get_current_menu();
-
-  //lcd.print("Current menu name: ");
-  lcd.print(cp_menu->get_name());
+  /*lcd.setCursor(0,1);*/
   
-  lcd.setCursor(0,1);
-  
-  lcd.print(cp_menu->get_current_component()->get_name());
+  /*lcd.print(cp_menu->get_current_component()->get_name());*/
+/*}*/
+
+void serialPrintHelp() {
+  Serial.println("***************");
+  Serial.println("w: go to previus item (up)");
+  Serial.println("s: go to next item (down)");
+  Serial.println("a: go back (right)");
+  Serial.println("d: select \"selected\" item");
+  Serial.println("?: print this help");
+  Serial.println("h: print this help");
+  Serial.println("***************");
 }
 
 void serialHandler() {
@@ -112,19 +138,19 @@ void serialHandler() {
     switch (inChar) {
     case 'w': // Previus item
       ms.prev();
-      displayMenu();
+      ms.display();
       break;
     case 's': // Next item
       ms.next();
-      displayMenu();
+      ms.display();
       break;
     case 'a': // Back presed
       ms.back();
-      displayMenu();
+      ms.display();
       break;
     case 'd': // Select presed
       ms.select();
-      displayMenu();
+      ms.display();
       break;
     case '?':
     case 'h': // Display help
@@ -136,15 +162,38 @@ void serialHandler() {
   }
 }
 
-void serialPrintHelp() {
-  Serial.println("***************");
-  Serial.println("w: go to previus item (up)");
-  Serial.println("s: go to next item (down)");
-  Serial.println("a: go back (right)");
-  Serial.println("d: select \"selected\" item");
-  Serial.println("?: print this help");
-  Serial.println("h: print this help");
-  Serial.println("***************");
+// Standard arduino functions
 
+void setup()
+{
+  Serial.begin(9600);
+  lcd.begin(16, 2);
+
+  serialPrintHelp();
+  Serial.println("Setting up the menu.");
+  // Menu setup
+  /*
+  Menu Structure:
+   -Item1
+   -Item2
+   -Item3
+   --Item1
+   */
+  ms.get_root_menu().add_item(&mm_mi1);
+  ms.get_root_menu().add_item(&mm_mi2);
+  ms.get_root_menu().add_menu(&mu1);
+  mu1.add_item(&mu1_mi1);
+
+  Serial.println("Menu set");
+
+  ms.display();
 }
 
+void loop()
+{
+  // Handle serial commands
+  serialHandler();
+
+  // Wait for two seconds so the output is viewable
+  //delay(2000);
+}
