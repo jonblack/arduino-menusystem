@@ -350,19 +350,23 @@ void NumericMenuItem::set_value(float value)
 
 bool NumericMenuItem::next(bool loop)
 {
-    // TODO: Add loop support here! yay!
     _value += _increment;
     if (_value > _maxValue)
-        _value = _maxValue;
+        if (loop)
+            _value = _minValue;
+        else
+            _value = _maxValue;
     return true;
 }
 
 bool NumericMenuItem::prev(bool loop)
 {
-    // TODO: Add loop support here! yay!
     _value -= _increment;
     if (_value < _minValue)
-        _value = _minValue;
+        if (loop)
+            _value = _maxValue;
+        else
+            _value = _minValue;
     return true;
 }
 
