@@ -17,203 +17,247 @@
 #define PIN_LED_WR    10
 #define PIN_LED_CLOCK 11
 #define PIN_LED_CS    12
-#define LED_WIDTH     32
-#define LED_HEIGHT    16
-#define FONT_WIDTH    5
-#define FONT_HEIGHT   7
+
+// Renderer
+
+ht1632c ledMatrix = ht1632c(&PORTB, PIN_LED_DATA, PIN_LED_WR, PIN_LED_CLOCK, PIN_LED_CS, GEOM_32x16, 2);
+
+class MyRenderer : public MenuComponentRenderer
+{
+public:
+    MyRenderer()
+    : _led_height(16),
+      _led_width(32),
+      _font_width(5),
+      _font_height(7),
+      _color(RED)
+    {
+    }
+
+    virtual void render(Menu const& menu) const
+    {
+        ledMatrix.clear();
+
+        const byte prev_comp_num = menu.get_prev_menu_component_num();
+        _p_prev_comp = menu.get_menu_component(prev_comp_num);
+        auto cp_m_comp = menu.get_current_component();
+        cp_m_comp->render(*this);
+    }
+
+    virtual void render_menu_item(MenuItem const& menu_item) const
+    {
+        auto prev_name = _p_prev_comp->get_name();
+        auto curr_name = menu_item.get_name();
+        _fade(prev_name, curr_name);
+    }
+
+    virtual void render_back_menu_item(BackMenuItem const& menu_item) const
+    {
+        auto prev_name = _p_prev_comp->get_name();
+        auto curr_name = menu_item.get_name();
+        _fade(prev_name, curr_name);
+    }
+
+    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const
+    {
+        auto prev_name = _p_prev_comp->get_name();
+        auto curr_name = menu_item.get_name();
+        _fade(prev_name, curr_name);
+    }
+
+    virtual void render_menu(Menu const& menu) const
+    {
+        auto prev_name = _p_prev_comp->get_name();
+        auto curr_name = menu.get_name();
+        _fade(prev_name, curr_name);
+    }
+
+private:
+    enum VSlideDirection { VSLIDE_UP, VSLIDE_DOWN };
+
+    void _vslide(char const* menu1, char const* menu2, VSlideDirection d) const
+    {
+        // Calculate vertical position
+        int menu1_start_y = (_led_height / 2) - (_font_height / 2);
+        int menu2_target_y = menu1_start_y;
+        int menu2_start_y;
+        if (d == VSLIDE_UP) {
+            menu2_start_y = menu1_start_y + _led_height;
+        } else {
+            menu2_start_y = menu1_start_y - _led_height;
+        }
+        int menu1_y = menu1_start_y;
+        int menu2_y = menu2_start_y;
+
+        // Calculate horizontal position
+        int menu1_text_width = _font_width * strlen(menu1);
+        int menu1_pixel_spare = _led_width - menu1_text_width;
+        int menu1_x_idnt = (int) floor(menu1_pixel_spare / 2);
+
+        int menu2_text_width = _font_width * strlen(menu2);
+        int menu2_pixel_spare = _led_width - menu2_text_width;
+        int menu2_x_idnt = (int) floor(menu2_pixel_spare / 2);
+
+        while (1) {
+            ledMatrix.clear();
+            for (size_t i = 0; i < strlen(menu1); i++) {
+                ledMatrix.putchar(
+                    (i * _font_width) + menu1_x_idnt,
+                    menu1_y, menu1[i], _color
+                );
+            }
+            for (size_t i = 0; i < strlen(menu2); i++) {
+                ledMatrix.putchar(
+                    (i * _font_width) + menu2_x_idnt,
+                    menu2_y, menu2[i], _color
+                );
+            }
+            ledMatrix.sendframe();
+
+            if (menu2_y == menu2_target_y) {
+                break;
+            }
+
+            if (d == VSLIDE_UP) {
+                menu1_y -= 1;
+                menu2_y -= 1;
+            } else {
+                menu1_y += 1;
+                menu2_y += 1;
+            }
+
+            delay(5);
+        }
+    }
+
+    enum HSlideDirection { HSLIDE_LEFT, HSLIDE_RIGHT };
+
+    void _hslide(char const* menu1, char const* menu2, HSlideDirection d) const
+    {
+        // Calculate vertical position
+        int y_idnt = (_led_height / 2) - (_font_height / 2);
+
+        // Calculate horizontal position
+        int menu1_text_width = _font_width * strlen(menu1);
+        int menu1_pixel_spare = _led_width - menu1_text_width;
+        int menu1_start_x = (int) floor(menu1_pixel_spare / 2);
+        int menu2_text_width = _font_width * strlen(menu2);
+        int menu2_pixel_spare = _led_width - menu2_text_width;
+        int menu2_target_x = (int) floor(menu2_pixel_spare / 2);
+        int menu2_start_x;
+        if (d == HSLIDE_LEFT) {
+            menu2_start_x = menu1_start_x + _led_width;
+        } else {
+            menu2_start_x = menu1_start_x - _led_width;
+        }
+        int menu1_x = menu1_start_x;
+        int menu2_x = menu2_start_x;
+
+        while (1) {
+            ledMatrix.clear();
+            for (size_t i = 0; i < strlen(menu1); i++) {
+                ledMatrix.putchar(
+                    (i * _font_width) + menu1_x,
+                    y_idnt, menu1[i], _color
+                );
+            }
+            for (size_t i = 0; i < strlen(menu2); i++) {
+                ledMatrix.putchar(
+                    (i * _font_width) + menu2_x,
+                    y_idnt, menu2[i], _color
+                );
+            }
+            ledMatrix.sendframe();
+
+            if (menu2_x == menu2_target_x) {
+                break;
+            }
+
+            if (d == HSLIDE_LEFT) {
+                menu1_x -= 1;
+                menu2_x -= 1;
+            } else {
+                menu1_x += 1;
+                menu2_x += 1;
+            }
+
+            delay(5);
+        }
+    }
+
+    void _fade(char const* menu1, char const* menu2) const
+    {
+        int y_idnt = (_led_height / 2) - (_font_height / 2);
+
+        int menu1_text_width = _font_width * strlen(menu1);
+        int menu1_pixel_spare = _led_width - menu1_text_width;
+        int menu1_x_idnt = (int) floor(menu1_pixel_spare / 2);
+        for (size_t i = 0; i < strlen(menu1); i++) {
+            ledMatrix.putchar(
+                (i * _font_width) + menu1_x_idnt,
+                y_idnt, menu1[i], _color
+            );
+        }
+        ledMatrix.sendframe();
+
+        int brightness = 10;
+        while (brightness > 0) {
+            ledMatrix.pwm(--brightness);
+            delay(30);
+        }
+        ledMatrix.clear();
+
+        int menu2_text_width = _font_width * strlen(menu2);
+        int menu2_pixel_spare = _led_width - menu2_text_width;
+        int menu2_x_idnt = (int) floor(menu2_pixel_spare / 2);
+        for (size_t i = 0; i < strlen(menu2); i++) {
+            ledMatrix.putchar(
+                (i * _font_width) + menu2_x_idnt,
+                y_idnt, menu2[i], _color
+            );
+        }
+        ledMatrix.sendframe();
+        delay(30);
+        while (brightness < 10) {
+            ledMatrix.pwm(++brightness);
+            delay(30);
+        }
+    }
+
+private:
+    const byte _led_height;
+    const byte _led_width;
+    const byte _font_width;
+    const byte _font_height;
+    const byte _color;
+
+    mutable MenuComponent const* _p_prev_comp;
+};
+MyRenderer my_renderer;
 
 // Menu variables
 
-MenuSystem ms;
-Menu mm("");
-MenuItem mi_one("ONE");
-MenuItem mi_two("TWO");
-MenuItem mi_three("THREE");
-
-// Display variables
-
-ht1632c ledMatrix = ht1632c(&PORTB, PIN_LED_DATA, PIN_LED_WR, PIN_LED_CLOCK,
-    PIN_LED_CS, GEOM_32x16, 2);
-
-// Functions
-
-enum VSlideDirection { VSLIDE_UP, VSLIDE_DOWN };
-
-void vslide(const char* menu1, const char* menu2, VSlideDirection d) {
-    // Calculate vertical position
-    int menu1_start_y = (LED_HEIGHT / 2) - (FONT_HEIGHT / 2);
-    int menu2_target_y = menu1_start_y;
-    int menu2_start_y;
-    if (d == VSLIDE_UP) {
-        menu2_start_y = menu1_start_y + LED_HEIGHT;
-    } else {
-        menu2_start_y = menu1_start_y - LED_HEIGHT;
-    }
-    int menu1_y = menu1_start_y;
-    int menu2_y = menu2_start_y;
-
-    // Calculate horizontal position
-    int menu1_text_width = FONT_WIDTH * strlen(menu1);
-    int menu1_pixel_spare = LED_WIDTH - menu1_text_width;
-    int menu1_x_idnt = (int) floor(menu1_pixel_spare / 2);
-
-    int menu2_text_width = FONT_WIDTH * strlen(menu2);
-    int menu2_pixel_spare = LED_WIDTH - menu2_text_width;
-    int menu2_x_idnt = (int) floor(menu2_pixel_spare / 2);
-
-    while (1) {
-        ledMatrix.clear();
-        for (int i = 0; i < strlen(menu1); i++) {
-            ledMatrix.putchar(
-                (i * FONT_WIDTH) + menu1_x_idnt,
-                menu1_y, menu1[i], RED
-            );
-        }
-        for (int i = 0; i < strlen(menu2); i++) {
-            ledMatrix.putchar(
-                (i * FONT_WIDTH) + menu2_x_idnt,
-                menu2_y, menu2[i], RED
-            );
-        }
-        ledMatrix.sendframe();
-
-        if (menu2_y == menu2_target_y) {
-            break;
-        }
-
-        if (d == VSLIDE_UP) {
-            menu1_y -= 1;
-            menu2_y -= 1;
-        } else {
-            menu1_y += 1;
-            menu2_y += 1;
-        }
-
-        delay(5);
-    }
-}
-
-enum HSlideDirection { HSLIDE_LEFT, HSLIDE_RIGHT };
-
-void hslide(const char* menu1, const char* menu2, HSlideDirection d) {
-    // Calculate vertical position
-    int y_idnt = (LED_HEIGHT / 2) - (FONT_HEIGHT / 2);
-
-    // Calculate horizontal position
-    int menu1_text_width = FONT_WIDTH * strlen(menu1);
-    int menu1_pixel_spare = LED_WIDTH - menu1_text_width;
-    int menu1_start_x = (int) floor(menu1_pixel_spare / 2);
-    int menu2_text_width = FONT_WIDTH * strlen(menu2);
-    int menu2_pixel_spare = LED_WIDTH - menu2_text_width;
-    int menu2_target_x = (int) floor(menu2_pixel_spare / 2);
-    int menu2_start_x;
-    if (d == HSLIDE_LEFT) {
-        menu2_start_x = menu1_start_x + LED_WIDTH;
-    } else {
-        menu2_start_x = menu1_start_x - LED_WIDTH;
-    }
-    int menu1_x = menu1_start_x;
-    int menu2_x = menu2_start_x;
-
-    while (1) {
-        ledMatrix.clear();
-        for (int i = 0; i < strlen(menu1); i++) {
-            ledMatrix.putchar(
-                (i * FONT_WIDTH) + menu1_x,
-                y_idnt, menu1[i], RED
-            );
-        }
-        for (int i = 0; i < strlen(menu2); i++) {
-            ledMatrix.putchar(
-                (i * FONT_WIDTH) + menu2_x,
-                y_idnt, menu2[i], RED
-            );
-        }
-        ledMatrix.sendframe();
-
-        if (menu2_x == menu2_target_x) {
-            break;
-        }
-
-        if (d == HSLIDE_LEFT) {
-            menu1_x -= 1;
-            menu2_x -= 1;
-        } else {
-            menu1_x += 1;
-            menu2_x += 1;
-        }
-
-        delay(5);
-    }
-}
-
-void fade(const char* menu1, const char* menu2) {
-    int y_idnt = (LED_HEIGHT / 2) - (FONT_HEIGHT / 2);
-
-    int menu1_text_width = FONT_WIDTH * strlen(menu1);
-    int menu1_pixel_spare = LED_WIDTH - menu1_text_width;
-    int menu1_x_idnt = (int) floor(menu1_pixel_spare / 2);
-    for (int i = 0; i < strlen(menu1); i++) {
-        ledMatrix.putchar(
-            (i * FONT_WIDTH) + menu1_x_idnt,
-            y_idnt, menu1[i], RED
-        );
-    }
-    ledMatrix.sendframe();
-
-    int brightness = 10;
-    while (brightness > 0) {
-        ledMatrix.pwm(--brightness);
-        delay(30);
-    }
-    ledMatrix.clear();
-
-    int menu2_text_width = FONT_WIDTH * strlen(menu2);
-    int menu2_pixel_spare = LED_WIDTH - menu2_text_width;
-    int menu2_x_idnt = (int) floor(menu2_pixel_spare / 2);
-    for (int i = 0; i < strlen(menu2); i++) {
-        ledMatrix.putchar(
-            (i * FONT_WIDTH) + menu2_x_idnt,
-            y_idnt, menu2[i], RED
-        );
-    }
-    ledMatrix.sendframe();
-    delay(30);
-    while (brightness < 10) {
-        ledMatrix.pwm(++brightness);
-        delay(30);
-    }
-}
+MenuSystem ms(my_renderer);
+MenuItem mi_one("ONE", nullptr);
+MenuItem mi_two("TWO", nullptr);
+MenuItem mi_three("THREE", nullptr);
 
 // Standard arduino functions
 
 void setup() {
     Serial.begin(9600);
 
-    // LED matrix
     ledMatrix.clear();
     ledMatrix.pwm(10);
     ledMatrix.setfont(FONT_5x7);
 
-    // Menu
-    mm.add_item(&mi_one, nullptr);
-    mm.add_item(&mi_two, nullptr);
-    mm.add_item(&mi_three, nullptr);
-    ms.set_root_menu(&mm);
+    ms.get_root_menu().add_item(&mi_one);
+    ms.get_root_menu().add_item(&mi_two);
+    ms.get_root_menu().add_item(&mi_three);
 }
 
 void loop() {
-    Menu const* menu;
-
-    menu = ms.get_current_menu();
-    const char* menu1_name = menu->get_current_component()->get_name();
     ms.next(true);
-    menu = ms.get_current_menu();
-    const char* menu2_name = menu->get_current_component()->get_name();
-
-    //vslide(menu1_name, menu2_name, VSLIDE_UP);
-    //hslide(menu1_name, menu2_name, HSLIDE_LEFT);
-    fade(menu1_name, menu2_name);
-
+    ms.display();
     delay(1000);
 }
