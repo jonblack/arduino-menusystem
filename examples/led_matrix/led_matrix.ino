@@ -11,112 +11,153 @@
 #include <ht1632c.h>
 #include <MenuSystem.h>
 
+// TODO Use my fork of ht1632c (arduino-ht1632c) and fix issues in it
+
 // Display constants
 
 #define PIN_LED_DATA  0
 #define PIN_LED_WR    3
 #define PIN_LED_CLOCK 5
 #define PIN_LED_CS    4
-#define LED_WIDTH     32
-#define LED_HEIGHT    16
-#define FONT_WIDTH    5
-#define FONT_HEIGHT   7
 
-// Menu variables
-
-MenuSystem ms;
-Menu mm("");
-MenuItem mi_time("TIME");
-MenuItem mi_date("DATE");
-Menu mu_disp("DISP*");
-MenuItem mi_brightness("BRTNS");
-MenuItem mi_color("COLOR");
-
-// Display variables
+// Renderer
 
 ht1632c ledMatrix = ht1632c(&PORTB, PIN_LED_DATA, PIN_LED_WR, PIN_LED_CLOCK, PIN_LED_CS, GEOM_32x16, 2);
-byte color = RED;
 
-// Functions
-
-void update_menu() {
-    ledMatrix.clear();
-
-    int y_idnt = (LED_HEIGHT / 2) - (FONT_HEIGHT / 2);
-    ledMatrix.setfont(FONT_5x7);
-
-    Menu const* menu = ms.get_current_menu();
-    const char* name = menu->get_current_component()->get_name();
-
-    // Calculate indentation for center alignment
-    int text_width = FONT_WIDTH * strlen(name);
-    int pixel_spare = LED_WIDTH - text_width;
-    int x_idnt = (int) floor(pixel_spare / 2);
-
-    // Display text
-    for (int i = 0; i < strlen(name); i++) {
-        ledMatrix.putchar((i * FONT_WIDTH) + x_idnt, y_idnt, name[i], color);
-    }
-    ledMatrix.sendframe();
-}
-
-bool process_serial() {
-    char inChar;
-    if ((inChar = Serial.read()) > 0) {
-        switch (inChar) {
-            case 'w':
-                if (ms.prev()) {
-                    Serial.println("Going to previous menu item");
-                    return true;
-                } else {
-                    return false;
-                }
-            case 's':
-                if (ms.next()) {
-                    Serial.println("Going to mext menu item");
-                    return true;
-                } else {
-                    return false;
-                }
-            case 'a':
-                if (ms.back()) {
-                    Serial.println("Going up a level");
-                    return true;
-                } else {
-                    return false;
-                }
-            case 'd':
-                Serial.println("Selecting menu item");
-                ms.select();
-                return true;
-            default:
-                return false;
-        }
+class MyRenderer : public MenuComponentRenderer
+{
+public:
+    MyRenderer()
+    : _led_height(16),
+      _led_width(32),
+      _font_width(5),
+      _font_height(7),
+      _color(RED)
+    {
     }
 
-    return false;
-}
+    virtual void render(Menu const& menu) const
+    {
+        ledMatrix.clear();
+        MenuComponent const* cp_m_comp = menu.get_current_component();
+        cp_m_comp->render(*this);
+    }
+
+    virtual void render_menu_item(MenuItem const& menu_item) const
+    {
+        char const* name = menu_item.get_name();
+        _render_text_center(name);
+    }
+
+    virtual void render_back_menu_item(BackMenuItem const& menu_item) const
+    {
+        char const* name = menu_item.get_name();
+        _render_text_center(name);
+    }
+
+    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const
+    {
+        char const* name = menu_item.get_name();
+        _render_text_center(name);
+    }
+
+    virtual void render_menu(Menu const& menu) const
+    {
+        char const* name = menu.get_name();
+        _render_text_center(name);
+    }
+
+private:
+    void _render_text_center(char const* name) const
+    {
+        byte x_idnt = _get_x_indent(name);
+        byte y_idnt = _get_y_indent();
+
+        for (size_t i = 0; i < strlen(name); i++)
+            ledMatrix.putchar((i * _font_width) + x_idnt, y_idnt, name[i], _color);
+        ledMatrix.sendframe();
+    }
+
+    byte _get_x_indent(char const* name) const
+    {
+        byte text_width = _font_width * strlen(name);
+        byte pixel_spare = _led_width - text_width;
+        return (byte) floor(pixel_spare / 2);
+    }
+
+    byte _get_y_indent() const
+    {
+        return (_led_width/ 2) - (_led_height / 2);
+    }
+
+private:
+    const byte _led_height;
+    const byte _led_width;
+    const byte _font_width;
+    const byte _font_height;
+    const byte _color;
+};
+MyRenderer my_renderer;
 
 // Menu callback functions
 
-void on_time_selected(MenuItem* p_menu_item) {
+void on_time_selected(MenuItem* p_menu_item)
+{
     Serial.println("Time selected");
 }
 
-void on_date_selected(MenuItem* p_menu_item) {
+void on_date_selected(MenuItem* p_menu_item)
+{
     Serial.println("Date selected");
 }
 
-void on_brightness_selected(MenuItem* p_menu_item) {
+void on_brightness_selected(MenuItem* p_menu_item)
+{
     Serial.println("Brightness selected");
 }
 
-void on_color_selected(MenuItem* p_menu_item) {
+void on_color_selected(MenuItem* p_menu_item)
+{
     Serial.println("Color selected");
-    if (color == RED) {
-        color = GREEN;
-    } else {
-        color = RED;
+}
+
+// Menu variables
+
+MenuSystem ms(my_renderer);
+MenuItem mi_time("TIME", &on_time_selected);
+MenuItem mi_date("DATE", &on_date_selected);
+Menu mu_disp("DISP*");
+MenuItem mi_brightness("BRTNS", &on_brightness_selected);
+MenuItem mi_color("COLOR", &on_color_selected);
+
+// Functions
+
+void serial_handler()
+{
+    char inChar;
+    if ((inChar = Serial.read()) > 0)
+    {
+        switch (inChar)
+        {
+            case 'w': // Previus item
+                ms.prev();
+                ms.display();
+                break;
+            case 's': // Next item
+                ms.next();
+                ms.display();
+                break;
+            case 'a': // Back presed
+                ms.back();
+                ms.display();
+                break;
+            case 'd': // Select presed
+                ms.select();
+                ms.display();
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -125,25 +166,17 @@ void on_color_selected(MenuItem* p_menu_item) {
 void setup() {
     Serial.begin(9600);
 
-    // LED matrix
     ledMatrix.clear();
+    ledMatrix.setfont(FONT_5x7);
 
-    // Menu
-    mm.add_item(&mi_time, &on_time_selected);
-    mm.add_item(&mi_date, &on_date_selected);
-    mm.add_menu(&mu_disp);
-    mu_disp.add_item(&mi_brightness, &on_brightness_selected);
-    mu_disp.add_item(&mi_color, &on_color_selected);
-    ms.set_root_menu(&mm);
-
-    update_menu();
+    ms.get_root_menu().add_item(&mi_time);
+    ms.get_root_menu().add_item(&mi_date);
+    ms.get_root_menu().add_menu(&mu_disp);
+    mu_disp.add_item(&mi_brightness);
+    mu_disp.add_item(&mi_color);
+    ms.display();
 }
 
 void loop() {
-    delay(100);
-
-    bool changed = process_serial();
-    if (changed) {
-        update_menu();
-    }
+    serial_handler();
 }
