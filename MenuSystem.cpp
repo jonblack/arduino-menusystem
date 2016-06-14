@@ -38,34 +38,34 @@ bool MenuComponent::has_focus() const
 
 Menu::Menu(const char* name)
 : MenuComponent(name),
-  _p_cur_menu_component(nullptr),
+  _p_current_component(nullptr),
   _menu_components(nullptr),
   _p_parent(nullptr),
-  _num_menu_components(0),
-  _cur_menu_component_num(0),
-  _prev_menu_component_num(0)
+  _num_components(0),
+  _current_component_num(0),
+  _previous_component_num(0)
 {
 }
 
 bool Menu::next(bool loop)
 {
-    _prev_menu_component_num = _cur_menu_component_num;
+    _previous_component_num = _current_component_num;
 
-    if (!_num_menu_components)
+    if (!_num_components)
     {
         return false;
     }
-    else if (_cur_menu_component_num != _num_menu_components - 1)
+    else if (_current_component_num != _num_components - 1)
     {
-        _cur_menu_component_num++;
-        _p_cur_menu_component = _menu_components[_cur_menu_component_num];
+        _current_component_num++;
+        _p_current_component = _menu_components[_current_component_num];
 
         return true;
     }
     else if (loop)
     {
-        _cur_menu_component_num = 0;
-        _p_cur_menu_component = _menu_components[_cur_menu_component_num];
+        _current_component_num = 0;
+        _p_current_component = _menu_components[_current_component_num];
 
         return true;
     }
@@ -74,23 +74,23 @@ bool Menu::next(bool loop)
 
 bool Menu::prev(bool loop)
 {
-    _prev_menu_component_num = _cur_menu_component_num;
+    _previous_component_num = _current_component_num;
 
-    if (!_num_menu_components)
+    if (!_num_components)
     {
         return false;
     }
-    else if (_cur_menu_component_num != 0)
+    else if (_current_component_num != 0)
     {
-        _cur_menu_component_num--;
-        _p_cur_menu_component = _menu_components[_cur_menu_component_num];
+        _current_component_num--;
+        _p_current_component = _menu_components[_current_component_num];
 
         return true;
     }
     else if (loop)
     {
-        _cur_menu_component_num = _num_menu_components - 1;
-        _p_cur_menu_component = _menu_components[_cur_menu_component_num];
+        _current_component_num = _num_components - 1;
+        _p_current_component = _menu_components[_current_component_num];
 
         return true;
     }
@@ -99,10 +99,10 @@ bool Menu::prev(bool loop)
 
 Menu* Menu::activate()
 {
-    if (!_num_menu_components)
+    if (!_num_components)
         return nullptr;
 
-    MenuComponent* pComponent = _menu_components[_cur_menu_component_num];
+    MenuComponent* pComponent = _menu_components[_current_component_num];
 
     if (pComponent == nullptr)
         return nullptr;
@@ -117,12 +117,12 @@ Menu* Menu::select()
 
 void Menu::reset()
 {
-    for (int i = 0; i < _num_menu_components; ++i)
+    for (int i = 0; i < _num_components; ++i)
         _menu_components[i]->reset();
 
-    _prev_menu_component_num = 0;
-    _cur_menu_component_num = 0;
-    _p_cur_menu_component = _num_menu_components ? _menu_components[0] : nullptr;
+    _previous_component_num = 0;
+    _current_component_num = 0;
+    _p_current_component = _num_components ? _menu_components[0] : nullptr;
 }
 
 void Menu::add_item(MenuItem* pItem)
@@ -130,17 +130,17 @@ void Menu::add_item(MenuItem* pItem)
     // Resize menu component list, keeping existing items.
     // If it fails, there the item is not added and the function returns.
     _menu_components = (MenuComponent**) realloc(_menu_components,
-                                                 (_num_menu_components + 1)
+                                                 (_num_components + 1)
                                                  * sizeof(MenuComponent*));
     if (_menu_components == nullptr)
       return;
 
-    _menu_components[_num_menu_components] = pItem;
+    _menu_components[_num_components] = pItem;
 
-    if (_num_menu_components == 0)
-        _p_cur_menu_component = pItem;
+    if (_num_components == 0)
+        _p_current_component = pItem;
 
-    _num_menu_components++;
+    _num_components++;
 }
 
 Menu const* Menu::get_parent() const
@@ -158,19 +158,19 @@ void Menu::add_menu(Menu* pMenu)
     // Resize menu component list, keeping existing items.
     // If it fails, there the item is not added and the function returns.
     _menu_components = (MenuComponent**) realloc(_menu_components,
-                                                 (_num_menu_components + 1)
+                                                 (_num_components + 1)
                                                  * sizeof(MenuComponent*));
     if (_menu_components == nullptr)
       return;
 
     pMenu->set_parent(this);
 
-    _menu_components[_num_menu_components] = pMenu;
+    _menu_components[_num_components] = pMenu;
 
-    if (_num_menu_components == 0)
-        _p_cur_menu_component = pMenu;
+    if (_num_components == 0)
+        _p_current_component = pMenu;
 
-    _num_menu_components++;
+    _num_components++;
 }
 
 MenuComponent const* Menu::get_menu_component(uint8_t index) const
@@ -180,22 +180,22 @@ MenuComponent const* Menu::get_menu_component(uint8_t index) const
 
 MenuComponent const* Menu::get_current_component() const
 {
-    return _p_cur_menu_component;
+    return _p_current_component;
 }
 
-uint8_t Menu::get_num_menu_components() const
+uint8_t Menu::get_num_components() const
 {
-    return _num_menu_components;
+    return _num_components;
 }
 
-uint8_t Menu::get_cur_menu_component_num() const
+uint8_t Menu::get_current_component_num() const
 {
-    return _cur_menu_component_num;
+    return _current_component_num;
 }
 
-uint8_t Menu::get_prev_menu_component_num() const
+uint8_t Menu::get_previous_component_num() const
 {
-    return _prev_menu_component_num;
+    return _previous_component_num;
 }
 
 void Menu::render(MenuComponentRenderer const& renderer) const
@@ -387,16 +387,16 @@ MenuSystem::MenuSystem(MenuComponentRenderer const& renderer)
 
 bool MenuSystem::next(bool loop)
 {
-    if (_p_curr_menu->_p_cur_menu_component->has_focus())
-        return _p_curr_menu->_p_cur_menu_component->next(loop);
+    if (_p_curr_menu->_p_current_component->has_focus())
+        return _p_curr_menu->_p_current_component->next(loop);
     else
         return _p_curr_menu->next(loop);
 }
 
 bool MenuSystem::prev(bool loop)
 {
-    if (_p_curr_menu->_p_cur_menu_component->has_focus())
-        return _p_curr_menu->_p_cur_menu_component->prev(loop);
+    if (_p_curr_menu->_p_current_component->has_focus())
+        return _p_curr_menu->_p_current_component->prev(loop);
     else
         return _p_curr_menu->prev(loop);
 }

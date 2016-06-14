@@ -14,7 +14,6 @@
 
 // TODO: coding standards e.g. p_menu vs pMenu
 // TODO: docstrings ala doxygen
-// TODO: update all examples
 // TODO: Don't use String.
 // TODO: Rule of 3 (or 5?) and freeing memory (will be needed for dynamic
 //       menus)
@@ -290,13 +289,9 @@ public:
     MenuComponent const* get_current_component() const;
     MenuComponent const* get_menu_component(uint8_t index) const;
 
-    // TODO: get_current_component vs get_menu_component,
-    // get_cur_menu_component_num.
-    //
-    // So, shoud it be get_num_components? I think so.
-    uint8_t get_num_menu_components() const;
-    uint8_t get_cur_menu_component_num() const;
-    uint8_t get_prev_menu_component_num() const;
+    uint8_t get_num_components() const;
+    uint8_t get_current_component_num() const;
+    uint8_t get_previous_component_num() const;
 
     void render(MenuComponentRenderer const& renderer) const;
 
@@ -311,12 +306,12 @@ protected:
     virtual void reset();
 
 private:
-    MenuComponent* _p_cur_menu_component;
+    MenuComponent* _p_current_component;
     MenuComponent** _menu_components;
     Menu* _p_parent;
-    uint8_t _num_menu_components;
-    uint8_t _cur_menu_component_num;
-    uint8_t _prev_menu_component_num;
+    uint8_t _num_components;
+    uint8_t _current_component_num;
+    uint8_t _previous_component_num;
 };
 
 

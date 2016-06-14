@@ -13,9 +13,6 @@
 #include <MenuSystem.h>
 #include "MyRenderer.h"
 
-// TODO get this working with the new rendering system. Mean moving
-// get_composite_name to a function in renderer.
-
 class MyRenderer;
 
 class CustomNumericMenuItem : public NumericMenuItem

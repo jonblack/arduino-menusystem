@@ -38,7 +38,7 @@ public:
     {
         ledMatrix.clear();
 
-        const uint8_t prev_comp_num = menu.get_prev_menu_component_num();
+        const uint8_t prev_comp_num = menu.get_previous_component_num();
         _p_prev_comp = menu.get_menu_component(prev_comp_num);
         auto cp_m_comp = menu.get_current_component();
         cp_m_comp->render(*this);
