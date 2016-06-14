@@ -38,7 +38,7 @@ public:
     {
         ledMatrix.clear();
 
-        const byte prev_comp_num = menu.get_prev_menu_component_num();
+        const uint8_t prev_comp_num = menu.get_prev_menu_component_num();
         _p_prev_comp = menu.get_menu_component(prev_comp_num);
         auto cp_m_comp = menu.get_current_component();
         cp_m_comp->render(*this);
@@ -225,11 +225,11 @@ private:
     }
 
 private:
-    const byte _led_height;
-    const byte _led_width;
-    const byte _font_width;
-    const byte _font_height;
-    const byte _color;
+    const uint8_t _led_height;
+    const uint8_t _led_width;
+    const uint8_t _font_width;
+    const uint8_t _font_height;
+    const uint8_t _color;
 
     mutable MenuComponent const* _p_prev_comp;
 };

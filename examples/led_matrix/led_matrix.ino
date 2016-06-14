@@ -70,32 +70,32 @@ public:
 private:
     void _render_text_center(char const* name) const
     {
-        byte x_idnt = _get_x_indent(name);
-        byte y_idnt = _get_y_indent();
+        uint8_t x_idnt = _get_x_indent(name);
+        uint8_t y_idnt = _get_y_indent();
 
         for (size_t i = 0; i < strlen(name); i++)
             ledMatrix.putchar((i * _font_width) + x_idnt, y_idnt, name[i], _color);
         ledMatrix.sendframe();
     }
 
-    byte _get_x_indent(char const* name) const
+    uint8_t _get_x_indent(char const* name) const
     {
-        byte text_width = _font_width * strlen(name);
-        byte pixel_spare = _led_width - text_width;
-        return (byte) floor(pixel_spare / 2);
+        uint8_t text_width = _font_width * strlen(name);
+        uint8_t pixel_spare = _led_width - text_width;
+        return (uint8_t) floor(pixel_spare / 2);
     }
 
-    byte _get_y_indent() const
+    uint8_t _get_y_indent() const
     {
         return (_led_width/ 2) - (_led_height / 2);
     }
 
 private:
-    const byte _led_height;
-    const byte _led_width;
-    const byte _font_width;
-    const byte _font_height;
-    const byte _color;
+    const uint8_t _led_height;
+    const uint8_t _led_width;
+    const uint8_t _font_width;
+    const uint8_t _font_height;
+    const uint8_t _color;
 };
 MyRenderer my_renderer;
 

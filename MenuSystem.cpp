@@ -173,7 +173,7 @@ void Menu::add_menu(Menu* pMenu)
     _num_menu_components++;
 }
 
-MenuComponent const* Menu::get_menu_component(byte index) const
+MenuComponent const* Menu::get_menu_component(uint8_t index) const
 {
     return _menu_components[index];
 }
@@ -183,17 +183,17 @@ MenuComponent const* Menu::get_current_component() const
     return _p_cur_menu_component;
 }
 
-byte Menu::get_num_menu_components() const
+uint8_t Menu::get_num_menu_components() const
 {
     return _num_menu_components;
 }
 
-byte Menu::get_cur_menu_component_num() const
+uint8_t Menu::get_cur_menu_component_num() const
 {
     return _cur_menu_component_num;
 }
 
-byte Menu::get_prev_menu_component_num() const
+uint8_t Menu::get_prev_menu_component_num() const
 {
     return _prev_menu_component_num;
 }

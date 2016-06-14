@@ -18,7 +18,6 @@
 // TODO: Don't use String.
 // TODO: Rule of 3 (or 5?) and freeing memory (will be needed for dynamic
 //       menus)
-// TODO: unint8_t instead of byte?
 
 class Menu;
 class MenuComponentRenderer;
@@ -289,15 +288,15 @@ public:
     void add_menu(Menu* pMenu);
 
     MenuComponent const* get_current_component() const;
-    MenuComponent const* get_menu_component(byte index) const;
+    MenuComponent const* get_menu_component(uint8_t index) const;
 
     // TODO: get_current_component vs get_menu_component,
     // get_cur_menu_component_num.
     //
     // So, shoud it be get_num_components? I think so.
-    byte get_num_menu_components() const;
-    byte get_cur_menu_component_num() const;
-    byte get_prev_menu_component_num() const;
+    uint8_t get_num_menu_components() const;
+    uint8_t get_cur_menu_component_num() const;
+    uint8_t get_prev_menu_component_num() const;
 
     void render(MenuComponentRenderer const& renderer) const;
 
@@ -315,9 +314,9 @@ private:
     MenuComponent* _p_cur_menu_component;
     MenuComponent** _menu_components;
     Menu* _p_parent;
-    byte _num_menu_components;
-    byte _cur_menu_component_num;
-    byte _prev_menu_component_num;
+    uint8_t _num_menu_components;
+    uint8_t _cur_menu_component_num;
+    uint8_t _prev_menu_component_num;
 };
 
 
