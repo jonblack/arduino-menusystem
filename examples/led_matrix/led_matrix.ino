@@ -11,8 +11,6 @@
 #include <ht1632c.h>
 #include <MenuSystem.h>
 
-// TODO Use my fork of ht1632c (arduino-ht1632c) and fix issues in it
-
 // Display constants
 
 #define PIN_LED_DATA  0

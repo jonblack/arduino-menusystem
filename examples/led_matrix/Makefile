@@ -1,5 +1,5 @@
 ARDUINO_DIR = $(HOME)/.arduino_ide
-ARDUINO_LIBS = arduino-menusystem ht1632c
+ARDUINO_LIBS = arduino-menusystem arduino-ht1632c
 ARDMK_DIR = $(HOME)/.arduino_mk
 BOARD_TAG = uno
 
