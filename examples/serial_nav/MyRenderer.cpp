@@ -5,14 +5,12 @@ void MyRenderer::render(Menu const& menu) const
     Serial.print("\nCurrent menu name: ");
     Serial.println(menu.get_name());
     String buffer;
-    MenuComponent const* cp_menu_sel = menu.get_current_component();
     for (int i = 0; i < menu.get_num_components(); ++i)
     {
         MenuComponent const* cp_m_comp = menu.get_menu_component(i);
         cp_m_comp->render(*this);
 
-        // TODO: Would be more succinct if we could do cp_m_comp->is_current()
-        if (cp_menu_sel == cp_m_comp)
+        if (cp_m_comp->is_current())
             Serial.print("<<< ");
         Serial.println("");
     }
@@ -34,8 +32,6 @@ void MyRenderer::render_numeric_menu_item(NumericMenuItem const& menu_item) cons
 
     buffer = menu_item.get_name();
     buffer += menu_item.has_focus() ? '<' : '=';
-
-    // TODO: get_value_string is a poor name. get_formatted_value maybe?
     buffer += menu_item.get_value_string();
 
     if (menu_item.has_focus())

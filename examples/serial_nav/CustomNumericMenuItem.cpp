@@ -16,8 +16,6 @@ uint8_t CustomNumericMenuItem::get_width() const
 
 void CustomNumericMenuItem::render(MenuComponentRenderer const& renderer) const
 {
-    // TODO: dynamic_cast not allowed due to compile option -fno-rtti;
-    // static_cast does zero checks! :s
     MyRenderer const& my_renderer = static_cast<MyRenderer const&>(renderer);
     my_renderer.render_custom_numeric_menu_item(*this);
 }

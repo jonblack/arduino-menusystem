@@ -34,9 +34,6 @@ public:
 
     uint8_t get_width() const;
 
-    // TODO: this HAS to override the base class to get called. c++11 override
-    //       keyword would help here. If it doesn't override it won't call the
-    //       base class and that's really well hidden.
     virtual void render(MenuComponentRenderer const& renderer) const;
 
 private:

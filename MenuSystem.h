@@ -12,12 +12,6 @@
   #include <WProgram.h>
 #endif
 
-// TODO: coding standards e.g. p_menu vs pMenu
-// TODO: docstrings ala doxygen
-// TODO: Don't use String.
-// TODO: Rule of 3 (or 5?) and freeing memory (will be needed for dynamic
-//       menus)
-
 class Menu;
 class MenuComponentRenderer;
 class MenuSystem;
@@ -84,6 +78,19 @@ public:
     //! \see NumericMenuComponent
     bool has_focus() const;
 
+    //! \brief Returns true if this is the current component; false otherwise
+    //!
+    //! This bool registers if the component is the current selected component.
+    //!
+    //! Subclasses should use set_current() when the component becomes
+    //! activated and use set_previous() once the component is no longer the
+    //! current component.
+    //!
+    //! \returns true if this component is the current component, false
+    //!          otherwise.
+    //! \see MenuComponent::set_current
+    bool is_current() const;
+
 protected:
     //! \brief Processes the next action
     //!
@@ -142,9 +149,17 @@ protected:
     //! \see NumericMenuComponent
     virtual Menu* select() = 0;
 
+    //! \brief Set the current state of the component
+    //!
+    //! \paran is_current true if this component is the current one; false
+    //!                   otherwise.
+    //! \see is_current
+    void set_current(bool is_current=true);
+
 protected:
     const char* _name;
     bool _has_focus;
+    bool _is_current;
 };
 
 
@@ -257,8 +272,11 @@ public:
     float get_minValue() const;
     float get_maxValue() const;
 
+    // TODO: get_value_string is a poor name. get_formatted_value maybe?
     String get_value_string() const;
     void set_value(float value);
+    void set_min_value(float value);
+    void set_max_value(float value);
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
