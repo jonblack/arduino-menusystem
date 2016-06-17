@@ -83,6 +83,25 @@ public:
     //! \see MenuComponent::select
     //! \see NumericMenuComponent
     bool has_focus() const;
+    
+    //! \brief Returns true if this is the current component; false otherwise
+    //!
+    //! This bool registers if the component is the current selected component.
+    //!
+    //! Subclasses should use set_current() when the component becomes activated
+    //! and use set_previous() once the component is no longer the current component.
+    //!
+    //! \returns true if this component is the current component, false otherwise.
+    //!
+    //! \see MenuComponent::set_current
+    //! \see MenuComponent::set_previous
+    bool is_current() const;
+    
+    //! \brief Set the current state of the component to true
+    void set_current();
+    
+    //! \brief Set the current state of the component to false
+    void set_previous();
 
 protected:
     //! \brief Processes the next action
@@ -145,6 +164,7 @@ protected:
 protected:
     const char* _name;
     bool _has_focus;
+    bool _is_current;
 };
 
 

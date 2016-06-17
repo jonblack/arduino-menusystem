@@ -13,7 +13,8 @@
 
 MenuComponent::MenuComponent(const char* name)
 : _name(name),
-  _has_focus(false)
+  _has_focus(false),
+  _is_current(false)
 {
 }
 
@@ -30,6 +31,21 @@ void MenuComponent::set_name(const char* name)
 bool MenuComponent::has_focus() const
 {
     return _has_focus;
+}
+
+bool MenuComponent::is_current() const
+{
+    return _is_current;
+}
+
+void MenuComponent::set_current()
+{
+    _is_current = true;
+}
+
+void MenuComponent::set_previous()
+{
+    _is_current = false;
 }
 
 // *********************************************************
@@ -60,6 +76,8 @@ bool Menu::next(bool loop)
         _current_component_num++;
         _p_current_component = _menu_components[_current_component_num];
 
+        _p_current_component->set_current();
+        _menu_components[_previous_component_num]->set_previous();
         return true;
     }
     else if (loop)
@@ -67,6 +85,9 @@ bool Menu::next(bool loop)
         _current_component_num = 0;
         _p_current_component = _menu_components[_current_component_num];
 
+        _p_current_component->set_current();
+        _menu_components[_previous_component_num]->set_previous();
+        
         return true;
     }
     return false;
@@ -84,6 +105,9 @@ bool Menu::prev(bool loop)
     {
         _current_component_num--;
         _p_current_component = _menu_components[_current_component_num];
+        
+        _p_current_component->set_current();
+        _menu_components[_previous_component_num]->set_previous();
 
         return true;
     }
@@ -91,6 +115,9 @@ bool Menu::prev(bool loop)
     {
         _current_component_num = _num_components - 1;
         _p_current_component = _menu_components[_current_component_num];
+        
+        _p_current_component->set_current();
+        _menu_components[_previous_component_num]->set_previous();
 
         return true;
     }
