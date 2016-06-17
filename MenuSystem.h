@@ -12,12 +12,6 @@
   #include <WProgram.h>
 #endif
 
-// TODO: coding standards e.g. p_menu vs pMenu
-// TODO: docstrings ala doxygen
-// TODO: Don't use String.
-// TODO: Rule of 3 (or 5?) and freeing memory (will be needed for dynamic
-//       menus)
-
 class Menu;
 class MenuComponentRenderer;
 class MenuSystem;
@@ -102,6 +96,8 @@ public:
     
     //! \brief Set the current state of the component to false
     void set_previous();
+
+    // TODO: is_current() possible?
 
 protected:
     //! \brief Processes the next action
@@ -277,6 +273,7 @@ public:
     float get_minValue() const;
     float get_maxValue() const;
 
+    // TODO: get_value_string is a poor name. get_formatted_value maybe?
     String get_value_string() const;
     void set_value(float value, float min, float max);
 

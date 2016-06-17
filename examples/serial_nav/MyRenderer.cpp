@@ -11,7 +11,6 @@ void MyRenderer::render(Menu const& menu) const
         MenuComponent const* cp_m_comp = menu.get_menu_component(i);
         cp_m_comp->render(*this);
 
-        // TODO: Would be more succinct if we could do cp_m_comp->is_current()
         if (cp_menu_sel == cp_m_comp)
             Serial.print("<<< ");
         Serial.println("");
@@ -34,8 +33,6 @@ void MyRenderer::render_numeric_menu_item(NumericMenuItem const& menu_item) cons
 
     buffer = menu_item.get_name();
     buffer += menu_item.has_focus() ? '<' : '=';
-
-    // TODO: get_value_string is a poor name. get_formatted_value maybe?
     buffer += menu_item.get_value_string();
 
     if (menu_item.has_focus())
