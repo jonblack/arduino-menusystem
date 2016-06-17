@@ -369,9 +369,11 @@ String NumericMenuItem::get_value_string() const
     return buffer;
 }
 
-void NumericMenuItem::set_value(float value)
+void NumericMenuItem::set_value(float value, float min, float max)
 {
     _value = value;
+    _minValue = min;
+    _maxValue = max;
 }
 
 

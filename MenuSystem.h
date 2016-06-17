@@ -278,7 +278,7 @@ public:
     float get_maxValue() const;
 
     String get_value_string() const;
-    void set_value(float value);
+    void set_value(float value, float min, float max);
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
