@@ -5,13 +5,12 @@ void MyRenderer::render(Menu const& menu) const
     Serial.print("\nCurrent menu name: ");
     Serial.println(menu.get_name());
     String buffer;
-    MenuComponent const* cp_menu_sel = menu.get_current_component();
     for (int i = 0; i < menu.get_num_components(); ++i)
     {
         MenuComponent const* cp_m_comp = menu.get_menu_component(i);
         cp_m_comp->render(*this);
 
-        if (cp_menu_sel == cp_m_comp)
+        if (cp_m_comp->is_current())
             Serial.print("<<< ");
         Serial.println("");
     }

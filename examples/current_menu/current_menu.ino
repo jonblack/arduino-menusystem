@@ -17,13 +17,12 @@ public:
     virtual void render(Menu const& menu) const
     {
         Serial.println("");
-        MenuComponent const* cp_menu_sel = menu.get_current_component();
         for (int i = 0; i < menu.get_num_components(); ++i)
         {
             MenuComponent const* cp_m_comp = menu.get_menu_component(i);
             cp_m_comp->render(*this);
 
-            if (cp_menu_sel == cp_m_comp)
+            if (cp_m_comp->is_current())
                 Serial.print("<<< ");
             Serial.println("");
         }
@@ -68,6 +67,8 @@ MenuItem mu1_mi1("Level 2 - Item 1 (Item)", &on_item3_selected);
 
 // Menu callback function
 
+bool done = false;
+
 void on_item1_selected(MenuItem* p_menu_item)
 {
   Serial.println("Item1 Selected");
@@ -81,8 +82,7 @@ void on_item2_selected(MenuItem* p_menu_item)
 void on_item3_selected(MenuItem* p_menu_item)
 {
   Serial.println("Item3 Selected");
-  ms.reset();
-  ms.display();
+  done = true;
 }
 
 // Standard arduino functions
@@ -104,6 +104,12 @@ void loop()
   // Simulate using the menu by walking over the entire structure.
   ms.select();
   ms.next();
+
+  if (done)
+  {
+    ms.reset();
+    done = false;
+  }
 
   delay(2000);
 }

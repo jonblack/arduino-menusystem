@@ -13,7 +13,8 @@
 
 MenuComponent::MenuComponent(const char* name)
 : _name(name),
-  _has_focus(false)
+  _has_focus(false),
+  _is_current(false)
 {
 }
 
@@ -30,6 +31,16 @@ void MenuComponent::set_name(const char* name)
 bool MenuComponent::has_focus() const
 {
     return _has_focus;
+}
+
+bool MenuComponent::is_current() const
+{
+    return _is_current;
+}
+
+void MenuComponent::set_current(bool is_current)
+{
+    _is_current = is_current;
 }
 
 // *********************************************************
@@ -60,12 +71,17 @@ bool Menu::next(bool loop)
         _current_component_num++;
         _p_current_component = _menu_components[_current_component_num];
 
+        _p_current_component->set_current();
+        _menu_components[_previous_component_num]->set_current(false);
         return true;
     }
     else if (loop)
     {
         _current_component_num = 0;
         _p_current_component = _menu_components[_current_component_num];
+
+        _p_current_component->set_current();
+        _menu_components[_previous_component_num]->set_current(false);
 
         return true;
     }
@@ -85,12 +101,18 @@ bool Menu::prev(bool loop)
         _current_component_num--;
         _p_current_component = _menu_components[_current_component_num];
 
+        _p_current_component->set_current();
+        _menu_components[_previous_component_num]->set_current(false);
+
         return true;
     }
     else if (loop)
     {
         _current_component_num = _num_components - 1;
         _p_current_component = _menu_components[_current_component_num];
+
+        _p_current_component->set_current();
+        _menu_components[_previous_component_num]->set_current(false);
 
         return true;
     }
@@ -120,9 +142,11 @@ void Menu::reset()
     for (int i = 0; i < _num_components; ++i)
         _menu_components[i]->reset();
 
+    _p_current_component->set_current(false);
     _previous_component_num = 0;
     _current_component_num = 0;
     _p_current_component = _num_components ? _menu_components[0] : nullptr;
+    _p_current_component->set_current();
 }
 
 void Menu::add_item(MenuItem* pItem)
@@ -138,7 +162,10 @@ void Menu::add_item(MenuItem* pItem)
     _menu_components[_num_components] = pItem;
 
     if (_num_components == 0)
+    {
         _p_current_component = pItem;
+        _p_current_component->set_current();
+    }
 
     _num_components++;
 }
@@ -168,7 +195,10 @@ void Menu::add_menu(Menu* pMenu)
     _menu_components[_num_components] = pMenu;
 
     if (_num_components == 0)
+    {
         _p_current_component = pMenu;
+        _p_current_component->set_current();
+    }
 
     _num_components++;
 }
@@ -347,6 +377,15 @@ void NumericMenuItem::set_value(float value)
     _value = value;
 }
 
+void NumericMenuItem::set_min_value(float value)
+{
+    _minValue = value;
+}
+
+void NumericMenuItem::set_max_value(float value)
+{
+    _maxValue = value;
+}
 
 bool NumericMenuItem::next(bool loop)
 {
