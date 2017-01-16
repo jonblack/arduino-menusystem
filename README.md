@@ -9,8 +9,8 @@ useful to you:
 
 * [Arduino forum post](http://arduino.cc/forum/index.php/topic,105866.0.html)
 * [Humble Coder](http://www.humblecoder.com/)
-* [Arduino Menu System Library](http://blog.humblecoder.com/arduino-menu-system-library/)
-* [Animated LED matrix menu transitions on the Arduino](http://blog.humblecoder.com/animated-led-matrix-menu-transitions-on-the-arduino/)
+* [Arduino Menu System Library](http://www.humblecoder.com/arduino-menu-system-library/)
+* [Animated LED matrix menu transitions on the Arduino](http://www.humblecoder.com/animated-led-matrix-menu-transitions-on-the-arduino/)
 
 ## Contribution
 
