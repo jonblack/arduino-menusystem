@@ -17,6 +17,10 @@ useful to you:
 If you'd like to contribute to `arduino-menusystem`, please submit a
 pull-request.
 
+## Donate
+
+* Bitcoin: 	1HnqohdK1d6gwDc7bT6LPPkmUFAXczEJKp
+
 ## Changelog
 
 **2.1.1 - 22/03/2016**
