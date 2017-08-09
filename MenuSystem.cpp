@@ -149,7 +149,18 @@ void Menu::reset()
     _p_current_component->set_current();
 }
 
-void Menu::add_item(MenuItem* pItem)
+void Menu::add_item(MenuItem* p_item)
+{
+    add_component((MenuComponent*) p_item);
+}
+
+void Menu::add_menu(Menu* p_menu)
+{
+    add_component((MenuComponent*) p_menu);
+    p_menu->set_parent(this);
+}
+
+void Menu::add_component(MenuComponent* p_component)
 {
     // Resize menu component list, keeping existing items.
     // If it fails, there the item is not added and the function returns.
@@ -159,11 +170,11 @@ void Menu::add_item(MenuItem* pItem)
     if (_menu_components == nullptr)
       return;
 
-    _menu_components[_num_components] = pItem;
+    _menu_components[_num_components] = p_component;
 
     if (_num_components == 0)
     {
-        _p_current_component = pItem;
+        _p_current_component = p_component;
         _p_current_component->set_current();
     }
 
@@ -178,29 +189,6 @@ Menu const* Menu::get_parent() const
 void Menu::set_parent(Menu* pParent)
 {
     _p_parent = pParent;
-}
-
-void Menu::add_menu(Menu* pMenu)
-{
-    // Resize menu component list, keeping existing items.
-    // If it fails, there the item is not added and the function returns.
-    _menu_components = (MenuComponent**) realloc(_menu_components,
-                                                 (_num_components + 1)
-                                                 * sizeof(MenuComponent*));
-    if (_menu_components == nullptr)
-      return;
-
-    pMenu->set_parent(this);
-
-    _menu_components[_num_components] = pMenu;
-
-    if (_num_components == 0)
-    {
-        _p_current_component = pMenu;
-        _p_current_component->set_current();
-    }
-
-    _num_components++;
 }
 
 MenuComponent const* Menu::get_menu_component(uint8_t index) const

@@ -301,8 +301,8 @@ class Menu : public MenuComponent
 public:
     Menu(const char* name);
 
-    void add_item(MenuItem* pItem);
-    void add_menu(Menu* pMenu);
+    void add_item(MenuItem* p_item);
+    void add_menu(Menu* p_menu);
 
     MenuComponent const* get_current_component() const;
     MenuComponent const* get_menu_component(uint8_t index) const;
@@ -322,6 +322,8 @@ protected:
     virtual bool prev(bool loop=false);
     virtual Menu* select();
     virtual void reset();
+
+    void add_component(MenuComponent* p_component);
 
 private:
     MenuComponent* _p_current_component;
