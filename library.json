@@ -1,7 +1,7 @@
 {
-  "name": "MenuSystem",
+  "name": "arduino-menusystem",
   "keywords": "display, menu",
-  "description": "A library for implementing a menu system",
+  "description": "Arduino library for implementing a menu system",
   "repository":
   {
     "type": "git",
