@@ -11,10 +11,11 @@
 // MenuComponent
 // *********************************************************
 
-MenuComponent::MenuComponent(const char* name)
+MenuComponent::MenuComponent(const char* name, SelectFnPtr select_fn)
 : _name(name),
   _has_focus(false),
-  _is_current(false)
+  _is_current(false),
+  _select_fn(select_fn)
 {
 }
 
@@ -43,12 +44,25 @@ void MenuComponent::set_current(bool is_current)
     _is_current = is_current;
 }
 
+Menu* MenuComponent::select()
+{
+    if (_select_fn != nullptr)
+        _select_fn(this);
+
+    return nullptr;
+}
+
+void MenuComponent::set_select_function(SelectFnPtr select_fn)
+{
+    _select_fn = select_fn;
+}
+
 // *********************************************************
 // Menu
 // *********************************************************
 
-Menu::Menu(const char* name)
-: MenuComponent(name),
+Menu::Menu(const char* name, SelectFnPtr select_fn)
+: MenuComponent(name, select_fn),
   _p_current_component(nullptr),
   _menu_components(nullptr),
   _p_parent(nullptr),
@@ -134,6 +148,7 @@ Menu* Menu::activate()
 
 Menu* Menu::select()
 {
+    MenuComponent::select();
     return this;
 }
 
@@ -253,21 +268,13 @@ void BackMenuItem::render(MenuComponentRenderer const& renderer) const
 // *********************************************************
 
 MenuItem::MenuItem(const char* name, SelectFnPtr select_fn)
-: MenuComponent(name),
-  _select_fn(select_fn)
+: MenuComponent(name, select_fn)
 {
-}
-
-void MenuItem::set_select_function(SelectFnPtr select_fn)
-{
-    _select_fn = select_fn;
 }
 
 Menu* MenuItem::select()
 {
-    if (_select_fn != nullptr)
-        _select_fn(this);
-
+    MenuComponent::select();
     return nullptr;
 }
 
@@ -406,7 +413,7 @@ bool NumericMenuItem::prev(bool loop)
 // *********************************************************
 
 MenuSystem::MenuSystem(MenuComponentRenderer const& renderer)
-: _p_root_menu(new Menu("")),
+: _p_root_menu(new Menu("", nullptr)),
   _p_curr_menu(_p_root_menu),
   _renderer(renderer)
 {

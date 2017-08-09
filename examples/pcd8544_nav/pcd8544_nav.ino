@@ -76,7 +76,7 @@ MyRenderer my_renderer;
 
 // Menu callback function
 
-void on_item1_selected(MenuItem* p_menu_item)
+void on_item1_selected(MenuComponent* p_menu_component)
 {
   lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
   lcd.print("Item1 Selectd");
@@ -84,7 +84,7 @@ void on_item1_selected(MenuItem* p_menu_item)
   delay(1500); // so we can look the result on the LCD
 }
 
-void on_item2_selected(MenuItem* p_menu_item)
+void on_item2_selected(MenuComponent* p_menu_component)
 {
   lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
   lcd.print("Item2 Selectd");
@@ -92,7 +92,7 @@ void on_item2_selected(MenuItem* p_menu_item)
   delay(1500); // so we can look the result on the LCD
 }
 
-void on_item3_selected(MenuItem* p_menu_item)
+void on_item3_selected(MenuComponent* p_menu_component)
 {
   lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
   lcd.print("Item3 Selectd");
