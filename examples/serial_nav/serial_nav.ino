@@ -15,21 +15,18 @@
 const String format_float(const float value);
 const String format_int(const float value);
 const String format_color(const float value);
-void on_item1_selected(MenuItem* p_menu_item);
-void on_item2_selected(MenuItem* p_menu_item);
-void on_item3_selected(MenuItem* p_menu_item);
-void on_back_item_selected(MenuItem* p_menu_item);
+void on_component_selected(MenuComponent* p_menu_component);
 
 // Menu variables
 
 MyRenderer my_renderer;
 MenuSystem ms(my_renderer);
 
-MenuItem mm_mi1("Level 1 - Item 1 (Item)", &on_item1_selected);
-MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_item2_selected);
+MenuItem mm_mi1("Level 1 - Item 1 (Item)", &on_component_selected);
+MenuItem mm_mi2("Level 1 - Item 2 (Item)", &on_component_selected);
 Menu mu1("Level 1 - Item 3 (Menu)");
-BackMenuItem mu1_mi0("Level 2 - Back (Item)", &on_back_item_selected, &ms);
-MenuItem mu1_mi1("Level 2 - Item 1 (Item)", &on_item3_selected);
+BackMenuItem mu1_mi0("Level 2 - Back (Item)", &on_component_selected, &ms);
+MenuItem mu1_mi1("Level 2 - Item 1 (Item)", &on_component_selected);
 NumericMenuItem mu1_mi2("Level 2 - Txt Item 2 (Item)", nullptr, 0, 0, 2, 1, format_color);
 CustomNumericMenuItem mu1_mi3(12, "Level 2 - Cust Item 3 (Item)", 80, 65, 121, 3, format_int);
 NumericMenuItem mm_mi4("Level 1 - Float Item 4 (Item)", nullptr, 0.5, 0.0, 1.0, 0.1, format_float);
@@ -74,24 +71,9 @@ const String format_color(const float value)
 
 // In this example all menu items use the same callback.
 
-void on_item1_selected(MenuItem* p_menu_item)
+void on_component_selected(MenuComponent* p_menu_component)
 {
-    Serial.println("Item1 Selected");
-}
-
-void on_item2_selected(MenuItem* p_menu_item)
-{
-    Serial.println("Item2 Selected");
-}
-
-void on_item3_selected(MenuItem* p_menu_item)
-{
-    Serial.println("Item3 Selected");
-}
-
-void on_back_item_selected(MenuItem* p_menu_item)
-{
-    Serial.println("Back item Selected");
+    Serial.println(p_menu_component->get_name());
 }
 
 void display_help() {
@@ -110,6 +92,7 @@ void serial_handler()
     char inChar;
     if ((inChar = Serial.read()) > 0)
     {
+        Serial.println("\033c");
         switch (inChar)
         {
             case 'w': // Previus item
@@ -161,7 +144,6 @@ void setup()
 
     display_help();
     ms.display();
-    Serial.println("");
 }
 
 void loop()

@@ -59,9 +59,9 @@ MyRenderer my_renderer;
 
 // Forward declarations
 
-void on_item1_selected(MenuItem* p_menu_item);
-void on_item2_selected(MenuItem* p_menu_item);
-void on_item3_selected(MenuItem* p_menu_item);
+void on_item1_selected(MenuComponent* p_menu_component);
+void on_item2_selected(MenuComponent* p_menu_component);
+void on_item3_selected(MenuComponent* p_menu_component);
 
 // Menu variables
 
@@ -73,21 +73,21 @@ MenuItem mu1_mi1("Level 2 - Item 1 (Item)", on_item3_selected);
 
 // Menu callback function
 
-void on_item1_selected(MenuItem* p_menu_item)
+void on_item1_selected(MenuComponent* p_menu_component)
 {
   lcd.setCursor(0,1);
   lcd.print("Item1 Selected  ");
   delay(1500); // so we can look the result on the LCD
 }
 
-void on_item2_selected(MenuItem* p_menu_item)
+void on_item2_selected(MenuComponent* p_menu_component)
 {
   lcd.setCursor(0,1);
   lcd.print("Item2 Selected  ");
   delay(1500); // so we can look the result on the LCD
 }
 
-void on_item3_selected(MenuItem* p_menu_item)
+void on_item3_selected(MenuComponent* p_menu_component)
 {
   lcd.setCursor(0,1);
   lcd.print("Item3 Selected  ");

@@ -99,22 +99,22 @@ MyRenderer my_renderer;
 
 // Menu callback functions
 
-void on_time_selected(MenuItem* p_menu_item)
+void on_time_selected(MenuComponent* p_menu_component)
 {
     Serial.println("Time selected");
 }
 
-void on_date_selected(MenuItem* p_menu_item)
+void on_date_selected(MenuComponent* p_menu_component)
 {
     Serial.println("Date selected");
 }
 
-void on_brightness_selected(MenuItem* p_menu_item)
+void on_brightness_selected(MenuComponent* p_menu_component)
 {
     Serial.println("Brightness selected");
 }
 
-void on_color_selected(MenuItem* p_menu_item)
+void on_color_selected(MenuComponent* p_menu_component)
 {
     Serial.println("Color selected");
 }

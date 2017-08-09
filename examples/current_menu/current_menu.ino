@@ -52,9 +52,9 @@ MyRenderer my_renderer;
 
 // forward declarations
 
-void on_item1_selected(MenuItem* p_menu_item);
-void on_item2_selected(MenuItem* p_menu_item);
-void on_item3_selected(MenuItem* p_menu_item);
+void on_item1_selected(MenuComponent* p_menu_component);
+void on_item2_selected(MenuComponent* p_menu_component);
+void on_item3_selected(MenuComponent* p_menu_component);
 
 // Menu variables
 
@@ -69,17 +69,17 @@ MenuItem mu1_mi1("Level 2 - Item 1 (Item)", &on_item3_selected);
 
 bool done = false;
 
-void on_item1_selected(MenuItem* p_menu_item)
+void on_item1_selected(MenuComponent* p_menu_component)
 {
   Serial.println("Item1 Selected");
 }
 
-void on_item2_selected(MenuItem* p_menu_item)
+void on_item2_selected(MenuComponent* p_menu_component)
 {
   Serial.println("Item2 Selected");
 }
 
-void on_item3_selected(MenuItem* p_menu_item)
+void on_item3_selected(MenuComponent* p_menu_component)
 {
   Serial.println("Item3 Selected");
   done = true;

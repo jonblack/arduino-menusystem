@@ -34,10 +34,16 @@ class MenuComponent
     friend class MenuSystem;
     friend class Menu;
 public:
+    //! \brief Callback for when the MenuComponent is selected
+    //!
+    //! \param menu_component The menu component being selected.
+    using SelectFnPtr = void (*)(MenuComponent* menu_component);
+
+public:
     //! \brief Construct a MenuComponent
     //! \param[in] name The name of the menu component that is displayed in
     //!                 clients.
-    MenuComponent(const char* name);
+    MenuComponent(const char* name, SelectFnPtr select_fn);
 
     //! \brief Set the component's name
     //! \param[in] name The name of the menu component that is displayed in
@@ -91,6 +97,11 @@ public:
     //! \see MenuComponent::set_current
     bool is_current() const;
 
+    //! \brief Sets the function to call when the MenuItem is selected
+    //! \param[in] select_fn The function to call when the MenuItem is
+    //!                      selected.
+    void set_select_function(SelectFnPtr select_fn);
+
 protected:
     //! \brief Processes the next action
     //!
@@ -141,13 +152,16 @@ protected:
     //! MenuComponent::prev methods can be used to change some state in the
     //! component.
     //!
+    //! The default implementation calls select_fn if it's not null. Components
+    //! that derive from this class must call their parent's implementation.
+    //!
     //! \returns The Menu instance selected or nullptr. The returned Menu
     //!          instance is used in MenuSystem::activate to set the current
     //!          menu in the MenuSystem.
     //!
     //! \see MenuComponent::has_focus
     //! \see NumericMenuComponent
-    virtual Menu* select() = 0;
+    virtual Menu* select();
 
     //! \brief Set the current state of the component
     //!
@@ -160,6 +174,7 @@ protected:
     const char* _name;
     bool _has_focus;
     bool _is_current;
+    SelectFnPtr _select_fn;
 };
 
 
@@ -174,23 +189,12 @@ protected:
 class MenuItem : public MenuComponent
 {
 public:
-    //! \brief Callback for when the MenuItem is selected
-    //!
-    //! \param menu_item The menu item being selected.
-    using SelectFnPtr = void (*)(MenuItem* menu_item);
-
-public:
     //! \brief Construct a MenuItem
     //! \param[in] name The name of the menu component that is displayed in
     //!                 clients.
     //! \param[in] select_fn The function to call when the MenuItem is
     //!                      selected.
     MenuItem(const char* name, SelectFnPtr select_fn);
-
-    //! \brief Sets the function to call when the MenuItem is selected
-    //! \param[in] select_fn The function to call when the MenuItem is
-    //!                      selected.
-    void set_select_function(SelectFnPtr select_fn);
 
     //! \copydoc MenuComponent::render
     virtual void render(MenuComponentRenderer const& renderer) const;
@@ -213,10 +217,8 @@ protected:
 
     //! \copydoc MenuComponent:select
     virtual Menu* select();
-
-protected:
-    SelectFnPtr _select_fn;
 };
+
 
 //! \brief A MenuItem that calls MenuSystem::back() when selected.
 //! \see MenuItem
@@ -299,7 +301,7 @@ class Menu : public MenuComponent
 {
     friend class MenuSystem;
 public:
-    Menu(const char* name);
+    Menu(const char* name, SelectFnPtr select_fn=nullptr);
 
     void add_item(MenuItem* p_item);
     void add_menu(Menu* p_menu);
