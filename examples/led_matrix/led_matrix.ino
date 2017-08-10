@@ -20,54 +20,47 @@
 
 // Renderer
 
-ht1632c ledMatrix = ht1632c(&PORTB, PIN_LED_DATA, PIN_LED_WR, PIN_LED_CLOCK, PIN_LED_CS, GEOM_32x16, 2);
+ht1632c ledMatrix = ht1632c(&PORTB, PIN_LED_DATA, PIN_LED_WR, PIN_LED_CLOCK,
+                            PIN_LED_CS, GEOM_32x16, 2);
 
-class MyRenderer : public MenuComponentRenderer
-{
+class MyRenderer : public MenuComponentRenderer {
 public:
     MyRenderer()
     : _led_height(16),
       _led_width(32),
       _font_width(5),
       _font_height(7),
-      _color(RED)
-    {
+      _color(RED) {
     }
 
-    virtual void render(Menu const& menu) const
-    {
+    void render(Menu const& menu) const {
         ledMatrix.clear();
         MenuComponent const* cp_m_comp = menu.get_current_component();
         cp_m_comp->render(*this);
     }
 
-    virtual void render_menu_item(MenuItem const& menu_item) const
-    {
+    void render_menu_item(MenuItem const& menu_item) const {
         char const* name = menu_item.get_name();
         _render_text_center(name);
     }
 
-    virtual void render_back_menu_item(BackMenuItem const& menu_item) const
-    {
+    void render_back_menu_item(BackMenuItem const& menu_item) const {
         char const* name = menu_item.get_name();
         _render_text_center(name);
     }
 
-    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const
-    {
+    void render_numeric_menu_item(NumericMenuItem const& menu_item) const {
         char const* name = menu_item.get_name();
         _render_text_center(name);
     }
 
-    virtual void render_menu(Menu const& menu) const
-    {
+    void render_menu(Menu const& menu) const {
         char const* name = menu.get_name();
         _render_text_center(name);
     }
 
 private:
-    void _render_text_center(char const* name) const
-    {
+    void _render_text_center(char const* name) const {
         uint8_t x_idnt = _get_x_indent(name);
         uint8_t y_idnt = _get_y_indent();
 
@@ -76,15 +69,13 @@ private:
         ledMatrix.sendframe();
     }
 
-    uint8_t _get_x_indent(char const* name) const
-    {
+    uint8_t _get_x_indent(char const* name) const {
         uint8_t text_width = _font_width * strlen(name);
         uint8_t pixel_spare = _led_width - text_width;
         return (uint8_t) floor(pixel_spare / 2);
     }
 
-    uint8_t _get_y_indent() const
-    {
+    uint8_t _get_y_indent() const {
         return (_led_width/ 2) - (_led_height / 2);
     }
 
@@ -99,23 +90,19 @@ MyRenderer my_renderer;
 
 // Menu callback functions
 
-void on_time_selected(MenuComponent* p_menu_component)
-{
+void on_time_selected(MenuComponent* p_menu_component) {
     Serial.println("Time selected");
 }
 
-void on_date_selected(MenuComponent* p_menu_component)
-{
+void on_date_selected(MenuComponent* p_menu_component) {
     Serial.println("Date selected");
 }
 
-void on_brightness_selected(MenuComponent* p_menu_component)
-{
+void on_brightness_selected(MenuComponent* p_menu_component) {
     Serial.println("Brightness selected");
 }
 
-void on_color_selected(MenuComponent* p_menu_component)
-{
+void on_color_selected(MenuComponent* p_menu_component) {
     Serial.println("Color selected");
 }
 
@@ -130,13 +117,10 @@ MenuItem mi_color("COLOR", &on_color_selected);
 
 // Functions
 
-void serial_handler()
-{
+void serial_handler() {
     char inChar;
-    if ((inChar = Serial.read()) > 0)
-    {
-        switch (inChar)
-        {
+    if ((inChar = Serial.read()) > 0) {
+        switch (inChar) {
             case 'w': // Previus item
                 ms.prev();
                 ms.display();

@@ -35,20 +35,17 @@ NumericMenuItem mm_mi5("Level 1 - Int Item 5 (Item)", nullptr, 50, -100, 100, 1,
 // Menu callback function
 
 // writes the (int) value of a float into a char buffer.
-const String format_int(const float value)
-{
+const String format_int(const float value) {
     return String((int) value);
 }
 
 // writes the value of a float into a char buffer.
-const String format_float(const float value)
-{
+const String format_float(const float value) {
     return String(value);
 }
 
 // writes the value of a float into a char buffer as predefined colors.
-const String format_color(const float value)
-{
+const String format_color(const float value) {
     String buffer;
 
     switch((int) value)
@@ -71,8 +68,7 @@ const String format_color(const float value)
 
 // In this example all menu items use the same callback.
 
-void on_component_selected(MenuComponent* p_menu_component)
-{
+void on_component_selected(MenuComponent* p_menu_component) {
     Serial.println(p_menu_component->get_name());
 }
 
@@ -87,14 +83,11 @@ void display_help() {
     Serial.println("***************");
 }
 
-void serial_handler()
-{
+void serial_handler() {
     char inChar;
-    if ((inChar = Serial.read()) > 0)
-    {
+    if ((inChar = Serial.read()) > 0) {
         Serial.println("\033c");
-        switch (inChar)
-        {
+        switch (inChar) {
             case 'w': // Previus item
                 ms.prev();
                 ms.display();
@@ -128,8 +121,7 @@ void serial_handler()
 
 // Standard arduino functions
 
-void setup()
-{
+void setup() {
     Serial.begin(9600);
 
     ms.get_root_menu().add_item(&mm_mi1);
@@ -146,7 +138,6 @@ void setup()
     ms.display();
 }
 
-void loop()
-{
+void loop() {
     serial_handler();
 }

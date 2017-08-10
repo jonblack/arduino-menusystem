@@ -15,15 +15,14 @@
 
 class CustomNumericMenuItem;
 
-class MyRenderer : public MenuComponentRenderer
-{
+class MyRenderer : public MenuComponentRenderer {
 public:
-    virtual void render(Menu const& menu) const;
-    virtual void render_menu_item(MenuItem const& menu_item) const;
-    virtual void render_back_menu_item(BackMenuItem const& menu_item) const;
-    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const;
-    virtual void render_custom_numeric_menu_item(CustomNumericMenuItem const& menu_item) const;
-    virtual void render_menu(Menu const& menu) const;
+    void render(Menu const& menu) const;
+    void render_menu_item(MenuItem const& menu_item) const;
+    void render_back_menu_item(BackMenuItem const& menu_item) const;
+    void render_numeric_menu_item(NumericMenuItem const& menu_item) const;
+    void render_custom_numeric_menu_item(CustomNumericMenuItem const& menu_item) const;
+    void render_menu(Menu const& menu) const;
 };
 
 #endif
