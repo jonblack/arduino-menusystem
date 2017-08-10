@@ -57,44 +57,44 @@ MenuItem mu1_mi2("Level 2 - Item 2 (Item)", &on_item4_selected);
 bool bRanCallback = false;
 
 void on_item1_selected(MenuComponent* p_menu_component) {
-  Serial.println("Item1 Selected");
-  bRanCallback = true;
+    Serial.println("Item1 Selected");
+    bRanCallback = true;
 }
 
 void on_item2_selected(MenuComponent* p_menu_component) {
-  Serial.println("Item2 Selected");
-  bRanCallback = true;
+    Serial.println("Item2 Selected");
+    bRanCallback = true;
 }
 
 void on_item3_selected(MenuComponent* p_menu_component) {
-  Serial.println("Item3 Selected");
-  bRanCallback = true;
+    Serial.println("Item3 Selected");
+    bRanCallback = true;
 }
 
 void on_item4_selected(MenuComponent* p_menu_component) {
-  Serial.println("Item4 Selected");
-  bRanCallback = false;
-  ms.reset();
+    Serial.println("Item4 Selected");
+    bRanCallback = false;
+    ms.reset();
 }
 
 // Standard arduino functions
 
 void setup() {
-  Serial.begin(9600);
+    Serial.begin(9600);
 
-  ms.get_root_menu().add_item(&mm_mi1);
-  ms.get_root_menu().add_item(&mm_mi2);
-  ms.get_root_menu().add_menu(&mu1);
-  mu1.add_item(&mu1_mi1);
-  mu1.add_item(&mu1_mi2);
+    ms.get_root_menu().add_item(&mm_mi1);
+    ms.get_root_menu().add_item(&mm_mi2);
+    ms.get_root_menu().add_menu(&mu1);
+    mu1.add_item(&mu1_mi1);
+    mu1.add_item(&mu1_mi2);
 }
 
 void loop() {
-  ms.display();
-  ms.select();
-  if (bRanCallback) {
-      ms.next();
-      bRanCallback = false;
-  }
-  delay(2000);
+    ms.display();
+    ms.select();
+    if (bRanCallback) {
+        ms.next();
+        bRanCallback = false;
+    }
+    delay(2000);
 }

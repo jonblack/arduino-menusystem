@@ -71,24 +71,24 @@ MyRenderer my_renderer;
 // Menu callback function
 
 void on_item1_selected(MenuComponent* p_menu_component) {
-  lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
-  lcd.print("Item1 Selectd");
-  lcd.display();
-  delay(1500); // so we can look the result on the LCD
+    lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
+    lcd.print("Item1 Selectd");
+    lcd.display();
+    delay(1500); // so we can look the result on the LCD
 }
 
 void on_item2_selected(MenuComponent* p_menu_component) {
-  lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
-  lcd.print("Item2 Selectd");
-  lcd.display();
-  delay(1500); // so we can look the result on the LCD
+    lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
+    lcd.print("Item2 Selectd");
+    lcd.display();
+    delay(1500); // so we can look the result on the LCD
 }
 
 void on_item3_selected(MenuComponent* p_menu_component) {
-  lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
-  lcd.print("Item3 Selectd");
-  lcd.display();
-  delay(1500); // so we can look the result on the LCD
+    lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
+    lcd.print("Item3 Selectd");
+    lcd.display();
+    delay(1500); // so we can look the result on the LCD
 }
 
 
@@ -101,72 +101,72 @@ Menu mu1("Lvl1-Item3(M)");
 MenuItem mu1_mi1("Lvl2-Item1(I)", &on_item3_selected);
 
 void serial_print_help() {
-  Serial.println("***************");
-  Serial.println("w: go to previus item (up)");
-  Serial.println("s: go to next item (down)");
-  Serial.println("a: go back (right)");
-  Serial.println("d: select \"selected\" item");
-  Serial.println("?: print this help");
-  Serial.println("h: print this help");
-  Serial.println("***************");
+    Serial.println("***************");
+    Serial.println("w: go to previus item (up)");
+    Serial.println("s: go to next item (down)");
+    Serial.println("a: go back (right)");
+    Serial.println("d: select \"selected\" item");
+    Serial.println("?: print this help");
+    Serial.println("h: print this help");
+    Serial.println("***************");
 }
 
 void serial_handler() {
-  char inChar;
-  if((inChar = Serial.read())>0) {
-    switch (inChar) {
-    case 'w': // Previus item
-      ms.prev();
-      ms.display();
-      break;
-    case 's': // Next item
-      ms.next();
-      ms.display();
-      break;
-    case 'a': // Back pressed
-      ms.back();
-      ms.display();
-      break;
-    case 'd': // Select pressed
-      ms.select();
-      ms.display();
-      break;
-    case '?':
-    case 'h': // Display help
-      serial_print_help();
-      break;
-    default:
-      break;
+    char inChar;
+    if((inChar = Serial.read())>0) {
+        switch (inChar) {
+            case 'w': // Previus item
+                ms.prev();
+                ms.display();
+                break;
+            case 's': // Next item
+                ms.next();
+                ms.display();
+                break;
+            case 'a': // Back pressed
+                ms.back();
+                ms.display();
+                break;
+            case 'd': // Select pressed
+                ms.select();
+                ms.display();
+                break;
+            case '?':
+            case 'h': // Display help
+                serial_print_help();
+                break;
+            default:
+                break;
+        }
     }
-  }
 }
 
 // Standard arduino functions
 
 void setup() {
-  Serial.begin(9600);
+    Serial.begin(9600);
 
-  lcd.begin();
-  lcd.setContrast(60);
+    lcd.begin();
+    lcd.setContrast(60);
 
 #ifdef HIDE_SPLASH
-  lcd.clearDisplay();
+    lcd.clearDisplay();
 #else
-  lcd.display();
-  delay(2000);
+    lcd.display();
+    delay(2000);
 #endif
 
-  lcd.setTextSize(1);
+    lcd.setTextSize(1);
 
-  serial_print_help();
+    serial_print_help();
 
-  ms.get_root_menu().add_item(&mm_mi1);
-  ms.get_root_menu().add_item(&mm_mi2);
-  ms.get_root_menu().add_menu(&mu1);
-  mu1.add_item(&mu1_mi1);
-  ms.display();
+    ms.get_root_menu().add_item(&mm_mi1);
+    ms.get_root_menu().add_item(&mm_mi2);
+    ms.get_root_menu().add_menu(&mu1);
+    mu1.add_item(&mu1_mi1);
+    ms.display();
 }
 
 void loop() {
-  serial_handler();
+    serial_handler();
 }
