@@ -243,27 +243,27 @@ public:
     using FormatValueFnPtr = const String (*)(const float value);
 
 public:
-    /// Constructor
-    ///
-    /// @param name The name of the menu item.
-    /// @param select_fn The function to call when this MenuItem is selected.
-    /// @param value Default value.
-    /// @param min_value The minimum value.
-    /// @param max_value The maximum value.
-    /// @param increment How much the value should be incremented by.
-    /// @param format_value_fn The custom formatter. If nullptr the String
-    ///                        float formatter will be used.
+    //! Constructor
+    //!
+    //! @param name The name of the menu item.
+    //! @param select_fn The function to call when this MenuItem is selected.
+    //! @param value Default value.
+    //! @param min_value The minimum value.
+    //! @param max_value The maximum value.
+    //! @param increment How much the value should be incremented by.
+    //! @param format_value_fn The custom formatter. If nullptr the String
+    //!                        float formatter will be used.
     NumericMenuItem(const char* name, SelectFnPtr select_fn,
                     float value, float min_value, float max_value,
                     float increment=1.0,
                     FormatValueFnPtr format_value_fn=nullptr);
 
-    /**
-     * Sets the custom number formatter.
-     *
-     * @param numberFormat the custom formatter. If nullptr the String float
-     *                     formatter will be used (2 decimals)
-     */
+    //!
+    //! \brief Sets the custom number formatter.
+    //!
+    //! \param numberFormat the custom formatter. If nullptr the String float
+    //!                     formatter will be used (2 decimals)
+    //!
     void set_number_formatter(FormatValueFnPtr format_value_fn);
 
     float get_value() const;
@@ -293,12 +293,23 @@ protected:
 };
 
 
+//! \brief A MenuComponent that can contain other MenuComponents.
+//!
+//! Menu represents the branch in the composite design pattern (see:
+//! https://en.wikipedia.org/wiki/Composite_pattern). When a Menu is
+//! selected, the user-defined Menu::_select_fn callback is called.
+//!
+//! \see MenuComponent
+//! \see MenuItem
 class Menu : public MenuComponent {
     friend class MenuSystem;
 public:
     Menu(const char* name, SelectFnPtr select_fn=nullptr);
 
+    //! \brief Adds a MenuItem to the Menu
     void add_item(MenuItem* p_item);
+
+    //! \brief Adds a Menu to the Menu
     void add_menu(Menu* p_menu);
 
     MenuComponent const* get_current_component() const;
@@ -308,16 +319,29 @@ public:
     uint8_t get_current_component_num() const;
     uint8_t get_previous_component_num() const;
 
+    //! \copydoc MenuComponent::render
     void render(MenuComponentRenderer const& renderer) const;
 
 protected:
     void set_parent(Menu* p_parent);
     Menu const* get_parent() const;
 
+    //! \brief Activates the current selection
+    //!
+    //! When a client makes a selection, activate is called on the current menu
+    //! which in turn calls the menu's current item's callback.
     Menu* activate();
+
+    //! \copydoc MenuComponent::next
     virtual bool next(bool loop=false);
+
+    //! \copydoc MenuComponent::prev
     virtual bool prev(bool loop=false);
+
+    //! \copydoc MenuComponent::select
     virtual Menu* select();
+
+    //! \copydoc MenuComponent::reset
     virtual void reset();
 
     void add_component(MenuComponent* p_component);
