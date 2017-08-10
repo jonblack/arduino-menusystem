@@ -23,11 +23,9 @@
 //    * LCD R/W pin to ground
 LiquidCrystal lcd = LiquidCrystal(8, 9, 4, 5, 6, 7);
 
-class MyRenderer : public MenuComponentRenderer
-{
+class MyRenderer : public MenuComponentRenderer {
 public:
-    virtual void render(Menu const& menu) const
-    {
+    void render(Menu const& menu) const {
         lcd.clear();
         lcd.setCursor(0,0);
         lcd.print(menu.get_name());
@@ -35,23 +33,19 @@ public:
         menu.get_current_component()->render(*this);
     }
 
-    virtual void render_menu_item(MenuItem const& menu_item) const
-    {
+    void render_menu_item(MenuItem const& menu_item) const {
         lcd.print(menu_item.get_name());
     }
 
-    virtual void render_back_menu_item(BackMenuItem const& menu_item) const
-    {
+    void render_back_menu_item(BackMenuItem const& menu_item) const {
         lcd.print(menu_item.get_name());
     }
 
-    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const
-    {
+    void render_numeric_menu_item(NumericMenuItem const& menu_item) const {
         lcd.print(menu_item.get_name());
     }
 
-    virtual void render_menu(Menu const& menu) const
-    {
+    void render_menu(Menu const& menu) const {
         lcd.print(menu.get_name());
     }
 };
@@ -73,28 +67,25 @@ MenuItem mu1_mi1("Level 2 - Item 1 (Item)", on_item3_selected);
 
 // Menu callback function
 
-void on_item1_selected(MenuComponent* p_menu_component)
-{
+void on_item1_selected(MenuComponent* p_menu_component) {
   lcd.setCursor(0,1);
   lcd.print("Item1 Selected  ");
   delay(1500); // so we can look the result on the LCD
 }
 
-void on_item2_selected(MenuComponent* p_menu_component)
-{
+void on_item2_selected(MenuComponent* p_menu_component) {
   lcd.setCursor(0,1);
   lcd.print("Item2 Selected  ");
   delay(1500); // so we can look the result on the LCD
 }
 
-void on_item3_selected(MenuComponent* p_menu_component)
-{
+void on_item3_selected(MenuComponent* p_menu_component) {
   lcd.setCursor(0,1);
   lcd.print("Item3 Selected  ");
   delay(1500); // so we can look the result on the LCD
 }
 
-void serialPrintHelp() {
+void serial_print_help() {
   Serial.println("***************");
   Serial.println("w: go to previus item (up)");
   Serial.println("s: go to next item (down)");
@@ -105,7 +96,7 @@ void serialPrintHelp() {
   Serial.println("***************");
 }
 
-void serialHandler() {
+void serial_handler() {
   char inChar;
   if((inChar = Serial.read())>0) {
     switch (inChar) {
@@ -127,7 +118,7 @@ void serialHandler() {
       break;
     case '?':
     case 'h': // Display help
-      serialPrintHelp();
+      serial_print_help();
       break;
     default:
       break;
@@ -137,12 +128,11 @@ void serialHandler() {
 
 // Standard arduino functions
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
   lcd.begin(16, 2);
 
-  serialPrintHelp();
+  serial_print_help();
 
   ms.get_root_menu().add_item(&mm_mi1);
   ms.get_root_menu().add_item(&mm_mi2);
@@ -152,7 +142,6 @@ void setup()
   ms.display();
 }
 
-void loop()
-{
-  serialHandler();
+void loop() {
+  serial_handler();
 }

@@ -20,22 +20,20 @@
 
 // Renderer
 
-ht1632c ledMatrix = ht1632c(&PORTB, PIN_LED_DATA, PIN_LED_WR, PIN_LED_CLOCK, PIN_LED_CS, GEOM_32x16, 2);
+ht1632c ledMatrix = ht1632c(&PORTB, PIN_LED_DATA, PIN_LED_WR, PIN_LED_CLOCK,
+                            PIN_LED_CS, GEOM_32x16, 2);
 
-class MyRenderer : public MenuComponentRenderer
-{
+class MyRenderer : public MenuComponentRenderer {
 public:
     MyRenderer()
     : _led_height(16),
       _led_width(32),
       _font_width(5),
       _font_height(7),
-      _color(RED)
-    {
+      _color(RED) {
     }
 
-    virtual void render(Menu const& menu) const
-    {
+    void render(Menu const& menu) const {
         ledMatrix.clear();
 
         const uint8_t prev_comp_num = menu.get_previous_component_num();
@@ -44,29 +42,25 @@ public:
         cp_m_comp->render(*this);
     }
 
-    virtual void render_menu_item(MenuItem const& menu_item) const
-    {
+    void render_menu_item(MenuItem const& menu_item) const {
         auto prev_name = _p_prev_comp->get_name();
         auto curr_name = menu_item.get_name();
         _fade(prev_name, curr_name);
     }
 
-    virtual void render_back_menu_item(BackMenuItem const& menu_item) const
-    {
+    void render_back_menu_item(BackMenuItem const& menu_item) const {
         auto prev_name = _p_prev_comp->get_name();
         auto curr_name = menu_item.get_name();
         _fade(prev_name, curr_name);
     }
 
-    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const
-    {
+    void render_numeric_menu_item(NumericMenuItem const& menu_item) const {
         auto prev_name = _p_prev_comp->get_name();
         auto curr_name = menu_item.get_name();
         _fade(prev_name, curr_name);
     }
 
-    virtual void render_menu(Menu const& menu) const
-    {
+    void render_menu(Menu const& menu) const {
         auto prev_name = _p_prev_comp->get_name();
         auto curr_name = menu.get_name();
         _fade(prev_name, curr_name);
@@ -75,8 +69,7 @@ public:
 private:
     enum VSlideDirection { VSLIDE_UP, VSLIDE_DOWN };
 
-    void _vslide(char const* menu1, char const* menu2, VSlideDirection d) const
-    {
+    void _vslide(char const* menu1, char const* menu2, VSlideDirection d) const {
         // Calculate vertical position
         int menu1_start_y = (_led_height / 2) - (_font_height / 2);
         int menu2_target_y = menu1_start_y;
@@ -132,8 +125,7 @@ private:
 
     enum HSlideDirection { HSLIDE_LEFT, HSLIDE_RIGHT };
 
-    void _hslide(char const* menu1, char const* menu2, HSlideDirection d) const
-    {
+    void _hslide(char const* menu1, char const* menu2, HSlideDirection d) const {
         // Calculate vertical position
         int y_idnt = (_led_height / 2) - (_font_height / 2);
 
@@ -185,8 +177,7 @@ private:
         }
     }
 
-    void _fade(char const* menu1, char const* menu2) const
-    {
+    void _fade(char const* menu1, char const* menu2) const {
         int y_idnt = (_led_height / 2) - (_font_height / 2);
 
         int menu1_text_width = _font_width * strlen(menu1);

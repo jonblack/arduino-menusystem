@@ -11,31 +11,25 @@
 
 // renderer
 
-class MyRenderer : public MenuComponentRenderer
-{
+class MyRenderer : public MenuComponentRenderer {
 public:
-    virtual void render(Menu const& menu) const
-    {
+    void render(Menu const& menu) const {
         menu.get_current_component()->render(*this);
     }
 
-    virtual void render_menu_item(MenuItem const& menu_item) const
-    {
+    void render_menu_item(MenuItem const& menu_item) const {
         Serial.println(menu_item.get_name());
     }
 
-    virtual void render_back_menu_item(BackMenuItem const& menu_item) const
-    {
+    void render_back_menu_item(BackMenuItem const& menu_item) const {
         Serial.println(menu_item.get_name());
     }
 
-    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const
-    {
+    void render_numeric_menu_item(NumericMenuItem const& menu_item) const {
         Serial.println(menu_item.get_name());
     }
 
-    virtual void render_menu(Menu const& menu) const
-    {
+    void render_menu(Menu const& menu) const {
         Serial.println(menu.get_name());
     }
 };
@@ -62,26 +56,22 @@ MenuItem mu1_mi2("Level 2 - Item 2 (Item)", &on_item4_selected);
 
 bool bRanCallback = false;
 
-void on_item1_selected(MenuComponent* p_menu_component)
-{
+void on_item1_selected(MenuComponent* p_menu_component) {
   Serial.println("Item1 Selected");
   bRanCallback = true;
 }
 
-void on_item2_selected(MenuComponent* p_menu_component)
-{
+void on_item2_selected(MenuComponent* p_menu_component) {
   Serial.println("Item2 Selected");
   bRanCallback = true;
 }
 
-void on_item3_selected(MenuComponent* p_menu_component)
-{
+void on_item3_selected(MenuComponent* p_menu_component) {
   Serial.println("Item3 Selected");
   bRanCallback = true;
 }
 
-void on_item4_selected(MenuComponent* p_menu_component)
-{
+void on_item4_selected(MenuComponent* p_menu_component) {
   Serial.println("Item4 Selected");
   bRanCallback = false;
   ms.reset();
@@ -89,8 +79,7 @@ void on_item4_selected(MenuComponent* p_menu_component)
 
 // Standard arduino functions
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
 
   ms.get_root_menu().add_item(&mm_mi1);
@@ -100,12 +89,10 @@ void setup()
   mu1.add_item(&mu1_mi2);
 }
 
-void loop()
-{
+void loop() {
   ms.display();
   ms.select();
-  if (bRanCallback)
-  {
+  if (bRanCallback) {
       ms.next();
       bRanCallback = false;
   }

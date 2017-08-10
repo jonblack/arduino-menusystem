@@ -15,8 +15,7 @@
 
 class MyRenderer;
 
-class CustomNumericMenuItem : public NumericMenuItem
-{
+class CustomNumericMenuItem : public NumericMenuItem {
 public:
     /**
      * @param width the width of the edit mode 'ASCII graphics', must be > 1

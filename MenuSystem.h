@@ -29,8 +29,7 @@ class MenuSystem;
 //!
 //! \see Menu
 //! \see MenuItem
-class MenuComponent
-{
+class MenuComponent {
     friend class MenuSystem;
     friend class Menu;
 public:
@@ -186,8 +185,7 @@ protected:
 //!
 //! \see MenuComponent
 //! \see Menu
-class MenuItem : public MenuComponent
-{
+class MenuItem : public MenuComponent {
 public:
     //! \brief Construct a MenuItem
     //! \param[in] name The name of the menu component that is displayed in
@@ -222,8 +220,7 @@ protected:
 
 //! \brief A MenuItem that calls MenuSystem::back() when selected.
 //! \see MenuItem
-class BackMenuItem : public MenuItem
-{
+class BackMenuItem : public MenuItem {
 public:
     BackMenuItem(const char* name, SelectFnPtr select_fn, MenuSystem* ms);
 
@@ -237,8 +234,7 @@ protected:
 };
 
 
-class NumericMenuItem : public MenuItem
-{
+class NumericMenuItem : public MenuItem {
 public:
     //! \brief Callback for formatting the numeric value into a String.
     //!
@@ -297,8 +293,7 @@ protected:
 };
 
 
-class Menu : public MenuComponent
-{
+class Menu : public MenuComponent {
     friend class MenuSystem;
 public:
     Menu(const char* name, SelectFnPtr select_fn=nullptr);
@@ -337,8 +332,7 @@ private:
 };
 
 
-class MenuSystem
-{
+class MenuSystem {
 public:
     MenuSystem(MenuComponentRenderer const& renderer);
 
@@ -359,8 +353,7 @@ private:
 };
 
 
-class MenuComponentRenderer
-{
+class MenuComponentRenderer {
 public:
     virtual void render(Menu const& menu) const = 0;
 

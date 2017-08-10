@@ -37,37 +37,31 @@ Adafruit_PCD8544 lcd = Adafruit_PCD8544(5, 4, 3);
 
 // Renderer
 
-class MyRenderer : public MenuComponentRenderer
-{
+class MyRenderer : public MenuComponentRenderer {
 public:
-    virtual void render(Menu const& menu) const
-    {
+    void render(Menu const& menu) const {
         lcd.clearDisplay();
         menu.render(*this);
         menu.get_current_component()->render(*this);
         lcd.display();
     }
 
-    virtual void render_menu_item(MenuItem const& menu_item) const
-    {
+    void render_menu_item(MenuItem const& menu_item) const {
         lcd.setCursor(0, 1 * PCD8544_CHAR_HEIGHT);
         lcd.print(menu_item.get_name());
     }
 
-    virtual void render_back_menu_item(BackMenuItem const& menu_item) const
-    {
+    void render_back_menu_item(BackMenuItem const& menu_item) const {
         lcd.setCursor(0, 1 * PCD8544_CHAR_HEIGHT);
         lcd.print(menu_item.get_name());
     }
 
-    virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const
-    {
+    void render_numeric_menu_item(NumericMenuItem const& menu_item) const {
         lcd.setCursor(0, 1 * PCD8544_CHAR_HEIGHT);
         lcd.print(menu_item.get_name());
     }
 
-    virtual void render_menu(Menu const& menu) const
-    {
+    void render_menu(Menu const& menu) const {
         lcd.setCursor(0, 0 * PCD8544_CHAR_HEIGHT);
         lcd.print(menu.get_name());
     }
@@ -76,24 +70,21 @@ MyRenderer my_renderer;
 
 // Menu callback function
 
-void on_item1_selected(MenuComponent* p_menu_component)
-{
+void on_item1_selected(MenuComponent* p_menu_component) {
   lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
   lcd.print("Item1 Selectd");
   lcd.display();
   delay(1500); // so we can look the result on the LCD
 }
 
-void on_item2_selected(MenuComponent* p_menu_component)
-{
+void on_item2_selected(MenuComponent* p_menu_component) {
   lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
   lcd.print("Item2 Selectd");
   lcd.display();
   delay(1500); // so we can look the result on the LCD
 }
 
-void on_item3_selected(MenuComponent* p_menu_component)
-{
+void on_item3_selected(MenuComponent* p_menu_component) {
   lcd.setCursor(0, 2 * PCD8544_CHAR_HEIGHT);
   lcd.print("Item3 Selectd");
   lcd.display();
@@ -109,7 +100,7 @@ MenuItem mm_mi2("Lvl1-Item2(I)", &on_item2_selected);
 Menu mu1("Lvl1-Item3(M)");
 MenuItem mu1_mi1("Lvl2-Item1(I)", &on_item3_selected);
 
-void serialPrintHelp() {
+void serial_print_help() {
   Serial.println("***************");
   Serial.println("w: go to previus item (up)");
   Serial.println("s: go to next item (down)");
@@ -120,7 +111,7 @@ void serialPrintHelp() {
   Serial.println("***************");
 }
 
-void serialHandler() {
+void serial_handler() {
   char inChar;
   if((inChar = Serial.read())>0) {
     switch (inChar) {
@@ -142,7 +133,7 @@ void serialHandler() {
       break;
     case '?':
     case 'h': // Display help
-      serialPrintHelp();
+      serial_print_help();
       break;
     default:
       break;
@@ -152,8 +143,7 @@ void serialHandler() {
 
 // Standard arduino functions
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
 
   lcd.begin();
@@ -168,7 +158,7 @@ void setup()
 
   lcd.setTextSize(1);
 
-  serialPrintHelp();
+  serial_print_help();
 
   ms.get_root_menu().add_item(&mm_mi1);
   ms.get_root_menu().add_item(&mm_mi2);
@@ -177,7 +167,6 @@ void setup()
   ms.display();
 }
 
-void loop()
-{
-  serialHandler();
+void loop() {
+  serial_handler();
 }
