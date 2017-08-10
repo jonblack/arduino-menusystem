@@ -243,7 +243,7 @@ void Menu::render(MenuComponentRenderer const& renderer) const
 BackMenuItem::BackMenuItem(const char* name, SelectFnPtr select_fn,
                            MenuSystem* ms)
 : MenuItem(name, select_fn),
-  menu_system(ms)
+  _menu_system(ms)
 {
 }
 
@@ -252,8 +252,8 @@ Menu* BackMenuItem::select()
     if (_select_fn!=nullptr)
         _select_fn(this);
 
-    if (menu_system!=nullptr)
-        menu_system->back();
+    if (_menu_system!=nullptr)
+        _menu_system->back();
 
     return nullptr;
 }
@@ -385,7 +385,7 @@ void NumericMenuItem::set_max_value(float value)
 bool NumericMenuItem::next(bool loop)
 {
     _value += _increment;
-    if (_value > _maxValue)
+    if (_value > _max_value)
     {
         if (loop)
             _value = _min_value;

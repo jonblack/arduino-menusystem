@@ -233,7 +233,7 @@ protected:
     virtual Menu* select();
 
 protected:
-    MenuSystem* menu_system;
+    MenuSystem* _menu_system;
 };
 
 
@@ -290,8 +290,8 @@ protected:
 
 protected:
     float _value;
-    float _minValue;
-    float _maxValue;
+    float _min_value;
+    float _max_value;
     float _increment;
     FormatValueFnPtr _format_value_fn;
 };

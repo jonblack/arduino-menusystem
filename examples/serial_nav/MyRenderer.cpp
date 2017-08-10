@@ -32,7 +32,7 @@ void MyRenderer::render_numeric_menu_item(NumericMenuItem const& menu_item) cons
 
     buffer = menu_item.get_name();
     buffer += menu_item.has_focus() ? '<' : '=';
-    buffer += menu_item.get_value_string();
+    buffer += menu_item.get_formatted_value();
 
     if (menu_item.has_focus())
         buffer += '>';
@@ -59,8 +59,8 @@ void MyRenderer::render_custom_numeric_menu_item(CustomNumericMenuItem const& me
         // insert a '|' at the relative _value position
         graphics[int(
             (menu_item.get_width() - 1) *
-                (menu_item.get_value() - menu_item.get_minValue()) /
-                (menu_item.get_maxValue() - menu_item.get_minValue())
+                (menu_item.get_value() - menu_item.get_min_value()) /
+                (menu_item.get_max_value() - menu_item.get_min_value())
             )] = '|';
         graphics[menu_item.get_width()] = ' ';
         graphics[menu_item.get_width() + 1] = 0;
