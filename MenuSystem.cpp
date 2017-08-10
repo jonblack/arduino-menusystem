@@ -201,9 +201,9 @@ Menu const* Menu::get_parent() const
     return _p_parent;
 }
 
-void Menu::set_parent(Menu* pParent)
+void Menu::set_parent(Menu* p_parent)
 {
-    _p_parent = pParent;
+    _p_parent = p_parent;
 }
 
 MenuComponent const* Menu::get_menu_component(uint8_t index) const
@@ -303,22 +303,22 @@ bool MenuItem::prev(bool loop)
 // *********************************************************
 
 NumericMenuItem::NumericMenuItem(const char* basename, SelectFnPtr select_fn,
-                                 float value, float minValue, float maxValue,
+                                 float value, float min_value, float max_value,
                                  float increment,
                                  FormatValueFnPtr format_value_fn)
 : MenuItem(basename, select_fn),
   _value(value),
-  _minValue(minValue),
-  _maxValue(maxValue),
+  _min_value(min_value),
+  _max_value(max_value),
   _increment(increment),
   _format_value_fn(format_value_fn)
 {
     if (_increment < 0.0) _increment = -_increment;
-    if (_minValue > _maxValue)
+    if (_min_value > _max_value)
     {
-        float tmp = _maxValue;
-        _maxValue = _minValue;
-        _minValue = tmp;
+        float tmp = _max_value;
+        _max_value = _min_value;
+        _min_value = tmp;
     }
 };
 
@@ -347,17 +347,17 @@ float NumericMenuItem::get_value() const
     return _value;
 }
 
-float NumericMenuItem::get_minValue() const
+float NumericMenuItem::get_min_value() const
 {
-    return _minValue;
+    return _min_value;
 }
 
-float NumericMenuItem::get_maxValue() const
+float NumericMenuItem::get_max_value() const
 {
-    return _maxValue;
+    return _max_value;
 }
 
-String NumericMenuItem::get_value_string() const
+String NumericMenuItem::get_formatted_value() const
 {
     String buffer;
     if (_format_value_fn != nullptr)
@@ -374,12 +374,12 @@ void NumericMenuItem::set_value(float value)
 
 void NumericMenuItem::set_min_value(float value)
 {
-    _minValue = value;
+    _min_value = value;
 }
 
 void NumericMenuItem::set_max_value(float value)
 {
-    _maxValue = value;
+    _max_value = value;
 }
 
 bool NumericMenuItem::next(bool loop)
@@ -388,9 +388,9 @@ bool NumericMenuItem::next(bool loop)
     if (_value > _maxValue)
     {
         if (loop)
-            _value = _minValue;
+            _value = _min_value;
         else
-            _value = _maxValue;
+            _value = _max_value;
     }
     return true;
 }
@@ -398,12 +398,12 @@ bool NumericMenuItem::next(bool loop)
 bool NumericMenuItem::prev(bool loop)
 {
     _value -= _increment;
-    if (_value < _minValue)
+    if (_value < _min_value)
     {
         if (loop)
-            _value = _maxValue;
+            _value = _max_value;
         else
-            _value = _minValue;
+            _value = _min_value;
     }
     return true;
 }

@@ -252,13 +252,13 @@ public:
     /// @param name The name of the menu item.
     /// @param select_fn The function to call when this MenuItem is selected.
     /// @param value Default value.
-    /// @param minValue The minimum value.
-    /// @param maxValue The maximum value.
+    /// @param min_value The minimum value.
+    /// @param max_value The maximum value.
     /// @param increment How much the value should be incremented by.
-    /// @param valueFormatter The custom formatter. If nullptr the String float
-    ///                       formatter will be used.
+    /// @param format_value_fn The custom formatter. If nullptr the String
+    ///                        float formatter will be used.
     NumericMenuItem(const char* name, SelectFnPtr select_fn,
-                    float value, float minValue, float maxValue,
+                    float value, float min_value, float max_value,
                     float increment=1.0,
                     FormatValueFnPtr format_value_fn=nullptr);
 
@@ -271,14 +271,14 @@ public:
     void set_number_formatter(FormatValueFnPtr format_value_fn);
 
     float get_value() const;
-    float get_minValue() const;
-    float get_maxValue() const;
+    float get_min_value() const;
+    float get_max_value() const;
 
-    // TODO: get_value_string is a poor name. get_formatted_value maybe?
-    String get_value_string() const;
     void set_value(float value);
     void set_min_value(float value);
     void set_max_value(float value);
+
+    String get_formatted_value() const;
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
@@ -316,7 +316,7 @@ public:
     void render(MenuComponentRenderer const& renderer) const;
 
 protected:
-    void set_parent(Menu* pParent);
+    void set_parent(Menu* p_parent);
     Menu const* get_parent() const;
 
     Menu* activate();
