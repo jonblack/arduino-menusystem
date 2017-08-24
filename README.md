@@ -8,9 +8,7 @@ Other than the examples included in the library, the following pages might be
 useful to you:
 
 * [Arduino forum post](http://arduino.cc/forum/index.php/topic,105866.0.html)
-* [Humble Coder](http://www.humblecoder.com/)
-* [Arduino Menu System Library](http://www.humblecoder.com/arduino-menu-system-library/)
-* [Animated LED matrix menu transitions on the Arduino](http://www.humblecoder.com/animated-led-matrix-menu-transitions-on-the-arduino/)
+* [Arduino Menu System Library](http://www.jonblack.me/arduino-menu-system-library/)
 
 ## Contribution
 
@@ -19,9 +17,19 @@ pull-request.
 
 ## Donate
 
-* Bitcoin: 	1HnqohdK1d6gwDc7bT6LPPkmUFAXczEJKp
+* Bitcoin:  1D4MBvrR9w4yVEHvQbzM8WAuJjDdzp7trA
+* Ethereum: 0x75804bb16c8177D919ea54a35980c9202F294A10
 
 ## Changelog
+
+**3.0.0 - 24-08-2017**
+
+* Factor out rendering a menu from its implementation
+* Add `NumericMenuItem` and `BackMenuItem`
+* Add `Menu` callback method
+* `MenuSystem` creates its own root menu
+* Hide non-api methods by making them private
+* Deprecate `Menu::get_selected`
 
 **2.1.1 - 22/03/2016**
 
