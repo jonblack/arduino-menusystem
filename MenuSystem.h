@@ -217,6 +217,46 @@ protected:
     virtual Menu* select();
 };
 
+class TextMenuItem : public MenuItem {
+public:
+    //! \brief Construct a TextMenuItem
+    //! \param[in] name The name of the menu component that is displayed in
+    //!                 clients.
+    //! \param[in] select_fn The function to call when the MenuItem is
+    //!                      selected.
+    TextMenuItem(const char* name, SelectFnPtr select_fn);
+    void set_values(char** values, int count){this->_values = values;this->count = count;}
+    void set_value(String value){this->_value = value;}
+    char* get_value(){return _values[current_value_id];}
+
+    //! \copydoc MenuComponent::render
+    virtual void render(MenuComponentRenderer const& renderer) const;
+
+protected:
+    //! \copydoc MenuComponent::next
+    //!
+    //! This method does nothing in MenyItem.
+    virtual bool next(bool loop=false);
+
+    //! \copydoc MenuComponent::prev
+    //!
+    //! This method does nothing in MenuItem.
+    virtual bool prev(bool loop=false);
+
+    //! \copydoc MenuComponent::reset
+    //!
+    //! This method does nothing in MenuItem.
+    virtual void reset();
+
+    //! \copydoc MenuComponent:select
+    virtual Menu* select();
+private:
+    String _value;
+    int current_value_id;
+    char** _values;
+    int count;
+};
+
 
 //! \brief A MenuItem that calls MenuSystem::back() when selected.
 //! \see MenuItem
@@ -291,7 +331,6 @@ protected:
     float _increment;
     FormatValueFnPtr _format_value_fn;
 };
-
 
 //! \brief A MenuComponent that can contain other MenuComponents.
 //!
@@ -382,6 +421,7 @@ public:
     virtual void render(Menu const& menu) const = 0;
 
     virtual void render_menu_item(MenuItem const& menu_item) const = 0;
+    virtual void render_text_menu_item(TextMenuItem const& menu_item) const = 0;
     virtual void render_back_menu_item(BackMenuItem const& menu_item) const = 0;
     virtual void render_numeric_menu_item(NumericMenuItem const& menu_item) const = 0;
     virtual void render_menu(Menu const& menu) const = 0;
