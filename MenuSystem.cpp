@@ -253,6 +253,54 @@ bool MenuItem::prev(bool loop) {
     return false;
 }
 
+
+// *********************************************************
+// TextMenuItem
+// *********************************************************
+
+TextMenuItem::TextMenuItem(const char* name, SelectFnPtr select_fn)
+: MenuItem(name, select_fn),current_value_id(0) {
+}
+
+Menu* TextMenuItem::select() {
+    _has_focus = !_has_focus;
+
+    // Only run _select_fn when the user is done editing the value
+    if (!_has_focus && _select_fn != nullptr)
+        _select_fn(this);
+    return nullptr;
+}
+
+void TextMenuItem::reset() {
+    // Do nothing.
+}
+
+void TextMenuItem::render(MenuComponentRenderer const& renderer) const {
+    renderer.render_text_menu_item(*this);
+}
+
+bool TextMenuItem::next(bool loop) {
+    current_value_id++;
+    if (current_value_id > count-1) {
+        if (loop)
+            current_value_id = 0;
+        else
+            current_value_id = count-1;
+    }
+    return true;
+}
+
+bool TextMenuItem::prev(bool loop) {
+    current_value_id--;
+    if (current_value_id < 0) {
+        if (loop)
+            current_value_id = count-1;
+        else
+            current_value_id = 0;
+    }
+    return true;
+}
+
 // *********************************************************
 // NumericMenuItem
 // *********************************************************
