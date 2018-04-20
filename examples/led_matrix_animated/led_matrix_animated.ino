@@ -229,6 +229,7 @@ MyRenderer my_renderer;
 // Menu variables
 
 MenuSystem ms(my_renderer);
+//MenuSystem ms("MAIN", my_renderer); // You can also name the implicitly created root menu component
 MenuItem mi_one("ONE", nullptr);
 MenuItem mi_two("TWO", nullptr);
 MenuItem mi_three("THREE", nullptr);

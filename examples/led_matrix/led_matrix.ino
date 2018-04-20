@@ -109,6 +109,7 @@ void on_color_selected(MenuComponent* p_menu_component) {
 // Menu variables
 
 MenuSystem ms(my_renderer);
+//MenuSystem ms("MAIN", my_renderer); // You can also name the implicitly created root menu component
 MenuItem mi_time("TIME", &on_time_selected);
 MenuItem mi_date("DATE", &on_date_selected);
 Menu mu_disp("DISP*");
