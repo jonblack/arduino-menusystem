@@ -95,6 +95,7 @@ void on_item3_selected(MenuComponent* p_menu_component) {
 // Menu variables
 
 MenuSystem ms(my_renderer);
+//MenuSystem ms("MyAwesomeMenu", my_renderer); // You can also name the implicitly created root menu component
 MenuItem mm_mi1("Lvl1-Item1(I)", &on_item1_selected);
 MenuItem mm_mi2("Lvl1-Item2(I)", &on_item2_selected);
 Menu mu1("Lvl1-Item3(M)");
