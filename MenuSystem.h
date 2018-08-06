@@ -359,6 +359,7 @@ private:
 class MenuSystem {
 public:
     MenuSystem(MenuComponentRenderer const& renderer);
+    MenuSystem(MenuComponentRenderer const& renderer, const char* name);
 
     void display() const;
     bool next(bool loop=false);
