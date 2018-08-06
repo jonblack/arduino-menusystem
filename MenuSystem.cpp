@@ -352,7 +352,11 @@ bool NumericMenuItem::prev(bool loop) {
 // *********************************************************
 
 MenuSystem::MenuSystem(MenuComponentRenderer const& renderer)
-: _p_root_menu(new Menu("", nullptr)),
+: MenuSystem(renderer, "") {
+}
+
+MenuSystem::MenuSystem(MenuComponentRenderer const& renderer, const char* name)
+: _p_root_menu(new Menu(name, nullptr)),
   _p_curr_menu(_p_root_menu),
   _renderer(renderer) {
 }
