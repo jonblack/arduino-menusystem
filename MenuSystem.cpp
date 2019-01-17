@@ -347,6 +347,10 @@ bool NumericMenuItem::prev(bool loop) {
     return true;
 }
 
+bool NumericMenuItem::has_focus() {
+	return _has_focus;
+}
+
 // *********************************************************
 // MenuSystem
 // *********************************************************

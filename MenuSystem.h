@@ -278,6 +278,8 @@ public:
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
+    bool has_focus();
+
 protected:
     virtual bool next(bool loop=false);
     virtual bool prev(bool loop=false);
