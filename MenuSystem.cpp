@@ -200,6 +200,12 @@ void Menu::render(MenuComponentRenderer const& renderer) const {
     renderer.render_menu(*this);
 }
 
+MenuComponent::Type Menu::type() const {
+    return MenuComponent::TypeMenu;
+}
+
+
+
 // *********************************************************
 // BackMenuItem
 // *********************************************************
@@ -222,6 +228,10 @@ Menu* BackMenuItem::select() {
 
 void BackMenuItem::render(MenuComponentRenderer const& renderer) const {
     renderer.render_back_menu_item(*this);
+}
+
+MenuComponent::Type BackMenuItem::type() const {
+    return MenuComponent::TypeBackMenuItem;
 }
 
 // *********************************************************
@@ -251,6 +261,10 @@ bool MenuItem::next(bool loop) {
 
 bool MenuItem::prev(bool loop) {
     return false;
+}
+
+MenuComponent::Type MenuItem::type() const {
+    return MenuComponent::TypeMenuItem;
 }
 
 // *********************************************************
@@ -325,6 +339,15 @@ void NumericMenuItem::set_max_value(float value) {
     _max_value = value;
 }
 
+float NumericMenuItem::get_increment() const {
+    return _increment;
+}
+
+void NumericMenuItem::set_increment(float increment) {
+    _increment = increment;
+}
+
+
 bool NumericMenuItem::next(bool loop) {
     _value += _increment;
     if (_value > _max_value) {
@@ -345,6 +368,10 @@ bool NumericMenuItem::prev(bool loop) {
             _value = _min_value;
     }
     return true;
+}
+
+MenuComponent::Type NumericMenuItem::type() const {
+    return MenuComponent::TypeNumericMenuItem;
 }
 
 // *********************************************************

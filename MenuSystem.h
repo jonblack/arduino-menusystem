@@ -101,6 +101,12 @@ public:
     //!                      selected.
     void set_select_function(SelectFnPtr select_fn);
 
+    enum Type { TypeMenu, TypeMenuItem, TypeNumericMenuItem, TypeBackMenuItem };
+    //! \brief Returns the type of this item.
+    //!
+    //! Subclasses should reimplement this to return the correct type.
+    virtual Type type() const = 0;
+
 protected:
     //! \brief Processes the next action
     //!
@@ -196,6 +202,7 @@ public:
 
     //! \copydoc MenuComponent::render
     virtual void render(MenuComponentRenderer const& renderer) const;
+    virtual Type type() const;
 
 protected:
     //! \copydoc MenuComponent::next
@@ -226,6 +233,7 @@ public:
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
+    virtual Type type() const;
 protected:
     virtual Menu* select();
 
@@ -269,15 +277,19 @@ public:
     float get_value() const;
     float get_min_value() const;
     float get_max_value() const;
+    float get_increment() const;
 
     void set_value(float value);
     void set_min_value(float value);
     void set_max_value(float value);
 
+    void set_increment(float increment);
+
     String get_formatted_value() const;
 
     virtual void render(MenuComponentRenderer const& renderer) const;
 
+    virtual Type type() const;
 protected:
     virtual bool next(bool loop=false);
     virtual bool prev(bool loop=false);
@@ -322,6 +334,7 @@ public:
     //! \copydoc MenuComponent::render
     void render(MenuComponentRenderer const& renderer) const;
 
+    virtual Type type() const;
 protected:
     void set_parent(Menu* p_parent);
     Menu const* get_parent() const;
