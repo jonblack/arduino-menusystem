@@ -7,8 +7,9 @@ An arduino library for implementing a menu system.
 Other than the examples included in the library, the following pages might be
 useful to you:
 
-* [Arduino forum post](http://arduino.cc/forum/index.php/topic,105866.0.html)
-* [Arduino Menu System Library](http://www.jonblack.me/arduino-menu-system-library/)
+* [Arduino forum post](https://forum.arduino.cc/t/new-arduino-library-menusystem/103562)
+* [Arduino Menu System Library](https://jonblack.me/blog/2015/arduino-menu-system-library/)
+* [Tutorial](https://jonblack.me/blog/2015/arduino-menu-system-library/#tutorial)
 
 ## Contribution
 
